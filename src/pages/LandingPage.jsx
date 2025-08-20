@@ -39,40 +39,61 @@ const LandingPage = () => {
         </Typography>
       </Box>
 
-      <Box sx={{ position: 'relative' }}>
+      <Box
+        sx={{
+          position: 'relative',
+          minHeight: '66px',
+          maxHeight: '120px',
+          width: '614px',
+          border: '1px solid transparent',
+          backgroundColor: '#f3f5fd',
+          borderRadius: 8,
+          overflow: 'hidden',
+          padding: '16px 128px 48px 24px',
+          transition: 'all 0.3s ease',
+          '&:focus-within': {
+            border: '1px solid #a1a1a1',
+          },
+        }}
+      >
         <Input
-          disableUnderline
-          multiline
           sx={{
-            minHeight: '130px',
-            width: '768px',
             display: 'flex',
-            justifyContent: 'start',
             alignItems: 'start',
-            whiteSpace: 'pre-wrap',
-            wordWrap: 'break-word',
-            backgroundColor: '#f3f5fd',
-            borderRadius: 8,
-            padding: '16px 128px 16px 24px',
-            fontSize: 14,
-            outline: 'none',
-            border: '1px solid transparent',
-            transition: 'all 0.3s ease',
-            '& textarea': {
-              padding: 0,
-              margin: 0,
-              height: '100%',
+            padding: 0,
+            height: '66px',
+            width: '616px',
+            overflow: 'hidden',
+            '& .MuiInputBase-input': {
+              maxHeight: '66px',
+              overflow: 'auto !important',
+              fontSize: '14px',
               boxSizing: 'border-box',
-              textAlign: 'start',
-              verticalAlign: 'top',
-              resize: 'none',
-            },
-            '&:focus-within': {
-              border: '1px solid #a1a1a1',
+              '&::placeholder': {
+                fontSize: '14px',
+                color: '#9ca3af',
+                opacity: 1,
+              },
+              '&::-webkit-scrollbar': {
+                width: '6px',
+              },
+              '&::-webkit-scrollbar-track': {
+                backgroundColor: 'transparent',
+              },
+              '&::-webkit-scrollbar-thumb': {
+                backgroundColor: '#d1d5db',
+                borderRadius: '3px',
+                '&:hover': {
+                  backgroundColor: '#9ca3af',
+                },
+              },
             },
           }}
+          disableUnderline
+          multiline
           placeholder="여기에 무엇이든 입력하세요... 정리는 맡겨주세요!"
-        ></Input>
+        />
+
         <Box sx={{ position: 'absolute', bottom: '8px', left: '20px', display: 'flex', gap: 0.5 }}>
           <Button
             disableRipple

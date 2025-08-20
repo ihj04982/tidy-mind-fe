@@ -21,7 +21,7 @@ export default function RegisterForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login');
+    console.log('Register');
   };
 
   const handleGoogleLogin = async () => {

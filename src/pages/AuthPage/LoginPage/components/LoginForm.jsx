@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -10,6 +9,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
+import React, { useState } from 'react';
 
 export default function LoginForm() {
   const theme = useTheme();
@@ -27,38 +27,24 @@ export default function LoginForm() {
     console.log('Google login');
   };
 
-  const textFieldProps = {
-    input: {
-      sx: {
-        height: 36,
-        fontSize: 14,
-        borderRadius: '8px',
-        background: theme.palette.background.default,
-        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-          borderColor: theme.palette.border.strong,
-        },
-      },
-    },
-  };
-
   return (
     <Card
       elevation={0}
       sx={{
         background: theme.palette.background.paper,
         backdropFilter: 'blur(6px)',
-        borderRadius: '12px',
-        px: '16px',
-        py: { xs: '20px', md: '32px' },
+        borderRadius: '0.75rem',
+        px: '1rem',
+        py: { xs: '1.25rem', md: '2rem' },
         border: `1px solid ${theme.palette.border.default}`,
       }}
     >
       <CardContent sx={{ p: 0 }}>
-        <Box sx={{ textAlign: 'center', mb: '24px' }}>
+        <Box sx={{ textAlign: 'center', mb: '1.5rem' }}>
           <Typography
             sx={{
-              fontSize: { xs: '18px', md: '20px' },
-              mb: '4px',
+              fontSize: { xs: '1.125rem', md: '1.25rem' },
+              mb: '0.25rem',
               fontWeight: 400,
               color: theme.palette.text.primary,
             }}
@@ -67,7 +53,7 @@ export default function LoginForm() {
           </Typography>
           <Typography
             sx={{
-              fontSize: { xs: '12px', md: '14px' },
+              fontSize: { xs: '0.75rem', md: '0.875rem' },
               color: theme.palette.text.secondary,
             }}
           >
@@ -87,9 +73,7 @@ export default function LoginForm() {
             size="small"
             variant="outlined"
             autoComplete="email"
-            slotProps={textFieldProps}
           />
-
           {/* Password */}
           <TextField
             type="password"
@@ -100,19 +84,17 @@ export default function LoginForm() {
             required
             size="small"
             variant="outlined"
-            slotProps={textFieldProps}
-            sx={{ mt: 1 }}
+            sx={{ mt: '0.25rem' }}
           />
 
           {/* Forgot password */}
-          <Box sx={{ textAlign: 'right', mt: '6px' }}>
+          <Box sx={{ textAlign: 'right', mt: '0.375rem' }}>
             <Link
               href="/forgot-password"
               underline="none"
               sx={{
-                fontSize: '14px',
+                fontSize: '0.875rem',
                 color: theme.palette.text.secondary,
-                transition: 'color 0.2s ease',
                 '&:hover': { color: theme.palette.text.primary },
               }}
             >
@@ -127,15 +109,13 @@ export default function LoginForm() {
             fullWidth
             disabled={isLoading || !email || !password}
             sx={{
-              mt: '16px',
-              height: '32px',
-              fontSize: '14px',
-              borderRadius: '10px',
+              mt: '1rem',
+              height: '2rem',
+              fontSize: '0.875rem',
+              borderRadius: '0.625rem',
               fontWeight: 600,
-              background: theme.palette.primary,
+              background: theme.palette.primary.main,
               color: theme.palette.primary.contrastText,
-              textTransform: 'none',
-              transition: 'opacity 0.2s ease',
               '&:hover': { background: theme.palette.primary, opacity: 0.9 },
               '&.Mui-disabled': { opacity: 0.5 },
             }}
@@ -144,7 +124,7 @@ export default function LoginForm() {
           </Button>
 
           {/* Divider */}
-          <Box sx={{ position: 'relative', my: '4px' }}>
+          <Box sx={{ position: 'relative', my: '0.25rem' }}>
             <Divider
               sx={{
                 borderColor: theme.palette.border.default,
@@ -152,8 +132,8 @@ export default function LoginForm() {
             >
               <span
                 style={{
-                  padding: '0 8px',
-                  fontSize: '12px',
+                  padding: '0 0.5rem',
+                  fontSize: '0.75rem',
                   color: theme.palette.text.secondary,
                 }}
               >
@@ -169,16 +149,14 @@ export default function LoginForm() {
             fullWidth
             onClick={handleGoogleLogin}
             sx={{
-              mt: '8px',
-              height: '32px',
-              fontSize: '14px',
-              borderRadius: '8px',
+              mt: '0.5rem',
+              height: '2rem',
+              fontSize: '0.875rem',
+              borderRadius: '0.5rem',
               fontWeight: 600,
-              textTransform: 'none',
               borderColor: theme.palette.border.default,
               background: theme.palette.background.default,
               color: theme.palette.text.primary,
-              transition: 'background-color 0.2s ease',
               '&:hover': {
                 background: theme.palette.background.paper,
               },
@@ -193,8 +171,8 @@ export default function LoginForm() {
           component="p"
           sx={{
             textAlign: 'center',
-            mt: '16px',
-            fontSize: '12px',
+            mt: '1rem',
+            fontSize: '0.75rem',
             color: theme.palette.text.secondary,
           }}
         >
@@ -204,7 +182,6 @@ export default function LoginForm() {
             underline="none"
             sx={{
               fontWeight: 600,
-              transition: 'color 0.2s ease',
               color: theme.palette.text.accent,
               '&:hover': { color: theme.palette.text.primary },
             }}

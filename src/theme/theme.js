@@ -3,7 +3,7 @@ import { createTheme } from '@mui/material/styles';
 /** 라이트/다크 팔레트 */
 const light = {
   mode: 'light',
-  background: { default: '#E8EBFA', paper: '#FFFFFF' },
+  background: { default: '#e5ebf9', paper: '#FFFFFF' },
   text: { primary: '#0a0a0a', secondary: '#737373', accent: '#FF6900' },
   primary: { main: '#8EA5E7', contrastText: '#FFFFFF' },
   secondary: { main: '#C3CEF4', contrastText: '#FFFFFF' },
@@ -30,34 +30,8 @@ export const makeTheme = (mode = 'light') =>
   createTheme({
     palette: mode === 'light' ? light : dark,
     typography: {
-      fontFamily: `사용할 폰트`,
+      fontFamily: `"noto-sans", sans-serif`,
+      fontSize: 16,
       button: { textTransform: 'none' },
-    },
-    components: {
-      // OutlinedInput 기본 스타일
-      MuiOutlinedInput: {
-        styleOverrides: {
-          root: {
-            transition: 'none',
-            boxShadow: 'none',
-            '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#e5e7eb',
-              borderWidth: 1,
-              transition: 'none',
-            },
-            '&:hover .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#e5e7eb',
-              borderWidth: 1,
-            },
-            '&.Mui-focused': {
-              boxShadow: 'none',
-            },
-            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#e5e7eb',
-              borderWidth: 1,
-            },
-          },
-        },
-      },
     },
   });

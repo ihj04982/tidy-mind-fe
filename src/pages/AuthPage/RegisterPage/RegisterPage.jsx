@@ -1,7 +1,8 @@
+import { Box, Link, Typography, useTheme } from '@mui/material';
+import { MoveLeft } from 'lucide-react';
 import React from 'react';
-import { ArrowBackIosNew } from '@mui/icons-material';
-import { Box, IconButton, Link, Typography, useTheme } from '@mui/material';
-import RegisterForm from './components/RegisterForm';
+
+import RegisterForm from './components/RegisterForm.jsx';
 
 export default function RegisterPage() {
   const theme = useTheme();
@@ -31,9 +32,7 @@ export default function RegisterPage() {
             '&:hover': { color: theme.palette.text.primary },
           }}
         >
-          <IconButton size="small" sx={{ p: 0, mr: 0.5, color: 'inherit' }}>
-            <ArrowBackIosNew fontSize="inherit" />
-          </IconButton>
+          <MoveLeft size={15} />
           <Typography component="span" fontSize={12}>
             Back to home
           </Typography>

@@ -1,7 +1,7 @@
-import React from 'react';
-import { useMemo, useState, createContext, useContext } from 'react';
-import PropTypes from 'prop-types';
 import { ThemeProvider, CssBaseline } from '@mui/material';
+import PropTypes from 'prop-types';
+import React, { useMemo, useState, createContext, useContext } from 'react';
+
 import { makeTheme } from './theme';
 
 const ColorModeContext = createContext({ mode: 'light', toggle: () => {} });

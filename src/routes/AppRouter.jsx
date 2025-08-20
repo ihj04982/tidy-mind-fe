@@ -8,10 +8,10 @@ import LandingPage from '../pages/LandingPage.jsx';
 const AppRouter = () => {
   return (
     <Routes>
+      {/* <Route path="login" element={<LoginPage />} />
+        <Route path="register" element={<RegisterPage />} /> */}
       <Route path="/" element={<AppLayout />}>
         <Route index element={<LandingPage />} />
-        {/* <Route path="login" element={<LoginPage />} />
-        <Route path="register" element={<RegisterPage />} /> */}
 
         <Route element={<PrivateRoute />}>
           {/* <Route path="collections" element={<CollectionsPage />} />

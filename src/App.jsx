@@ -1,9 +1,13 @@
 import React from 'react';
+import ThemeRegistry from './themeProvider';
+import RegisterPage from './pages/AuthPage/RegisterPage/RegisterPage';
 
 function App() {
   return (
     <>
-      <h1>Hello World</h1>
+      <ThemeRegistry>
+        <RegisterPage />
+      </ThemeRegistry>
     </>
   );
 }

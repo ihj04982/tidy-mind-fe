@@ -1,14 +1,15 @@
 import React from 'react';
 import { ArrowBackIosNew } from '@mui/icons-material';
-import { Box, IconButton, Link, Typography } from '@mui/material';
+import { Box, IconButton, Link, Typography, useTheme } from '@mui/material';
 import LoginForm from './components/LoginForm';
 
 export default function LoginPage() {
+  const theme = useTheme();
   return (
     <Box
       sx={{
         minHeight: '100vh',
-        background: '#E8EBFA',
+        background: theme.palette.background.default,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -24,10 +25,10 @@ export default function LoginPage() {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
-            color: '#6b7280', // text-muted-foreground
+            color: theme.palette.text.secondary,
             mb: '8px',
             transition: 'color 0.2s ease',
-            '&:hover': { color: '#0b0b0c' }, // hover:text-foreground
+            '&:hover': { color: theme.palette.text.primary },
           }}
         >
           <IconButton size="small" sx={{ p: 0, mr: 0.5, color: 'inherit' }}>

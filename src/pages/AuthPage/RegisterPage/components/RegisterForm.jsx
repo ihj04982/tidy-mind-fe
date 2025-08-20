@@ -11,9 +11,10 @@ import {
   useTheme,
 } from '@mui/material';
 
-export default function LoginForm() {
+export default function RegisterForm() {
   const theme = useTheme();
 
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const isLoading = false; // 필요 시 로딩 상태 연결
@@ -63,7 +64,7 @@ export default function LoginForm() {
               color: theme.palette.text.primary,
             }}
           >
-            Welcome back
+            Create account
           </Typography>
           <Typography
             sx={{
@@ -71,11 +72,24 @@ export default function LoginForm() {
               color: theme.palette.text.secondary,
             }}
           >
-            Sign in to your TidyMind account
+            Join TidyMind to organize your thoughts
           </Typography>
         </Box>
 
         <form onSubmit={handleSubmit}>
+          {/* Email */}
+          <TextField
+            type="text"
+            placeholder="Full name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            fullWidth
+            required
+            size="small"
+            variant="outlined"
+            slotProps={textFieldProps}
+          />
+
           {/* Email */}
           <TextField
             type="email"
@@ -88,6 +102,7 @@ export default function LoginForm() {
             variant="outlined"
             autoComplete="email"
             slotProps={textFieldProps}
+            sx={{ mt: 1 }}
           />
 
           {/* Password */}
@@ -103,22 +118,14 @@ export default function LoginForm() {
             slotProps={textFieldProps}
             sx={{ mt: 1 }}
           />
-
-          {/* Forgot password */}
-          <Box sx={{ textAlign: 'right', mt: '6px' }}>
-            <Link
-              href="/forgot-password"
-              underline="none"
-              sx={{
-                fontSize: '14px',
-                color: theme.palette.text.secondary,
-                transition: 'color 0.2s ease',
-                '&:hover': { color: theme.palette.text.primary },
-              }}
-            >
-              Forgot password?
-            </Link>
-          </Box>
+          <span
+            style={{
+              fontSize: '14px',
+              color: theme.palette.text.secondary,
+            }}
+          >
+            Must be at least 8 characters
+          </span>
 
           {/* Submit */}
           <Button
@@ -140,7 +147,7 @@ export default function LoginForm() {
               '&.Mui-disabled': { opacity: 0.5 },
             }}
           >
-            {isLoading ? 'Signing in...' : 'Sign in'}
+            {isLoading ? 'Signing up...' : 'Sign up'}
           </Button>
 
           {/* Divider */}
@@ -188,7 +195,7 @@ export default function LoginForm() {
           </Button>
         </form>
 
-        {/* Sign up */}
+        {/* Sign in */}
         <Typography
           component="p"
           sx={{
@@ -198,9 +205,9 @@ export default function LoginForm() {
             color: theme.palette.text.secondary,
           }}
         >
-          {`Don't have an account? `}
+          {`Already have an account? `}
           <Link
-            href="/register"
+            href="/login"
             underline="none"
             sx={{
               fontWeight: 600,
@@ -209,7 +216,7 @@ export default function LoginForm() {
               '&:hover': { color: theme.palette.text.primary },
             }}
           >
-            Sign up
+            Sign in
           </Link>
         </Typography>
       </CardContent>

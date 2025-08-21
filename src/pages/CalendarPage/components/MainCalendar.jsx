@@ -143,140 +143,48 @@ const MainCalendar = () => {
     },
   };
 
-  const mockCategories = [
-    {
-      _id: 'cat1',
-      userId: 'user123',
-      name: 'task',
-      color: '#3ac6dd',
-      type: 'task',
-      createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-      updatedAt: new Date(),
-    },
-    {
-      _id: 'cat2',
-      userId: 'user123',
-      name: 'reminder',
-      color: '#57e578',
-      type: 'general',
-      createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-      updatedAt: new Date(),
-    },
-    {
-      _id: 'cat3',
-      userId: 'user123',
-      name: 'birthday',
-      color: '#d8e572',
-      type: 'general',
-      createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-      updatedAt: new Date(),
-    },
-  ];
-
-  const mockNotes = [
+  const calendarEvents = [
     {
       _id: '1',
-      userId: 'user123',
       title: 'Complete Project Report',
       content: 'Need to finish the Q3 project report with all metrics and analysis',
-      categoryId: 'cat1',
-      withDate: true,
-      dateMeta: {
-        dueDate: '2025-08-25',
-        done: false,
+      dueDate: '2025-08-25',
+      done: false,
+      category: {
+        name: 'task',
+        color: '#3ac6dd',
+        type: 'task',
       },
-      createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-      updatedAt: new Date(),
-    },
-    {
-      _id: '2',
-      userId: 'user123',
-      title: '지현 생일',
-      content: '지현 생일: 8월 24일',
-      categoryId: 'cat3',
-      withDate: true,
-      dateMeta: {
-        dueDate: '2025-08-24',
-        done: false,
-      },
-      createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-      updatedAt: new Date(),
-    },
-    {
-      _id: '3',
-      userId: 'user123',
-      title: '마라톤',
-      content: '마라톤 경기',
-      categoryId: 'cat2',
-      withDate: false,
-      dateMeta: {
-        dueDate: '2025-08-26',
-        done: true,
-      },
-      createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-      updatedAt: new Date(),
     },
     {
       _id: '4',
-      userId: 'user123',
       title: 'Submit Budget Proposal',
       content: 'Prepare and submit Q4 budget proposal to finance team',
-      categoryId: 'cat1',
-      withDate: true,
-      dateMeta: {
-        dueDate: '2025-08-27',
-        done: true,
+      dueDate: '2025-08-27',
+      done: true,
+      category: {
+        name: 'task',
+        color: '#3ac6dd',
+        type: 'task',
       },
-      createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-      updatedAt: new Date(),
-    },
-    {
-      _id: '5',
-      userId: 'user123',
-      title: 'Team Meeting Prep',
-      content: 'Prepare agenda for weekly team sync',
-      categoryId: 'cat3',
-      withDate: true,
-      dateMeta: {
-        dueDate: '2025-08-28',
-        done: true,
-      },
-      createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-      updatedAt: new Date(),
     },
   ];
 
-  const getCategoryById = (categoryId) => {
-    return mockCategories.find((cat) => cat._id === categoryId);
-  };
-
-  const mockEvents = mockNotes
-    .filter((note) => {
-      if (!note.withDate || !note.dateMeta?.dueDate) return false;
-
-      const category = getCategoryById(note.categoryId);
-      if (!category || category.type !== 'task') return false;
-
-      return true;
-    })
-    .map((note) => {
-      const category = getCategoryById(note.categoryId);
-      return {
-        id: note._id,
-        title: note.title,
-        start: note.dateMeta.dueDate,
-        backgroundColor: note.dateMeta.done ? theme.palette.text.secondary : category.color,
-        borderColor: note.dateMeta.done ? theme.palette.text.secondary : category.color,
-        textColor: theme.palette.background.paper,
-        extendedProps: {
-          content: note.content,
-          done: note.dateMeta.done,
-          categoryName: category.name,
-          categoryType: category.type,
-          categoryColor: category.color,
-        },
-      };
-    });
+  const mockEvents = calendarEvents.map((event) => ({
+    id: event._id,
+    title: event.title,
+    start: event.dueDate,
+    backgroundColor: event.done ? theme.palette.text.secondary : event.category.color,
+    borderColor: event.done ? theme.palette.text.secondary : event.category.color,
+    textColor: theme.palette.background.paper,
+    extendedProps: {
+      content: event.content,
+      done: event.done,
+      categoryName: event.category.name,
+      categoryType: event.category.type,
+      categoryColor: event.category.color,
+    },
+  }));
 
   return (
     <Paper

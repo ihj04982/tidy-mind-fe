@@ -6,7 +6,7 @@ import globals from 'globals';
 
 export default [
   {
-    ignores: ['node_modules/**', 'dist/**', 'build/**', 'coverage/**', '*.config.js'],
+    ignores: ['node_modules/**', 'dist/**', 'build/**', 'coverage/**', 'vite.config.js'],
   },
   {
     files: ['**/*.{js,mjs,cjs,jsx}'],

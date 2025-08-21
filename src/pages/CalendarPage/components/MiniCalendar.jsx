@@ -114,7 +114,7 @@ const MiniCalendar = () => {
           fixedWeekCount={false}
           selectable
           eventDisplay="none"
-          datesSet={(arg) => setCurrentDate(arg.view.currentStart)}
+          datesSet={(arg) => setCurrentDate(arg.view.calendar.getDate())}
         />
       </Box>
     </Paper>

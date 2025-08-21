@@ -6,7 +6,7 @@ import globals from 'globals';
 
 export default [
   {
-    ignores: ['node_modules/**', 'dist/**', 'build/**', 'coverage/**'],
+    ignores: ['node_modules/**', 'dist/**', 'build/**', 'coverage/**', '*.config.js'],
   },
   {
     files: ['**/*.{js,mjs,cjs,jsx}'],
@@ -24,11 +24,6 @@ export default [
       react: {
         version: 'detect',
       },
-      'import/resolver': {
-        node: {
-          extensions: ['.js', '.jsx', '.ts', '.tsx'],
-        },
-      },
     },
   },
   js.configs.recommended,
@@ -39,7 +34,7 @@ export default [
       'import/order': [
         'error',
         {
-          groups: [['builtin', 'external'], ['parent', 'sibling'], 'index'],
+          groups: [['builtin', 'external'], ['internal'], ['parent', 'sibling'], 'index'],
           'newlines-between': 'always',
           alphabetize: { order: 'asc', caseInsensitive: true },
         },

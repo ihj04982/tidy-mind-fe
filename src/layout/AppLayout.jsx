@@ -2,12 +2,13 @@ import { Button, Drawer, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { FolderOpen, Calendar, User, Moon, AlignJustify, X, LogOut } from 'lucide-react';
 import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 import Footer from './Footer.jsx';
 import Logo from '../assets/logo.png';
 
 const AppLayout = () => {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
   const toggleDrawer = (newOpen) => () => {
@@ -17,7 +18,7 @@ const AppLayout = () => {
   const DrawerList = (
     <Box
       sx={{
-        height: '100vh',
+        height: '100',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
@@ -27,6 +28,7 @@ const AppLayout = () => {
     >
       <Box>
         <Box
+          onClick={() => navigate('/')}
           sx={{
             display: 'flex',
             justifyContent: 'space-between',
@@ -52,6 +54,7 @@ const AppLayout = () => {
           </Button>
         </Box>
         <Button
+          onClick={() => navigate('/collections')}
           sx={{
             display: 'flex',
             justifyContent: 'start',
@@ -68,6 +71,7 @@ const AppLayout = () => {
           <Typography fontSize={'14px'}>Collections</Typography>
         </Button>
         <Button
+          onClick={() => navigate('/calendar')}
           sx={{
             display: 'flex',
             justifyContent: 'start',
@@ -103,23 +107,7 @@ const AppLayout = () => {
           <Typography fontSize={'14px'}>Dark Mode</Typography>
         </Button>
         <Button
-          sx={{
-            display: 'flex',
-            justifyContent: 'start',
-            alignContent: 'center',
-            gap: '0.875rem',
-            color: 'black',
-            padding: '8px 12px',
-            marginBottom: '0.5rem',
-            fontSize: '14px',
-            height: '3rem',
-            width: '100%',
-          }}
-        >
-          <User width={16} cursor={'pointer'} />
-          <Typography fontSize={'14px'}>Profile</Typography>
-        </Button>
-        <Button
+          onClick={() => navigate('/login')}
           sx={{
             display: 'flex',
             justifyContent: 'start',
@@ -155,6 +143,7 @@ const AppLayout = () => {
           backgroundColor: '#fff',
           boxShadow: 1,
           borderRight: '1px solid #e5e5e5',
+          zIndex: 999,
         }}
       >
         <Box
@@ -165,10 +154,23 @@ const AppLayout = () => {
             width: 24,
             marginTop: 7,
             marginBottom: 1.5,
+            cursor: 'pointer',
           }}
         />
-        <FolderOpen width={23} cursor={'pointer'} />
-        <Calendar width={23} cursor={'pointer'} />
+        <Button
+          disableRipple
+          onClick={() => navigate('/collections')}
+          sx={{ padding: 0, color: 'black' }}
+        >
+          <FolderOpen width={23} cursor={'pointer'} />
+        </Button>
+        <Button
+          disableRipple
+          onClick={() => navigate('/calendar')}
+          sx={{ padding: 0, color: 'black' }}
+        >
+          <Calendar width={23} cursor={'pointer'} />
+        </Button>
       </Box>
 
       <Box
@@ -181,20 +183,31 @@ const AppLayout = () => {
           backgroundColor: 'transparent',
         }}
       >
-        <Button
+        <Box
           sx={{
-            position: 'absolute',
-            right: '1rem',
-            top: '1rem',
-            width: 40,
-            height: 40,
             display: { xs: 'flex', md: 'none' },
+            justifyContent: 'end',
+            position: 'fixed',
             backgroundColor: '#e5ebf9',
+            zIndex: 111,
+            left: 0,
+            right: 0,
+            top: 0,
+            padding: '1rem 0.5rem 0.7rem',
           }}
-          onClick={toggleDrawer(true)}
         >
-          <AlignJustify color="black" />
-        </Button>
+          <Button
+            sx={{
+              display: { xs: 'flex', md: 'none' },
+              width: 40,
+              height: 40,
+              backgroundColor: '#e5ebf9',
+            }}
+            onClick={toggleDrawer(true)}
+          >
+            <AlignJustify size={20} color="#737373" />
+          </Button>
+        </Box>
         <Drawer
           BackdropProps={{
             sx: {
@@ -213,9 +226,9 @@ const AppLayout = () => {
 
         <Box
           sx={{
-            position: 'sticky',
+            position: 'fixed',
             top: 0,
-            left: '80px',
+            left: 0,
             right: 0,
             backgroundColor: '#e5ebf9',
             // backdropFilter: 'blur(6px)',
@@ -240,6 +253,7 @@ const AppLayout = () => {
             <Moon color="#737373" size={20} strokeWidth={1.5} />
           </Button>
           <Button
+            onClick={() => navigate('/login')}
             disableRipple
             sx={{
               minWidth: '48px',
@@ -252,7 +266,9 @@ const AppLayout = () => {
           </Button>
         </Box>
 
-        <Box sx={{ flex: 1 }}>
+        <Box
+          sx={{ display: 'flex', flexDirection: 'column', minHeight: 0, flex: 1, overflow: 'auto' }}
+        >
           <Outlet />
           <Footer />
         </Box>

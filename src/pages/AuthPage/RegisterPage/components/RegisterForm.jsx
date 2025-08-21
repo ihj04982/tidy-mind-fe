@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import React, { useState } from 'react';
 
-export default function LoginForm() {
+export default function RegisterForm() {
   const theme = useTheme();
 
   const [name, setName] = useState('');

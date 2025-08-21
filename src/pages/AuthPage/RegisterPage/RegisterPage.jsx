@@ -38,7 +38,7 @@ export default function RegisterPage() {
           </Typography>
         </Link>
 
-        {/* LoginForm */}
+        {/* RegisterForm */}
         <RegisterForm />
       </Box>
     </Box>

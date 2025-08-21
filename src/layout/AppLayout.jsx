@@ -1,21 +1,153 @@
-import { Button } from '@mui/material';
+import { Button, Drawer, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import { FolderOpen, Calendar, User, Moon } from 'lucide-react';
-import React from 'react';
+import { FolderOpen, Calendar, User, Moon, AlignJustify, X, LogOut } from 'lucide-react';
+import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import Footer from './Footer.jsx';
 import Logo from '../assets/logo.png';
 
 const AppLayout = () => {
+  const [open, setOpen] = useState(false);
+
+  const toggleDrawer = (newOpen) => () => {
+    setOpen(newOpen);
+  };
+
+  const DrawerList = (
+    <Box
+      sx={{
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        alignItems: 'start',
+        padding: 3,
+      }}
+    >
+      <Box>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '2rem',
+            gap: 3,
+          }}
+        >
+          <Box
+            sx={{
+              width: '120px',
+              height: '31px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              transform: 'rotate(90deg)',
+            }}
+          >
+            <img src={Logo} style={{ height: '120px' }} />
+          </Box>
+          <Button size="32px" color="#111" onClick={toggleDrawer(false)}>
+            <X size={16} />
+          </Button>
+        </Box>
+        <Button
+          sx={{
+            display: 'flex',
+            justifyContent: 'start',
+            alignContent: 'center',
+            gap: '0.875rem',
+            color: 'black',
+            padding: '8px 12px',
+            fontSize: '14px',
+            height: '3rem',
+            width: '100%',
+          }}
+        >
+          <FolderOpen width={16} cursor={'pointer'} />
+          <Typography fontSize={'14px'}>Collections</Typography>
+        </Button>
+        <Button
+          sx={{
+            display: 'flex',
+            justifyContent: 'start',
+            alignContent: 'center',
+            gap: '0.875rem',
+            color: 'black',
+            padding: '8px 12px',
+            fontSize: '14px',
+            height: '3rem',
+            width: '100%',
+          }}
+        >
+          <Calendar width={16} cursor={'pointer'} />
+          <Typography fontSize={'14px'}>Calendar</Typography>
+        </Button>
+      </Box>
+      <Box sx={{ width: '100%', paddingTop: '1rem', borderTop: '1px solid #e5e5e5' }}>
+        <Button
+          sx={{
+            display: 'flex',
+            justifyContent: 'start',
+            alignContent: 'center',
+            gap: '0.875rem',
+            color: 'black',
+            padding: '8px 12px',
+            marginBottom: '0.5rem',
+            fontSize: '14px',
+            height: '3rem',
+            width: '100%',
+          }}
+        >
+          <Moon width={16} cursor={'pointer'} />
+          <Typography fontSize={'14px'}>Dark Mode</Typography>
+        </Button>
+        <Button
+          sx={{
+            display: 'flex',
+            justifyContent: 'start',
+            alignContent: 'center',
+            gap: '0.875rem',
+            color: 'black',
+            padding: '8px 12px',
+            marginBottom: '0.5rem',
+            fontSize: '14px',
+            height: '3rem',
+            width: '100%',
+          }}
+        >
+          <User width={16} cursor={'pointer'} />
+          <Typography fontSize={'14px'}>Profile</Typography>
+        </Button>
+        <Button
+          sx={{
+            display: 'flex',
+            justifyContent: 'start',
+            alignContent: 'center',
+            gap: '0.875rem',
+            color: 'black',
+            padding: '8px 12px',
+            marginBottom: '0.5rem',
+            fontSize: '14px',
+            height: '3rem',
+            width: '100%',
+          }}
+        >
+          <LogOut width={16} cursor={'pointer'} />
+          <Typography fontSize={'14px'}>Login / Sign Up</Typography>
+        </Button>
+      </Box>
+    </Box>
+  );
+
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <Box
         sx={{
           position: 'fixed',
           width: '80px',
-          height: '100%',
-          display: 'flex',
+          height: '100vh',
+          display: { xs: 'none', md: 'flex' },
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'start',
@@ -41,21 +173,53 @@ const AppLayout = () => {
 
       <Box
         sx={{
-          marginLeft: '80px',
+          position: 'relative',
+          marginLeft: { xs: 0, md: '80px' },
           flex: 1,
           display: 'flex',
           flexDirection: 'column',
           backgroundColor: 'transparent',
         }}
       >
-        <Box
+        <Button
           sx={{
             position: 'absolute',
+            right: '1rem',
+            top: '1rem',
+            width: 40,
+            height: 40,
+            display: { xs: 'flex', md: 'none' },
+            backgroundColor: '#e5ebf9',
+          }}
+          onClick={toggleDrawer(true)}
+        >
+          <AlignJustify color="black" />
+        </Button>
+        <Drawer
+          BackdropProps={{
+            sx: {
+              backgroundColor: 'rgba(234, 234, 234, 0.3)',
+              backdropFilter: 'blur(5px)',
+            },
+          }}
+          sx={{
+            display: { xs: 'block', md: 'none' },
+          }}
+          open={open}
+          onClose={toggleDrawer(false)}
+        >
+          {DrawerList}
+        </Drawer>
+
+        <Box
+          sx={{
+            position: 'sticky',
             top: 0,
             left: '80px',
             right: 0,
-            backgroundColor: 'transparent',
-            display: 'flex',
+            backgroundColor: '#e5ebf9',
+            // backdropFilter: 'blur(6px)',
+            display: { xs: 'none', md: 'flex' },
             alignItems: 'center',
             justifyContent: 'end',
             paddingBottom: '20px',

@@ -13,6 +13,7 @@ const LandingPage = () => {
         flexDirection: ' column',
         justifyContent: 'center',
         alignItems: 'center',
+        width: '100%',
         height: '100%',
         backgroundColor: '#e5ebf9',
       }}
@@ -24,12 +25,13 @@ const LandingPage = () => {
           justifyContent: 'center',
           alignItems: 'center',
           marginBottom: 5,
+          paddingInline: { xs: 5, md: 0 },
         }}
       >
-        <Typography component="p" sx={{ color: '#ff6801', marginBottom: 4 }}>
+        <Typography component="p" sx={{ textAlign: 'center', color: '#ff6801', marginBottom: 4 }}>
           TIDYMIND WORKS
         </Typography>
-        <Typography component="h1" sx={{ fontSize: 48, marginBottom: 4 }}>
+        <Typography component="h1" sx={{ textAlign: 'center', fontSize: 48, marginBottom: 4 }}>
           Drop your thoughts.
         </Typography>
         <Typography component="p" sx={{ textAlign: 'center', fontSize: 18, color: '#9b9697b3' }}>
@@ -44,12 +46,12 @@ const LandingPage = () => {
           position: 'relative',
           minHeight: '66px',
           maxHeight: '120px',
-          width: '614px',
+          width: '45%',
           border: '1px solid transparent',
           backgroundColor: '#f3f5fd',
           borderRadius: 8,
           overflow: 'hidden',
-          padding: '16px 128px 48px 24px',
+          padding: '16px 92px 48px 24px',
           transition: 'all 0.3s ease',
           '&:focus-within': {
             border: '1px solid #a1a1a1',
@@ -62,7 +64,6 @@ const LandingPage = () => {
             alignItems: 'start',
             padding: 0,
             height: '66px',
-            width: '616px',
             overflow: 'hidden',
             '& .MuiInputBase-input': {
               maxHeight: '66px',

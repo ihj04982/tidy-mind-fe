@@ -18,8 +18,8 @@ const Footer = () => {
           padding: '24px 54.5px',
         }}
       >
-        <Grid container sx={{ paddingBottom: 4 }}>
-          <Grid size={3}>
+        <Grid container>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }} sx={{ paddingBottom: 4 }}>
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
               <Typography
                 sx={{
@@ -74,7 +74,7 @@ const Footer = () => {
               </Typography>
             </Box>
           </Grid>
-          <Grid size={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }} sx={{ paddingBottom: 4 }}>
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
               <Typography
                 sx={{
@@ -130,7 +130,7 @@ const Footer = () => {
               </Typography>
             </Box>
           </Grid>
-          <Grid size={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }} sx={{ paddingBottom: 4 }}>
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
               <Typography
                 sx={{
@@ -172,7 +172,7 @@ const Footer = () => {
               </Typography>
             </Box>
           </Grid>
-          <Grid size={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }} sx={{ paddingBottom: 4 }}>
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
               <Typography
                 sx={{
@@ -232,6 +232,8 @@ const Footer = () => {
         <Box
           sx={{
             display: 'flex',
+            flexDirection: { xs: 'column', md: 'row' },
+            alignItems: 'center',
             justifyContent: 'space-between',
             paddingTop: 3,
             borderTop: '1px solid #e5e5e5',

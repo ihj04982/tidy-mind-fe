@@ -24,6 +24,12 @@ export default [
       react: {
         version: 'detect',
       },
+      'import/resolver': {
+        node: {
+          extensions: ['.js', '.jsx', '.ts', '.tsx'],
+          moduleDirectory: ['node_modules', 'src'],
+        },
+      },
     },
   },
   js.configs.recommended,

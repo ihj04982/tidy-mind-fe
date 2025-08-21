@@ -1,74 +1,124 @@
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
-import { Box } from '@mui/material';
-import React from 'react';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { Box, IconButton, Paper, Typography, useTheme } from '@mui/material';
+import React, { useRef, useState } from 'react';
 
-const calendarStyles = {
-  maxWidth: { xs: '100%', md: 600, lg: '100%' },
-  mx: { xs: 'auto', lg: 0 },
-  '& .fc': { fontFamily: '"noto-sans", sans-serif' },
-  '& .fc-theme-standard td, .fc-theme-standard th, .fc-scrollgrid': { border: 'none' },
-  '& .fc-toolbar-title': { fontSize: '1rem', fontWeight: 400, textTransform: 'capitalize' },
-  '& .fc-button': {
-    backgroundColor: 'transparent',
-    border: 'none',
-    color: '#999',
-    padding: 0.25,
-    fontSize: '1rem',
-    boxShadow: 'none',
-    '&:hover, &:active, &.fc-button-active': { backgroundColor: 'transparent', color: '#333' },
-    '&:focus': { boxShadow: 'none' },
-  },
-  '& .fc-prev-button, .fc-next-button .fc-icon': { fontSize: '0.8rem' },
-  '& .fc-col-header-cell': {
-    padding: '0.5rem 0',
-    fontSize: '0.75rem',
-    color: '#999',
-    textTransform: 'uppercase',
-  },
-  '& .fc-daygrid-day': {
-    padding: 0.25,
-    '&:hover': { backgroundColor: '#f5f5f5' },
-    '& .fc-daygrid-day-frame': {
-      minHeight: '2rem',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      cursor: 'pointer',
+const MiniCalendar = () => {
+  const theme = useTheme();
+  const calendarRef = useRef(null);
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  const MONTH_LABELS = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+
+  const handlePrevMonth = () => {
+    const calendarApi = calendarRef.current?.getApi();
+    calendarApi?.prev();
+    setCurrentDate(calendarApi?.getDate() || new Date());
+  };
+
+  const handleNextMonth = () => {
+    const calendarApi = calendarRef.current?.getApi();
+    calendarApi?.next();
+    setCurrentDate(calendarApi?.getDate() || new Date());
+  };
+
+  const calendarStyles = {
+    '& .fc': { fontFamily: theme.typography.fontFamily },
+    '& .fc-theme-standard td, .fc-theme-standard th, .fc-scrollgrid': { border: 'none' },
+    '& .fc-toolbar': { display: 'none' },
+    '& .fc-col-header-cell': {
+      padding: { xs: '0.5rem 0', lg: '0.25rem 0' },
+      fontSize: { xs: '0.75rem', lg: '0.625rem' },
+      color: theme.palette.text.secondary,
+      textTransform: 'uppercase',
     },
-    '& .fc-daygrid-day-number': {
-      fontSize: '0.875rem',
-      width: '1.75rem',
-      height: '1.75rem',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: '50%',
-      transition: 'all 0.2s',
+    '& .fc-daygrid-day': {
+      padding: { xs: '0.125rem', lg: '0.0625rem' },
+      '&:hover': { backgroundColor: '#f5f5f5' },
+      '& .fc-daygrid-day-frame': {
+        minHeight: { xs: '1.5rem', md: '1.5rem', lg: '1rem' },
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: 'pointer',
+      },
+      '& .fc-daygrid-day-number': {
+        fontSize: { xs: '0.75rem', lg: '0.625rem' },
+        width: { xs: '1.5rem', lg: '1.25rem' },
+        height: { xs: '1.5rem', lg: '1.25rem' },
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: '50%',
+        transition: 'all 0.2s',
+      },
     },
-  },
-  '& .fc-day-today': {
-    backgroundColor: 'transparent !important',
-    '& .fc-daygrid-day-number': { backgroundColor: '#ff6b35', color: 'white', fontWeight: 500 },
-  },
-  '& .fc-day-selected .fc-daygrid-day-number': { backgroundColor: '#ff6900', color: 'white' },
+    '& .fc-day-today': {
+      backgroundColor: 'transparent !important',
+      '& .fc-daygrid-day-number': {
+        backgroundColor: theme.palette.text.accent,
+        color: theme.palette.background.paper,
+        fontWeight: 500,
+      },
+    },
+    '& .fc-day-selected .fc-daygrid-day-number': {
+      backgroundColor: theme.palette.text.accent,
+      color: theme.palette.background.paper,
+    },
+  };
+
+  return (
+    <Paper
+      sx={{
+        p: 3,
+        borderRadius: 2,
+        minHeight: { lg: '480px' },
+      }}
+    >
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 2, gap: 1 }}>
+        <IconButton size="small" onClick={handlePrevMonth} aria-label="Previous month">
+          <ChevronLeftIcon fontSize="small" />
+        </IconButton>
+        <Typography sx={{ minWidth: 120, textAlign: 'center', fontSize: '0.8rem' }}>
+          {MONTH_LABELS[currentDate.getMonth()]} {currentDate.getFullYear()}
+        </Typography>
+        <IconButton size="small" onClick={handleNextMonth} aria-label="Next month">
+          <ChevronRightIcon fontSize="small" />
+        </IconButton>
+      </Box>
+
+      <Box sx={calendarStyles}>
+        <FullCalendar
+          ref={calendarRef}
+          plugins={[dayGridPlugin, interactionPlugin]}
+          initialView="dayGridMonth"
+          headerToolbar={false}
+          height="auto"
+          dayHeaderFormat={{ weekday: 'narrow' }}
+          fixedWeekCount={false}
+          selectable
+          eventDisplay="none"
+          datesSet={(arg) => setCurrentDate(arg.view.currentStart)}
+        />
+      </Box>
+    </Paper>
+  );
 };
-
-const MiniCalendar = () => (
-  <Box sx={calendarStyles}>
-    <FullCalendar
-      plugins={[dayGridPlugin, interactionPlugin]}
-      initialView="dayGridMonth"
-      headerToolbar={{ left: 'prev', center: 'title', right: 'next' }}
-      height="auto"
-      dayHeaderFormat={{ weekday: 'narrow' }}
-      titleFormat={{ month: 'long', year: 'numeric' }}
-      fixedWeekCount={false}
-      selectable
-      eventDisplay="none"
-    />
-  </Box>
-);
 
 export default MiniCalendar;

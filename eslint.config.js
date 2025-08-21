@@ -41,6 +41,7 @@ export default [
       ],
       'import/no-unresolved': 'error',
       'react-hooks/rules-of-hooks': 'error',
+      'react/prop-types': 'off',
     },
   },
 ];

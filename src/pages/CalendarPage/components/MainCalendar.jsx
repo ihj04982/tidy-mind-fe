@@ -1,11 +1,148 @@
 import dayGridPlugin from '@fullcalendar/daygrid';
 import FullCalendar from '@fullcalendar/react';
-import { Box } from '@mui/material';
+import { Box, Paper, useTheme } from '@mui/material';
 import React from 'react';
 
 import SearchBar from './SearchBar.jsx';
 
 const MainCalendar = () => {
+  const theme = useTheme();
+
+  const calendarStyles = {
+    flex: 1,
+    mt: 1,
+    '& .fc': {
+      fontFamily: theme.typography.fontFamily,
+    },
+    '& .fc-toolbar': {
+      marginBottom: '1.5rem',
+    },
+    '& .fc-toolbar-title': {
+      fontSize: '1.5rem',
+      fontWeight: '400',
+      textTransform: 'capitalize',
+      fontFamily: '"playfair-display", serif',
+    },
+    '& .fc-button': {
+      backgroundColor: theme.palette.background.paper,
+      border: `1px solid ${theme.palette.border.default}`,
+      color: theme.palette.text.primary,
+      padding: '0.375rem 0.875rem',
+      fontSize: '0.9rem',
+      fontWeight: '400',
+      textTransform: 'none',
+      borderRadius: '0.25rem',
+      transition: 'all 0.2s',
+      '&:hover': {
+        backgroundColor: '#f5f5f5',
+        borderColor: theme.palette.border.strong,
+      },
+      '&:focus': {
+        boxShadow: 'none',
+      },
+    },
+    '& .fc-button-primary:not(:disabled).fc-button-active': {
+      backgroundColor: '#f0f0f0',
+      color: theme.palette.text.primary,
+      borderColor: theme.palette.border.strong,
+    },
+    '& .fc-button-group': {
+      '& .fc-button': {
+        marginLeft: '0',
+        borderRadius: '0',
+      },
+      '& .fc-button:first-child': {
+        borderRadius: '0.25rem 0 0 0.25rem',
+      },
+      '& .fc-button:last-child': {
+        borderRadius: '0 0.25rem 0.25rem 0',
+      },
+    },
+    '& .fc-today-button': {
+      marginLeft: '0.5rem',
+      borderRadius: '0.25rem',
+      backgroundColor: `${theme.palette.background.paper} !important`,
+      border: `1px solid ${theme.palette.border.default} !important`,
+      color: `${theme.palette.text.primary} !important`,
+      '&:hover': {
+        backgroundColor: '#f5f5f5',
+        borderColor: `${theme.palette.border.strong} !important`,
+      },
+      '&:disabled': {
+        backgroundColor: `${theme.palette.background.paper} !important`,
+        opacity: '0.65',
+      },
+    },
+    '& .fc-theme-standard td, & .fc-theme-standard th': {
+      border: `1px solid ${theme.palette.border.default}`,
+    },
+    '& .fc-theme-standard .fc-scrollgrid': {
+      border: `1px solid ${theme.palette.border.default}`,
+      overflow: 'hidden',
+    },
+    '& .fc-col-header': {
+      backgroundColor: '#f8f8f8',
+    },
+    '& .fc-col-header-cell': {
+      padding: '0.625rem 0',
+      fontWeight: '400',
+      fontSize: '1rem',
+      color: theme.palette.text.secondary,
+      textAlign: 'center',
+    },
+    '& .fc-daygrid-day': {
+      backgroundColor: theme.palette.background.paper,
+      minHeight: '5.625rem',
+      '&:hover': {
+        backgroundColor: '#fafafa',
+      },
+    },
+    '& .fc-daygrid-day-frame': {
+      padding: '0.5rem',
+      minHeight: '5rem',
+    },
+    '& .fc-daygrid-day-number': {
+      fontSize: '0.95rem',
+      color: theme.palette.text.primary,
+      padding: '0.25rem',
+      float: 'left',
+    },
+    '& .fc-day-today': {
+      backgroundColor: 'transparent !important',
+    },
+    '& .fc-day-today .fc-daygrid-day-number': {
+      backgroundColor: theme.palette.text.accent,
+      color: theme.palette.background.paper,
+      borderRadius: '50%',
+      width: '1.625rem',
+      height: '1.625rem',
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontWeight: '500',
+      float: 'none',
+      margin: '0.125rem',
+    },
+    '& .fc-event': {
+      padding: '0.125rem 0.25rem',
+      fontSize: '0.8rem',
+      cursor: 'pointer',
+      transition: 'opacity 0.2s',
+      '&:hover': {
+        opacity: '0.9',
+      },
+    },
+    '& .fc-event-title': {
+      fontWeight: '500',
+    },
+    '& .fc-daygrid-event-dot': {
+      display: 'none',
+    },
+    '& .fc-daygrid-day-events': {
+      marginTop: '0.125rem',
+    },
+  };
+
   const mockCategories = [
     {
       _id: 'cat1',
@@ -128,9 +265,9 @@ const MainCalendar = () => {
         id: note._id,
         title: note.title,
         start: note.dateMeta.dueDate,
-        backgroundColor: note.dateMeta.done ? '#9E9E9E' : category.color,
-        borderColor: note.dateMeta.done ? '#9E9E9E' : category.color,
-        textColor: 'white',
+        backgroundColor: note.dateMeta.done ? theme.palette.text.secondary : category.color,
+        borderColor: note.dateMeta.done ? theme.palette.text.secondary : category.color,
+        textColor: theme.palette.background.paper,
         extendedProps: {
           content: note.content,
           done: note.dateMeta.done,
@@ -142,145 +279,18 @@ const MainCalendar = () => {
     });
 
   return (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Paper
+      sx={{
+        p: 3,
+        borderRadius: 2,
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       <SearchBar />
 
-      <Box
-        sx={{
-          flex: 1,
-          '& .fc': {
-            fontFamily: '"noto-sans", sans-serif',
-          },
-          '& .fc-toolbar': {
-            marginBottom: '1.5rem',
-          },
-          '& .fc-toolbar-title': {
-            fontSize: '1.5rem',
-            fontWeight: '400',
-            textTransform: 'capitalize',
-            fontFamily: '"playfair-display", serif',
-          },
-          '& .fc-button': {
-            backgroundColor: 'white',
-            border: '1px solid #ddd',
-            color: '#333',
-            padding: '6px 14px',
-            fontSize: '0.9rem',
-            fontWeight: '400',
-            textTransform: 'none',
-            borderRadius: '4px',
-            transition: 'all 0.2s',
-            '&:hover': {
-              backgroundColor: '#f5f5f5',
-              borderColor: '#ccc',
-            },
-            '&:focus': {
-              boxShadow: 'none',
-            },
-          },
-          '& .fc-button-primary:not(:disabled).fc-button-active': {
-            backgroundColor: '#f0f0f0',
-            color: '#333',
-            borderColor: '#999',
-          },
-          '& .fc-button-group': {
-            '& .fc-button': {
-              marginLeft: '0',
-              borderRadius: '0',
-            },
-            '& .fc-button:first-child': {
-              borderRadius: '4px 0 0 4px',
-            },
-            '& .fc-button:last-child': {
-              borderRadius: '0 4px 4px 0',
-            },
-          },
-
-          '& .fc-today-button': {
-            marginLeft: '8px',
-            borderRadius: '4px',
-            backgroundColor: 'white !important',
-            border: '1px solid #ddd !important',
-            color: '#333 !important',
-            '&:hover': {
-              backgroundColor: '#f5f5f5 !important',
-              borderColor: '#ccc !important',
-            },
-            '&:disabled': {
-              backgroundColor: 'white !important',
-              opacity: '0.65',
-            },
-          },
-          '& .fc-theme-standard td, & .fc-theme-standard th': {
-            border: '1px solid #ddd',
-          },
-          '& .fc-theme-standard .fc-scrollgrid': {
-            border: '1px solid #ddd',
-            overflow: 'hidden',
-          },
-          '& .fc-col-header': {
-            backgroundColor: '#f8f8f8',
-          },
-          '& .fc-col-header-cell': {
-            padding: '10px 0',
-            fontWeight: '400',
-            fontSize: '1rem',
-            color: '#666',
-            textAlign: 'center',
-          },
-          '& .fc-daygrid-day': {
-            backgroundColor: 'white',
-            minHeight: '90px',
-            '&:hover': {
-              backgroundColor: '#fafafa',
-            },
-          },
-          '& .fc-daygrid-day-frame': {
-            padding: '8px',
-            minHeight: '80px',
-          },
-          '& .fc-daygrid-day-number': {
-            fontSize: '0.95rem',
-            color: '#333',
-            padding: '4px',
-            float: 'left',
-          },
-          '& .fc-day-today': {
-            backgroundColor: 'transparent !important',
-          },
-          '& .fc-day-today .fc-daygrid-day-number': {
-            backgroundColor: '#ff6900',
-            color: 'white',
-            borderRadius: '50%',
-            width: '26px',
-            height: '26px',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontWeight: '500',
-            float: 'none',
-            margin: '2px',
-          },
-          '& .fc-event': {
-            padding: '2px 4px',
-            fontSize: '0.8rem',
-            cursor: 'pointer',
-            transition: 'opacity 0.2s',
-            '&:hover': {
-              opacity: '0.9',
-            },
-          },
-          '& .fc-event-title': {
-            fontWeight: '500',
-          },
-          '& .fc-daygrid-event-dot': {
-            display: 'none',
-          },
-          '& .fc-daygrid-day-events': {
-            marginTop: '2px',
-          },
-        }}
-      >
+      <Box sx={calendarStyles}>
         <FullCalendar
           plugins={[dayGridPlugin]}
           initialView="dayGridMonth"
@@ -300,7 +310,7 @@ const MainCalendar = () => {
           moreLinkClick="popover"
         />
       </Box>
-    </Box>
+    </Paper>
   );
 };
 

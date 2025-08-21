@@ -9,8 +9,12 @@ const CalendarSidebar = () => {
     <Box
       sx={{
         display: 'flex',
-        flexDirection: 'column',
-        gap: 1,
+        flexDirection: {
+          xs: 'column',
+          sm: 'row',
+          lg: 'column',
+        },
+        gap: 2,
         height: '100%',
       }}
     >

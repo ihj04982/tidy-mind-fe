@@ -13,7 +13,7 @@ const SearchBar = () => (
       border: '1px solid #e0e0e0',
       px: 2,
       ml: 'auto',
-      mb: 10,
+      mb: 4,
     }}
   >
     <SearchIcon sx={{ color: '#9e9e9e', mr: 1 }} />

@@ -5,11 +5,11 @@ import CalendarSidebar from './components/CalendarSidebar.jsx';
 import MainCalendar from './components/MainCalendar.jsx';
 
 const CalendarPage = () => (
-  <Container sx={{ my: 20, minHeight: 'calc(100dvh - 200px)' }}>
+  <Container sx={{ my: 20 }}>
     <Box
       sx={{
         display: 'flex',
-        gap: 8,
+        gap: 2,
         flexDirection: { xs: 'column', lg: 'row' },
         alignItems: { xs: 'stretch', lg: 'flex-start' },
       }}

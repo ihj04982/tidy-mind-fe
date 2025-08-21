@@ -1,15 +1,7 @@
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { Box, IconButton, Paper, Typography, Tooltip } from '@mui/material';
+import { Box, IconButton, Paper, Typography, useTheme } from '@mui/material';
 import React, { useState, useMemo } from 'react';
-
-const COLORS = {
-  empty: '#ebedf0',
-  low: '#a5f3ff',
-  medium: '#4ac8db',
-  high: '#18b4cc',
-  veryHigh: '#0d9dc1',
-};
 
 const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const MONTH_LABELS = [
@@ -26,14 +18,6 @@ const MONTH_LABELS = [
   'Nov',
   'Dec',
 ];
-
-const getColorIntensity = (count) => {
-  if (count === 0) return COLORS.empty;
-  if (count <= 3) return COLORS.low;
-  if (count <= 6) return COLORS.medium;
-  if (count <= 9) return COLORS.high;
-  return COLORS.veryHigh;
-};
 
 const generateCalendarData = (year, month) => {
   const firstDay = new Date(year, month, 1).getDay();
@@ -73,7 +57,24 @@ const generateCalendarData = (year, month) => {
 };
 
 const TaskCountHeatmap = () => {
+  const theme = useTheme();
   const [currentDate, setCurrentDate] = useState(new Date());
+
+  const COLORS = {
+    empty: theme.palette.background.paper,
+    low: '#c3cef4',
+    medium: '#8ea5e7',
+    high: '#5078e5',
+    veryHigh: '#0943e5',
+  };
+
+  const getColorIntensity = (count) => {
+    if (count === 0) return COLORS.empty;
+    if (count <= 3) return COLORS.low;
+    if (count <= 6) return COLORS.medium;
+    if (count <= 9) return COLORS.high;
+    return COLORS.veryHigh;
+  };
 
   const { calendarData, dayNumbers, firstDay, daysInMonth } = useMemo(
     () => generateCalendarData(currentDate.getFullYear(), currentDate.getMonth()),
@@ -91,12 +92,17 @@ const TaskCountHeatmap = () => {
     setCurrentDate((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1));
 
   return (
-    <Paper sx={{ p: 3, borderRadius: 2, maxWidth: { xs: '100%', md: 600 }, mx: 'auto' }}>
+    <Paper
+      sx={{
+        p: 3,
+        borderRadius: 2,
+      }}
+    >
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 2, gap: 1 }}>
         <IconButton size="small" onClick={handlePrevMonth} aria-label="Previous month">
           <ChevronLeftIcon fontSize="small" />
         </IconButton>
-        <Typography sx={{ minWidth: 120, textAlign: 'center', fontSize: 14 }}>
+        <Typography sx={{ minWidth: 120, textAlign: 'center', fontSize: '0.8rem' }}>
           {MONTH_LABELS[currentDate.getMonth()]} {currentDate.getFullYear()}
         </Typography>
         <IconButton size="small" onClick={handleNextMonth} aria-label="Next month">
@@ -106,17 +112,25 @@ const TaskCountHeatmap = () => {
 
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <Box>
-          <Box sx={{ display: 'flex', gap: '3px', mb: '3px' }}>
+          <Box sx={{ display: 'flex', gap: '0.1875rem', mb: '0.1875rem' }}>
             {DAY_LABELS.map((day) => (
-              <Box key={day} sx={{ width: 30, textAlign: 'center', fontSize: 9, color: '#586069' }}>
+              <Box
+                key={day}
+                sx={{
+                  width: '1.875rem',
+                  textAlign: 'center',
+                  fontSize: '0.5625rem',
+                  color: theme.palette.text.secondary,
+                }}
+              >
                 {day}
               </Box>
             ))}
           </Box>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '0.1875rem' }}>
             {calendarData.map((week, weekIndex) => (
-              <Box key={weekIndex} sx={{ display: 'flex', gap: '3px' }}>
+              <Box key={weekIndex} sx={{ display: 'flex', gap: '0.1875rem' }}>
                 {week.map((taskCount, dayIndex) => {
                   const dayNumber = dayNumbers[weekIndex][dayIndex];
                   const cellIndex = weekIndex * 7 + dayIndex;
@@ -124,29 +138,31 @@ const TaskCountHeatmap = () => {
                     cellIndex >= firstDay && cellIndex < firstDay + daysInMonth;
 
                   return (
-                    <Tooltip key={dayIndex} title={isCurrentMonth ? `${taskCount} tasks` : ''}>
-                      <Box
-                        sx={{
-                          width: 30,
-                          height: 30,
-                          backgroundColor: isCurrentMonth
-                            ? getColorIntensity(taskCount)
-                            : '#f6f8fa',
-                          borderRadius: '3px',
-                          cursor: 'pointer',
-                          border: '1px solid rgba(27, 31, 35, 0.06)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: 11,
-                          color: isCurrentMonth ? (taskCount > 6 ? '#fff' : '#24292e') : '#c3c8cf',
-                          fontWeight: isCurrentMonth ? 500 : 400,
-                          '&:hover': { border: '1px solid rgba(27, 31, 35, 0.3)' },
-                        }}
-                      >
-                        {dayNumber}
-                      </Box>
-                    </Tooltip>
+                    <Box
+                      key={dayIndex}
+                      sx={{
+                        width: '1.875rem',
+                        height: '1.875rem',
+                        backgroundColor: isCurrentMonth ? getColorIntensity(taskCount) : '#f6f8fa',
+                        borderRadius: '0.1875rem',
+                        cursor: 'pointer',
+                        border: `1px solid rgba(27, 31, 35, 0.06)`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '0.7rem',
+                        color: isCurrentMonth
+                          ? taskCount > 6
+                            ? theme.palette.background.paper
+                            : theme.palette.text.primary
+                          : theme.palette.text.secondary,
+                        '&:hover': {
+                          border: `1px solid rgba(27, 31, 35, 0.3)`,
+                        },
+                      }}
+                    >
+                      {dayNumber}
+                    </Box>
                   );
                 })}
               </Box>
@@ -156,24 +172,28 @@ const TaskCountHeatmap = () => {
       </Box>
 
       <Box sx={{ mt: 3, display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'center' }}>
-        <Typography sx={{ fontSize: 11, color: '#586069', mr: 1 }}>Less</Typography>
+        <Typography sx={{ fontSize: '0.6875rem', color: theme.palette.text.secondary, mr: 1 }}>
+          Less
+        </Typography>
         {[0, 3, 6, 9, 12].map((level) => (
           <Box
             key={level}
             sx={{
-              width: 10,
-              height: 10,
+              width: '0.625rem',
+              height: '0.625rem',
               backgroundColor: getColorIntensity(level),
-              borderRadius: '2px',
-              border: '1px solid rgba(27, 31, 35, 0.06)',
+              borderRadius: '0.125rem',
+              border: `1px solid rgba(27, 31, 35, 0.06)`,
             }}
           />
         ))}
-        <Typography sx={{ fontSize: 11, color: '#586069', ml: 1 }}>More</Typography>
+        <Typography sx={{ fontSize: '0.6875rem', color: theme.palette.text.secondary, ml: 1 }}>
+          More
+        </Typography>
       </Box>
 
       <Box sx={{ mt: 2, textAlign: 'center' }}>
-        <Typography sx={{ fontSize: 12, color: '#586069' }}>
+        <Typography sx={{ fontSize: '0.75rem', color: theme.palette.text.secondary }}>
           <strong>{totalTasks}</strong> total tasks in {MONTH_LABELS[currentDate.getMonth()]}{' '}
           {currentDate.getFullYear()}
         </Typography>

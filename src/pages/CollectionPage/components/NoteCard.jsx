@@ -6,7 +6,7 @@ import React from 'react';
 import { CATEGORIES } from '../../../constants/note.constants';
 import { formatRelativeDate } from '../../../utils/dateUtils';
 
-const NoteCard = ({ note, isSelected, onSelect, onToggleDone }) => {
+const NoteCard = ({ note, isSelected, onSelect, onToggleDone, onDeleteNote }) => {
   const theme = useTheme();
 
   const category = Object.values(CATEGORIES).find((cat) => cat.id === note.categoryId);
@@ -18,7 +18,9 @@ const NoteCard = ({ note, isSelected, onSelect, onToggleDone }) => {
 
   const handleDelete = (e) => {
     e.stopPropagation();
-    console.log(note, 'is deleted');
+    if (onDeleteNote) {
+      onDeleteNote(note._id);
+    }
   };
 
   const handleCheckboxClick = (e) => {

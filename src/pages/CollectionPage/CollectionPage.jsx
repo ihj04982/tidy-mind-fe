@@ -120,6 +120,7 @@ const CollectionPage = () => {
               onNoteSelect={handleNoteSelect}
               onCategoryFilter={handleCategoryFilter}
               onToggleDone={handleToggleDone}
+              onDeleteNote={handleDeleteNote}
             />
           </Paper>
         </Grid>

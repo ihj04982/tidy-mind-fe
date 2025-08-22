@@ -1,4 +1,11 @@
-import { format, formatDistanceToNow } from 'date-fns';
+import {
+  format,
+  formatDistanceToNow,
+  differenceInCalendarDays,
+  isToday,
+  isYesterday,
+  isThisWeek,
+} from 'date-fns';
 
 export const formatDate = (date) => {
   return format(new Date(date), 'M/d/yyyy');
@@ -13,18 +20,31 @@ export const formatRelativeDate = (date) => {
 };
 
 export const formatDueDate = (dueDate) => {
-  return `Due ${formatRelativeDate(dueDate)}`;
+  const now = new Date();
+  const due = new Date(dueDate);
+  const diffDays = differenceInCalendarDays(due, now);
+
+  if (diffDays < 0) {
+    return `Overdue ${Math.abs(diffDays)} day${Math.abs(diffDays) !== 1 ? 's' : ''} ago`;
+  } else if (diffDays === 0) {
+    return 'Due today';
+  } else if (diffDays === 1) {
+    return 'Due tomorrow';
+  } else {
+    return `Due in ${diffDays} days`;
+  }
+};
+
+export const formatDateForInput = (date) => {
+  return format(new Date(date), 'yyyy-MM-dd');
 };
 
 export const getDateGroup = (date) => {
-  const now = new Date();
   const noteDate = new Date(date);
-  const diffTime = now - noteDate;
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-  if (diffDays === 0) return 'Today';
-  if (diffDays === 1) return 'Yesterday';
-  if (diffDays <= 7) return 'Previous 7 Days';
+  if (isToday(noteDate)) return 'Today';
+  if (isYesterday(noteDate)) return 'Yesterday';
+  if (isThisWeek(noteDate)) return 'Previous 7 Days';
   return 'Older';
 };
 

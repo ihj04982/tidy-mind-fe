@@ -6,7 +6,14 @@ import NoteCard from './NoteCard';
 import { CATEGORIES } from '../../../constants/note.constants';
 import { groupNotesByDate } from '../../../utils/dateUtils';
 
-const NoteList = ({ notes, selectedNote, onNoteSelect, onCategoryFilter, onToggleDone }) => {
+const NoteList = ({
+  notes,
+  selectedNote,
+  onNoteSelect,
+  onCategoryFilter,
+  onToggleDone,
+  onDeleteNote,
+}) => {
   const theme = useTheme();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const groupedNotes = groupNotesByDate(notes);
@@ -29,12 +36,12 @@ const NoteList = ({ notes, selectedNote, onNoteSelect, onCategoryFilter, onToggl
           Collections
         </Typography>
 
-        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
+        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
           <Button
             variant={selectedCategory === 'all' ? 'contained' : 'outlined'}
             onClick={() => handleCategoryClick('all')}
             size="small"
-            color={theme.palette.text.secondary}
+            color="inherit"
             sx={{
               fontSize: '0.75rem',
               backgroundColor:
@@ -53,12 +60,13 @@ const NoteList = ({ notes, selectedNote, onNoteSelect, onCategoryFilter, onToggl
                 key={category.id}
                 variant={isSelected ? 'contained' : 'outlined'}
                 onClick={() => handleCategoryClick(category.id)}
-                color={category.color}
+                color="inherit"
                 size="small"
                 sx={{
                   fontSize: '0.75rem',
-                  backgroundColor: isSelected && category.color,
+                  backgroundColor: isSelected ? category.color : 'transparent',
                   color: isSelected ? '#FFFFFF' : category.color,
+                  borderColor: category.color,
                   fontWeight: isSelected ? 600 : 400,
                   borderRadius: '14px',
                 }}
@@ -101,6 +109,7 @@ const NoteList = ({ notes, selectedNote, onNoteSelect, onCategoryFilter, onToggl
                   isSelected={selectedNote?._id === note._id}
                   onSelect={onNoteSelect}
                   onToggleDone={onToggleDone}
+                  onDeleteNote={onDeleteNote}
                 />
               ))}
             </Box>

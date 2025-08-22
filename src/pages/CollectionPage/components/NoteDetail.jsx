@@ -14,7 +14,12 @@ import { ArrowLeft, Edit2, Save, X, Calendar, Trash, Clock, AlertCircle } from '
 import React, { useState } from 'react';
 
 import { CATEGORIES } from '../../../constants/note.constants';
-import { formatDate, formatTime, formatDueDate } from '../../../utils/dateUtils';
+import {
+  formatDate,
+  formatTime,
+  formatDueDate,
+  formatDateForInput,
+} from '../../../utils/dateUtils';
 
 const NoteDetail = ({ note, onBack, isMobile, onToggleDone, onDeleteNote }) => {
   const theme = useTheme();
@@ -238,7 +243,7 @@ const NoteDetail = ({ note, onBack, isMobile, onToggleDone, onDeleteNote }) => {
               {isEditing ? (
                 <input
                   type="date"
-                  value={editedDueDate ? editedDueDate.toISOString().split('T')[0] : ''}
+                  value={editedDueDate ? formatDateForInput(editedDueDate) : ''}
                   onChange={(e) =>
                     setEditedDueDate(e.target.value ? new Date(e.target.value) : null)
                   }

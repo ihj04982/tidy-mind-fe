@@ -25,12 +25,46 @@ const CollectionPage = () => {
     }
   };
 
+  const handleToggleDone = (noteId, done) => {
+    setFilteredNotes((prev) =>
+      prev.map((note) =>
+        note._id === noteId
+          ? {
+              ...note,
+              dateMeta: {
+                ...note.dateMeta,
+                done,
+              },
+            }
+          : note,
+      ),
+    );
+
+    if (selectedNote?._id === noteId) {
+      setSelectedNote((prev) => ({
+        ...prev,
+        dateMeta: {
+          ...prev.dateMeta,
+          done,
+        },
+      }));
+    }
+
+    console.log(`Note ${noteId} done status changed to: ${done}`);
+  };
+
+  const handleDeleteNote = (noteId) => {
+    setFilteredNotes((prev) => prev.filter((note) => note._id !== noteId));
+    setSelectedNote(null);
+  };
+
   return (
     <Box
       sx={{
         minHeight: '100%',
         backgroundColor: theme.palette.background.default,
         padding: { xs: 2, md: 3 },
+        paddingTop: { xs: 8, md: 10 },
       }}
     >
       <Grid container spacing={3} sx={{ height: '100%' }}>
@@ -56,6 +90,8 @@ const CollectionPage = () => {
               note={selectedNote}
               onBack={() => setSelectedNote(null)}
               isMobile={isMobile}
+              onToggleDone={handleToggleDone}
+              onDeleteNote={handleDeleteNote}
             />
           </Paper>
         </Grid>
@@ -83,6 +119,7 @@ const CollectionPage = () => {
               selectedNote={selectedNote}
               onNoteSelect={handleNoteSelect}
               onCategoryFilter={handleCategoryFilter}
+              onToggleDone={handleToggleDone}
             />
           </Paper>
         </Grid>

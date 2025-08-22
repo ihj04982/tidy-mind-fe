@@ -1,4 +1,14 @@
-import { Box, Typography, Chip, IconButton, TextField, Select, MenuItem } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Chip,
+  IconButton,
+  TextField,
+  Select,
+  MenuItem,
+  Checkbox,
+  FormControlLabel,
+} from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { ArrowLeft, Edit2, Save, X, Calendar, Trash, Clock, AlertCircle } from 'lucide-react';
 import React, { useState } from 'react';
@@ -6,7 +16,7 @@ import React, { useState } from 'react';
 import { CATEGORIES } from '../../../constants/note.constants';
 import { formatDate, formatTime, formatDueDate } from '../../../utils/dateUtils';
 
-const NoteDetail = ({ note, onBack, isMobile }) => {
+const NoteDetail = ({ note, onBack, isMobile, onToggleDone, onDeleteNote }) => {
   const theme = useTheme();
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(note?.content || '');
@@ -15,10 +25,14 @@ const NoteDetail = ({ note, onBack, isMobile }) => {
   const [editedDueDate, setEditedDueDate] = useState(
     note?.withDate && note?.dateMeta?.dueDate ? new Date(note.dateMeta.dueDate) : null,
   );
+  const [editedDone, setEditedDone] = useState(
+    note?.withDate ? note?.dateMeta?.done || false : false,
+  );
 
   const category = note
     ? Object.values(CATEGORIES).find((cat) => cat.id === note.categoryId)
     : null;
+  const isWithDateType = category?.type === 'withDate';
 
   if (!note) {
     return (
@@ -51,6 +65,7 @@ const NoteDetail = ({ note, onBack, isMobile }) => {
     setEditedDueDate(
       note.withDate && note.dateMeta?.dueDate ? new Date(note.dateMeta.dueDate) : null,
     );
+    setEditedDone(note.withDate ? note.dateMeta?.done || false : false);
   };
 
   const handleSave = () => {
@@ -60,6 +75,7 @@ const NoteDetail = ({ note, onBack, isMobile }) => {
       title: editedTitle,
       categoryId: editedCategoryId,
       dueDate: editedDueDate,
+      done: editedDone,
     });
   };
 
@@ -71,10 +87,17 @@ const NoteDetail = ({ note, onBack, isMobile }) => {
     setEditedDueDate(
       note.withDate && note.dateMeta?.dueDate ? new Date(note.dateMeta.dueDate) : null,
     );
+    setEditedDone(note.withDate ? note.dateMeta?.done || false : false);
   };
 
   const handleDelete = () => {
-    console.log('delete');
+    onDeleteNote(note._id);
+  };
+
+  const handleCheckboxClick = () => {
+    if (onToggleDone && note?.withDate) {
+      onToggleDone(note._id, !note.dateMeta?.done);
+    }
   };
 
   return (
@@ -233,6 +256,41 @@ const NoteDetail = ({ note, onBack, isMobile }) => {
                 >
                   {note.dateMeta ? formatDueDate(note.dateMeta.dueDate) : 'No due date'}
                 </Typography>
+              )}
+            </Box>
+          )}
+
+          {isWithDateType && (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              {isEditing ? (
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={editedDone}
+                      onChange={(e) => setEditedDone(e.target.checked)}
+                      size="small"
+                      sx={{ padding: 0 }}
+                    />
+                  }
+                  label={
+                    <Typography variant="body2" sx={{ fontSize: '0.75rem' }}>
+                      Done
+                    </Typography>
+                  }
+                  sx={{ margin: 0 }}
+                />
+              ) : (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                  <Checkbox
+                    checked={note.dateMeta?.done || false}
+                    onChange={handleCheckboxClick}
+                    size="small"
+                    sx={{ padding: 0 }}
+                  />
+                  <Typography variant="body2" sx={{ fontSize: '0.75rem' }}>
+                    Done
+                  </Typography>
+                </Box>
               )}
             </Box>
           )}

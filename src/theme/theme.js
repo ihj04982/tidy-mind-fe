@@ -28,7 +28,18 @@ const dark = {
  */
 export const makeTheme = (mode = 'light') =>
   createTheme({
-    palette: mode === 'light' ? light : dark,
+    palette: {
+      ...(mode === 'light' ? light : dark),
+      category: {
+        task: '#2F6DF9',
+        idea: '#5AA1FA',
+        work: '#119D77',
+        reminder: '#fd7642',
+        goal: '#fe76a2',
+        personal: '#fe76a2',
+        other: '#E3ABA7',
+      },
+    },
     typography: {
       fontFamily: `"noto-sans", sans-serif`,
       fontSize: 16,

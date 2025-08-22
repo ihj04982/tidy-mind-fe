@@ -27,6 +27,7 @@ export default [
       'import/resolver': {
         node: {
           extensions: ['.js', '.jsx', '.ts', '.tsx'],
+          moduleDirectory: ['node_modules', 'src'],
         },
       },
     },
@@ -39,7 +40,7 @@ export default [
       'import/order': [
         'error',
         {
-          groups: [['builtin', 'external'], ['parent', 'sibling'], 'index'],
+          groups: [['builtin', 'external'], ['internal'], ['parent', 'sibling'], 'index'],
           'newlines-between': 'always',
           alphabetize: { order: 'asc', caseInsensitive: true },
         },

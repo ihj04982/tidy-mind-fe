@@ -4,7 +4,7 @@ import FullCalendar from '@fullcalendar/react';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { Box, IconButton, Paper, Typography, useTheme } from '@mui/material';
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 
 const MiniCalendar = () => {
   const theme = useTheme();
@@ -38,50 +38,53 @@ const MiniCalendar = () => {
     setCurrentDate(calendarApi?.getDate() || new Date());
   };
 
-  const calendarStyles = {
-    '& .fc': { fontFamily: theme.typography.fontFamily },
-    '& .fc-theme-standard td, .fc-theme-standard th, .fc-scrollgrid': { border: 'none' },
-    '& .fc-toolbar': { display: 'none' },
-    '& .fc-col-header-cell': {
-      padding: { xs: '0.5rem 0', lg: '0.25rem 0' },
-      fontSize: { xs: '0.75rem', lg: '0.625rem' },
-      color: theme.palette.text.secondary,
-      textTransform: 'uppercase',
-    },
-    '& .fc-daygrid-day': {
-      padding: { xs: '0.125rem', lg: '0.0625rem' },
-      '&:hover': { backgroundColor: '#f5f5f5' },
-      '& .fc-daygrid-day-frame': {
-        minHeight: { xs: '1.5rem', md: '1.5rem', lg: '1rem' },
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: 'pointer',
-      },
-      '& .fc-daygrid-day-number': {
+  const calendarStyles = useMemo(
+    () => ({
+      '& .fc': { fontFamily: theme.typography.fontFamily },
+      '& .fc-theme-standard td, .fc-theme-standard th, .fc-scrollgrid': { border: 'none' },
+      '& .fc-toolbar': { display: 'none' },
+      '& .fc-col-header-cell': {
+        padding: { xs: '0.5rem 0', lg: '0.25rem 0' },
         fontSize: { xs: '0.75rem', lg: '0.625rem' },
-        width: { xs: '1.5rem', lg: '1.25rem' },
-        height: { xs: '1.5rem', lg: '1.25rem' },
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: '50%',
-        transition: 'all 0.2s',
+        color: theme.palette.text.secondary,
+        textTransform: 'uppercase',
       },
-    },
-    '& .fc-day-today': {
-      backgroundColor: 'transparent !important',
-      '& .fc-daygrid-day-number': {
+      '& .fc-daygrid-day': {
+        padding: { xs: '0.125rem', lg: '0.0625rem' },
+        '&:hover': { backgroundColor: '#f5f5f5' },
+        '& .fc-daygrid-day-frame': {
+          minHeight: { xs: '1.5rem', md: '1.5rem', lg: '1rem' },
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+        },
+        '& .fc-daygrid-day-number': {
+          fontSize: { xs: '0.75rem', lg: '0.625rem' },
+          width: { xs: '1.5rem', lg: '1.25rem' },
+          height: { xs: '1.5rem', lg: '1.25rem' },
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: '50%',
+          transition: 'all 0.2s',
+        },
+      },
+      '& .fc-day-today': {
+        backgroundColor: 'transparent !important',
+        '& .fc-daygrid-day-number': {
+          backgroundColor: theme.palette.text.accent,
+          color: theme.palette.background.paper,
+          fontWeight: 500,
+        },
+      },
+      '& .fc-day-selected .fc-daygrid-day-number': {
         backgroundColor: theme.palette.text.accent,
         color: theme.palette.background.paper,
-        fontWeight: 500,
       },
-    },
-    '& .fc-day-selected .fc-daygrid-day-number': {
-      backgroundColor: theme.palette.text.accent,
-      color: theme.palette.background.paper,
-    },
-  };
+    }),
+    [theme],
+  );
 
   return (
     <Paper

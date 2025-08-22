@@ -2,16 +2,21 @@ import { Button, Drawer, Typography } from '@mui/material';
 import { Box, useTheme } from '@mui/system';
 import { FolderOpen, Calendar, User, Moon, AlignJustify, X, LogOut } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import Logo from '../../assets/logo.png';
 
 const TopNavigation = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [open, setOpen] = useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [location]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -170,7 +175,6 @@ const TopNavigation = () => {
             display: { xs: 'flex', md: 'none' },
             width: 40,
             height: 40,
-            background: theme.palette.background.default,
           }}
           onClick={toggleDrawer(true)}
         >

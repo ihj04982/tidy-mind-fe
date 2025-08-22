@@ -21,7 +21,7 @@ const Footer = () => {
         }}
       >
         <Grid container>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }} sx={{ paddingBottom: 4 }}>
+          <Grid size={{ xs: 6, md: 3 }} sx={{ paddingBottom: 4 }}>
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
               <Typography
                 sx={{
@@ -76,7 +76,7 @@ const Footer = () => {
               </Typography>
             </Box>
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }} sx={{ paddingBottom: 4 }}>
+          <Grid size={{ xs: 6, md: 3 }} sx={{ paddingBottom: 4 }}>
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
               <Typography
                 sx={{
@@ -132,7 +132,7 @@ const Footer = () => {
               </Typography>
             </Box>
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }} sx={{ paddingBottom: 4 }}>
+          <Grid size={{ xs: 6, md: 3 }} sx={{ paddingBottom: 4 }}>
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
               <Typography
                 sx={{
@@ -174,7 +174,7 @@ const Footer = () => {
               </Typography>
             </Box>
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }} sx={{ paddingBottom: 4 }}>
+          <Grid size={{ xs: 6, md: 3 }} sx={{ paddingBottom: 4 }}>
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
               <Typography
                 sx={{

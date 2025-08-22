@@ -23,11 +23,17 @@ const AppLayout = () => {
         <TopNavigation />
 
         <Box
-          sx={{ display: 'flex', flexDirection: 'column', minHeight: 0, flex: 1, overflow: 'auto' }}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: 0,
+            flex: 1,
+            overflow: 'hidden',
+          }}
         >
           <Outlet />
-          <Footer />
         </Box>
+        <Footer />
       </Box>
     </Box>
   );

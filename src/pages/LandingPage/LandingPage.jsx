@@ -1,12 +1,46 @@
 import AddIcon from '@mui/icons-material/Add';
 import { Button, Input, Typography, useTheme } from '@mui/material';
-import { Box } from '@mui/system';
-import { Mic } from 'lucide-react';
-import { Image } from 'lucide-react';
-import React from 'react';
+import { Box, keyframes } from '@mui/system';
+import { Circle, Mic, Square } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+
+import useSpeechToText from '../../hooks/useSpeechToText';
+import CloudinaryUploadWidget from '../../utils/CloudinaryUploadWidget';
 
 const LandingPage = () => {
   const theme = useTheme();
+  const { transcript, listening, toggleListening } = useSpeechToText();
+  const [inputValue, setInputValue] = useState('');
+
+  useEffect(() => {
+    if (transcript) {
+      setInputValue((prev) => prev + transcript);
+    }
+  }, [transcript]);
+
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
+
+  const wave = keyframes`
+  0%, 100% {
+    height: 2px;
+    opacity: 0.4;
+  }
+  50% {
+    height: 1rem;
+    opacity: 1;
+  }
+`;
+
+  const pulse = keyframes`
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+`;
 
   return (
     <Box
@@ -67,10 +101,9 @@ const LandingPage = () => {
       <Box
         sx={{
           position: 'relative',
-          minHeight: '66px',
-          maxHeight: '120px',
+          height: '120px',
           width: { xs: '80%', md: '60%', lg: '55%', xl: '45%' },
-          border: '1px solid transparent',
+          border: `1px solid ${listening ? theme.palette.text.accent : 'transparent'}`,
           backgroundColor: '#f3f5fd',
           borderRadius: 8,
           overflow: 'hidden',
@@ -82,9 +115,55 @@ const LandingPage = () => {
           },
         }}
       >
+        {listening && (
+          <Box
+            sx={{
+              position: 'absolute',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              top: '0.625rem',
+            }}
+          >
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                gap: 1,
+              }}
+            >
+              <Box sx={{ animation: `${pulse} 1.5s ease-in-out infinite` }}>
+                <Circle size={12} fill="#FF6900" color="none" />
+              </Box>
+              <Typography
+                sx={{ fontSize: '0.75rem', color: theme.palette.text.accent, marginRight: 2 }}
+              >
+                Recording...
+              </Typography>
+            </Box>
+            {Array.from({ length: 15 }).map((_, i) => (
+              <Box
+                key={i}
+                sx={{
+                  marginRight: 0.3,
+                  width: '2px',
+                  height: '1rem',
+                  bgcolor: theme.palette.text.accent,
+                  borderRadius: '2px',
+                  animation: `${wave} 1.5s ease-in-out infinite`,
+                  animationDelay: `${i * 0.1}s`,
+                }}
+              />
+            ))}
+          </Box>
+        )}
         <Input
+          value={inputValue}
+          onChange={handleInputChange}
+          disabled={listening && true}
           sx={{
-            display: 'flex',
+            display: `${listening ? 'none' : 'flex'}`,
             alignItems: 'start',
             padding: 0,
             height: '66px',
@@ -118,33 +197,54 @@ const LandingPage = () => {
           disableUnderline
           multiline
           rows={3}
-          placeholder="여기에 무엇이든 입력하세요... 정리는 맡겨주세요!"
+          placeholder={listening ? '' : '여기에 무엇이든 입력하세요... 정리는 맡겨주세요!'}
         />
 
-        <Box sx={{ position: 'absolute', bottom: '8px', left: '20px', display: 'flex', gap: 0.5 }}>
-          <Button
-            disableRipple
+        {listening ? (
+          <Box
+            sx={{ position: 'absolute', bottom: '8px', left: '20px', display: 'flex', gap: 0.5 }}
+          >
+            <Box
+              onClick={toggleListening}
+              sx={{
+                width: '40px',
+                height: '40px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: '30px',
+                background: theme.palette.text.accent,
+                cursor: 'pointer',
+              }}
+            >
+              <Square color="#fff" fill="#fff" size={16} strokeWidth={1.5} />
+            </Box>
+          </Box>
+        ) : (
+          <Box
             sx={{
-              minWidth: '40px',
-              height: '40px',
-              padding: 0,
-              borderRadius: '30px',
+              position: 'absolute',
+              bottom: '8px',
+              left: '20px',
+              display: 'flex',
+              gap: 0.5,
             }}
           >
-            <Mic color="#737373" size={20} strokeWidth={1.5} />
-          </Button>
-          <Button
-            disableRipple
-            sx={{
-              minWidth: '40px',
-              height: '40px',
-              padding: 0,
-              borderRadius: '30px',
-            }}
-          >
-            <Image color="#737373" size={20} strokeWidth={1.5} />
-          </Button>
-        </Box>
+            <Button
+              onClick={toggleListening}
+              disableRipple
+              sx={{
+                minWidth: '40px',
+                height: '40px',
+                padding: 0,
+                borderRadius: '30px',
+              }}
+            >
+              <Mic color="#737373" size={20} strokeWidth={1.5} />
+            </Button>
+            <CloudinaryUploadWidget />
+          </Box>
+        )}
         <Button
           disableRipple
           sx={{

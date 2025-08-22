@@ -29,6 +29,7 @@ const LeftNavigation = () => {
       }}
     >
       <Box
+        onClick={() => navigate('/')}
         component="img"
         src={Logo}
         alt="logo"

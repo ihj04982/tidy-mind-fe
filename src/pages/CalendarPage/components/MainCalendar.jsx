@@ -1,12 +1,41 @@
 import dayGridPlugin from '@fullcalendar/daygrid';
 import FullCalendar from '@fullcalendar/react';
 import { Box, Paper, useTheme } from '@mui/material';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 
+import EventModal from './EventModal.jsx';
 import SearchBar from './SearchBar.jsx';
 
 const MainCalendar = () => {
   const theme = useTheme();
+  const [selectedEventId, setSelectedEventId] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [events, setEvents] = useState([
+    {
+      _id: '1',
+      title: 'Complete Project Report',
+      content: 'Need to finish the Q3 project report with all metrics and analysis',
+      dueDate: '2025-08-25',
+      done: false,
+      category: {
+        name: 'task',
+        color: '#2F6DF9',
+        type: 'task',
+      },
+    },
+    {
+      _id: '4',
+      title: 'Submit Budget Proposal',
+      content: 'Prepare and submit Q4 budget proposal to finance team',
+      dueDate: '2025-08-27',
+      done: true,
+      category: {
+        name: 'task',
+        color: '#2F6DF9',
+        type: 'task',
+      },
+    },
+  ]);
 
   const calendarStyles = useMemo(
     () => ({
@@ -146,34 +175,44 @@ const MainCalendar = () => {
     [theme],
   );
 
-  const calendarEvents = [
-    {
-      _id: '1',
-      title: 'Complete Project Report',
-      content: 'Need to finish the Q3 project report with all metrics and analysis',
-      dueDate: '2025-08-25',
-      done: false,
-      category: {
-        name: 'task',
-        color: theme.palette.category.task,
-        type: 'task',
-      },
-    },
-    {
-      _id: '4',
-      title: 'Submit Budget Proposal',
-      content: 'Prepare and submit Q4 budget proposal to finance team',
-      dueDate: '2025-08-27',
-      done: true,
-      category: {
-        name: 'task',
-        color: theme.palette.category.task,
-        type: 'task',
-      },
-    },
-  ];
+  const handleEventClick = (info) => {
+    setSelectedEventId(info.event.id);
+    setModalOpen(true);
+  };
 
-  const mockEvents = calendarEvents.map((event) => ({
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedEventId(null);
+  };
+
+  const handleStatusChange = (eventId, newStatus) => {
+    setEvents((prevEvents) =>
+      prevEvents.map((event) => (event._id === eventId ? { ...event, done: newStatus } : event)),
+    );
+  };
+
+  // Get the current event data from state
+  const currentEvent = selectedEventId
+    ? events.find((event) => event._id === selectedEventId)
+    : null;
+
+  // Format event for modal (matching FullCalendar event structure)
+  const formattedEvent = currentEvent
+    ? {
+        id: currentEvent._id,
+        title: currentEvent.title,
+        start: currentEvent.dueDate,
+        extendedProps: {
+          content: currentEvent.content,
+          done: currentEvent.done,
+          categoryName: currentEvent.category.name,
+          categoryColor: currentEvent.category.color,
+          categoryType: currentEvent.category.type,
+        },
+      }
+    : null;
+
+  const mockEvents = events.map((event) => ({
     id: event._id,
     title: event.title,
     start: event.dueDate,
@@ -219,11 +258,16 @@ const MainCalendar = () => {
           eventDisplay="block"
           dayMaxEvents={3}
           moreLinkClick="popover"
-          eventClick={(info) => {
-            console.log(info);
-          }}
+          eventClick={handleEventClick}
         />
       </Box>
+
+      <EventModal
+        open={modalOpen}
+        onClose={handleCloseModal}
+        event={formattedEvent}
+        onStatusChange={handleStatusChange}
+      />
     </Paper>
   );
 };

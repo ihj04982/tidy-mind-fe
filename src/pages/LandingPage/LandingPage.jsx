@@ -344,6 +344,7 @@ const LandingPage = () => {
           </Box>
         )}
         <Button
+          disabled={listening ? true : ''}
           disableRipple
           sx={{
             position: 'absolute',
@@ -355,13 +356,16 @@ const LandingPage = () => {
             margin: 2,
             borderRadius: '30px',
             backgroundColor: '#c0ccf2',
-            boxShadow: 1,
+            boxShadow: '0 0 3px #0000003c',
             transition: 'all 0.2s ease',
             '&:hover': {
               backgroundColor: '#b0bbdfff',
             },
             '&:active': {
               transform: 'translateY(2px)',
+            },
+            '&:disabled': {
+              backgroundColor: '#d2d2d2ff',
             },
           }}
         >

@@ -1,10 +1,11 @@
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 import PrivateRoute from './PrivateRoute.jsx';
 import AppLayout from '../layout/AppLayout.jsx';
 import LoginPage from '../pages/AuthPage/LoginPage/LoginPage.jsx';
 import RegisterPage from '../pages/AuthPage/RegisterPage/RegisterPage.jsx';
+import CollectionPage from '../pages/CollectionPage/CollectionPage';
 import LandingPage from '../pages/LandingPage.jsx';
 
 const AppRouter = () => {
@@ -16,8 +17,8 @@ const AppRouter = () => {
         <Route index element={<LandingPage />} />
 
         <Route element={<PrivateRoute />}>
-          {/* <Route path="collections" element={<CollectionsPage />} />
-          <Route path="calendar" element={<CalendarPage />} /> */}
+          <Route path="collections" element={<CollectionPage />} />
+          {/* <Route path="calendar" element={<CalendarPage />} /> */}
         </Route>
       </Route>
     </Routes>

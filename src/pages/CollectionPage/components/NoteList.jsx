@@ -6,7 +6,7 @@ import NoteCard from './NoteCard';
 import { CATEGORIES } from '../../../constants/note.constants';
 import { groupNotesByDate } from '../../../utils/dateUtils';
 
-const NoteList = ({ notes, selectedNote, onNoteSelect, onCategoryFilter }) => {
+const NoteList = ({ notes, selectedNote, onNoteSelect, onCategoryFilter, onToggleDone }) => {
   const theme = useTheme();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const groupedNotes = groupNotesByDate(notes);
@@ -100,6 +100,7 @@ const NoteList = ({ notes, selectedNote, onNoteSelect, onCategoryFilter }) => {
                   note={note}
                   isSelected={selectedNote?._id === note._id}
                   onSelect={onNoteSelect}
+                  onToggleDone={onToggleDone}
                 />
               ))}
             </Box>

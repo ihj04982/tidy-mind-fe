@@ -1,7 +1,7 @@
 import AddIcon from '@mui/icons-material/Add';
 import { Button, Input, Typography, useTheme } from '@mui/material';
 import { Box, keyframes } from '@mui/system';
-import { Circle, Mic, Square } from 'lucide-react';
+import { Circle, Image, Mic, Square, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 import useSpeechToText from '../../hooks/useSpeechToText';
@@ -11,6 +11,8 @@ const LandingPage = () => {
   const theme = useTheme();
   const { transcript, listening, toggleListening } = useSpeechToText();
   const [inputValue, setInputValue] = useState('');
+  const [imgURLs, setImgURLs] = useState('');
+  const MAX_IMAGE_COUNT = 5;
 
   useEffect(() => {
     if (transcript) {
@@ -20,6 +22,16 @@ const LandingPage = () => {
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
+  };
+
+  const uploadImage = (url) => {
+    if (imgURLs.length < MAX_IMAGE_COUNT) {
+      setImgURLs((prev) => [...prev, url]);
+    }
+  };
+
+  const removeImage = (index) => {
+    setImgURLs((prev) => prev.filter((_, i) => i !== index));
   };
 
   const wave = keyframes`
@@ -97,6 +109,77 @@ const LandingPage = () => {
           Instantly organized with tasks added to your calendar.
         </Typography>
       </Box>
+
+      {imgURLs.length > 0 && (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 1,
+            marginBottom: '0.75rem',
+          }}
+        >
+          {imgURLs.map((url, index) => (
+            <Box key={index} sx={{ position: 'relative', width: '80px', height: '80px' }}>
+              <Box
+                component="img"
+                src={url}
+                alt={`img-${index}`}
+                sx={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: '0.5rem',
+                  boxShadow: '0 0 6px #00000011',
+                }}
+              />
+              <Button
+                onClick={() => removeImage(index)}
+                sx={{
+                  position: 'absolute',
+                  top: '-0.5rem',
+                  right: '-0.5rem',
+                  minWidth: '1.5rem',
+                  width: '1.5rem',
+                  height: '1.5rem',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderRadius: '2rem',
+                  padding: 0,
+                  background: theme.palette.text.accent,
+                }}
+              >
+                <X size={12} color={theme.palette.background.paper} />
+              </Button>
+            </Box>
+          ))}
+          {MAX_IMAGE_COUNT - imgURLs.length > 0 && (
+            <CloudinaryUploadWidget uploadImage={uploadImage}>
+              {(openWidget) => (
+                <Button
+                  onClick={openWidget}
+                  sx={{
+                    height: '80px',
+                    width: '80px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    border: `1px dashed ${theme.palette.border.strong}`,
+                    margin: '0 1rem ',
+                    fontSize: '0.75rem',
+                    lineHeight: '1rem',
+                    color: theme.palette.text.secondary,
+                  }}
+                >
+                  + Add {MAX_IMAGE_COUNT - imgURLs.length} more
+                </Button>
+              )}
+            </CloudinaryUploadWidget>
+          )}
+        </Box>
+      )}
 
       <Box
         sx={{
@@ -242,7 +325,22 @@ const LandingPage = () => {
             >
               <Mic color="#737373" size={20} strokeWidth={1.5} />
             </Button>
-            <CloudinaryUploadWidget />
+            <CloudinaryUploadWidget uploadImage={uploadImage}>
+              {(openWidget) => (
+                <Button
+                  onClick={openWidget}
+                  disableRipple
+                  sx={{
+                    minWidth: '40px',
+                    height: '40px',
+                    padding: 0,
+                    borderRadius: '30px',
+                  }}
+                >
+                  <Image color="#737373" size={20} strokeWidth={1.5} />
+                </Button>
+              )}
+            </CloudinaryUploadWidget>
           </Box>
         )}
         <Button

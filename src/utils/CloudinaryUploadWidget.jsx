@@ -1,10 +1,8 @@
-import { Button } from '@mui/material';
-import { Image } from 'lucide-react';
-import React, { Component } from 'react';
+import { Component } from 'react';
 
 const CLOUDNAME = import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME;
 
-const UPLOADPRESET = import.meta.env.VITE_APP_CLOUDINARY_CLOUDINARY_PRESET;
+const UPLOADPRESET = import.meta.env.VITE_APP_CLOUDINARY_PRESET;
 
 class CloudinaryUploadWidget extends Component {
   componentDidMount() {
@@ -25,21 +23,8 @@ class CloudinaryUploadWidget extends Component {
   };
 
   render() {
-    return (
-      <Button
-        id="upload_widget"
-        disableRipple
-        onClick={this.openWidget}
-        sx={{
-          minWidth: '40px',
-          height: '40px',
-          padding: 0,
-          borderRadius: '30px',
-        }}
-      >
-        <Image color="#737373" size={20} strokeWidth={1.5} />
-      </Button>
-    );
+    const { children } = this.props;
+    return children ? children(this.openWidget) : null;
   }
 }
 

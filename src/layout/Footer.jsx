@@ -1,19 +1,21 @@
 import { Link, Typography } from '@mui/material';
-import { Box, Grid } from '@mui/system';
+import { Box, Grid, useTheme } from '@mui/system';
 import React from 'react';
 
 const Footer = () => {
+  const theme = useTheme();
+
   return (
     <Box
       sx={{
-        backgroundColor: '#e5ebf9',
+        backgroundColor: theme.palette.background.default,
         paddingInline: 3,
         paddingTop: 4,
       }}
     >
       <Box
         sx={{
-          backgroundColor: '#fff',
+          backgroundColor: theme.palette.background.paper,
           borderRadius: '24px 24px 0 0',
           padding: '24px 54.5px',
         }}
@@ -25,7 +27,7 @@ const Footer = () => {
                 sx={{
                   fontSize: '16px',
                   fontWeight: 'bold',
-                  color: '#0a0a0a',
+                  color: theme.palette.text.primary,
                   marginBottom: '12px',
                 }}
               >
@@ -34,11 +36,11 @@ const Footer = () => {
               <Typography
                 sx={{
                   fontSize: '14px',
-                  color: '#737373',
+                  color: theme.palette.text.secondary,
                   marginBottom: '8px',
                   cursor: 'pointer',
                   '&:hover': {
-                    color: '#0a0a0a',
+                    color: theme.palette.text.primary,
                   },
                 }}
               >
@@ -47,12 +49,12 @@ const Footer = () => {
               <Typography
                 sx={{
                   fontSize: '14px',
-                  color: '#737373',
+                  color: theme.palette.text.secondary,
                   marginBottom: '8px',
                   cursor: 'pointer',
 
                   '&:hover': {
-                    color: '#0a0a0a',
+                    color: theme.palette.text.primary,
                   },
                 }}
               >
@@ -61,12 +63,12 @@ const Footer = () => {
               <Typography
                 sx={{
                   fontSize: '14px',
-                  color: '#737373',
+                  color: theme.palette.text.secondary,
                   marginBottom: '8px',
                   cursor: 'pointer',
 
                   '&:hover': {
-                    color: '#0a0a0a',
+                    color: theme.palette.text.primary,
                   },
                 }}
               >
@@ -80,7 +82,7 @@ const Footer = () => {
                 sx={{
                   fontSize: '16px',
                   fontWeight: 'bold',
-                  color: '#0a0a0a',
+                  color: theme.palette.text.primary,
                   marginBottom: '12px',
                 }}
               >
@@ -89,12 +91,12 @@ const Footer = () => {
               <Typography
                 sx={{
                   fontSize: '14px',
-                  color: '#737373',
+                  color: theme.palette.text.secondary,
                   marginBottom: '8px',
                   cursor: 'pointer',
 
                   '&:hover': {
-                    color: '#0a0a0a',
+                    color: theme.palette.text.primary,
                   },
                 }}
               >
@@ -103,12 +105,12 @@ const Footer = () => {
               <Typography
                 sx={{
                   fontSize: '14px',
-                  color: '#737373',
+                  color: theme.palette.text.secondary,
                   marginBottom: '8px',
                   cursor: 'pointer',
 
                   '&:hover': {
-                    color: '#0a0a0a',
+                    color: theme.palette.text.primary,
                   },
                 }}
               >
@@ -117,12 +119,12 @@ const Footer = () => {
               <Typography
                 sx={{
                   fontSize: '14px',
-                  color: '#737373',
+                  color: theme.palette.text.secondary,
                   marginBottom: '8px',
                   cursor: 'pointer',
 
                   '&:hover': {
-                    color: '#0a0a0a',
+                    color: theme.palette.text.primary,
                   },
                 }}
               >
@@ -136,7 +138,7 @@ const Footer = () => {
                 sx={{
                   fontSize: '16px',
                   fontWeight: 'bold',
-                  color: '#0a0a0a',
+                  color: theme.palette.text.primary,
                   marginBottom: '12px',
                 }}
               >
@@ -145,12 +147,12 @@ const Footer = () => {
               <Typography
                 sx={{
                   fontSize: '14px',
-                  color: '#737373',
+                  color: theme.palette.text.secondary,
                   marginBottom: '8px',
                   cursor: 'pointer',
 
                   '&:hover': {
-                    color: '#0a0a0a',
+                    color: theme.palette.text.primary,
                   },
                 }}
               >
@@ -159,12 +161,12 @@ const Footer = () => {
               <Typography
                 sx={{
                   fontSize: '14px',
-                  color: '#737373',
+                  color: theme.palette.text.secondary,
                   marginBottom: '8px',
                   cursor: 'pointer',
 
                   '&:hover': {
-                    color: '#0a0a0a',
+                    color: theme.palette.text.primary,
                   },
                 }}
               >
@@ -178,7 +180,7 @@ const Footer = () => {
                 sx={{
                   fontSize: '16px',
                   fontWeight: 'bold',
-                  color: '#0a0a0a',
+                  color: theme.palette.text.primary,
                   marginBottom: '12px',
                 }}
               >
@@ -187,12 +189,12 @@ const Footer = () => {
               <Typography
                 sx={{
                   fontSize: '14px',
-                  color: '#737373',
+                  color: theme.palette.text.secondary,
                   marginBottom: '8px',
                   cursor: 'pointer',
 
                   '&:hover': {
-                    color: '#0a0a0a',
+                    color: theme.palette.text.primary,
                   },
                 }}
               >
@@ -201,12 +203,12 @@ const Footer = () => {
               <Typography
                 sx={{
                   fontSize: '14px',
-                  color: '#737373',
+                  color: theme.palette.text.secondary,
                   marginBottom: '8px',
                   cursor: 'pointer',
 
                   '&:hover': {
-                    color: '#0a0a0a',
+                    color: theme.palette.text.primary,
                   },
                 }}
               >
@@ -215,12 +217,12 @@ const Footer = () => {
               <Typography
                 sx={{
                   fontSize: '14px',
-                  color: '#737373',
+                  color: theme.palette.text.secondary,
                   marginBottom: '8px',
                   cursor: 'pointer',
 
                   '&:hover': {
-                    color: '#0a0a0a',
+                    color: theme.palette.text.primary,
                   },
                 }}
               >
@@ -236,21 +238,23 @@ const Footer = () => {
             alignItems: 'center',
             justifyContent: 'space-between',
             paddingTop: 3,
-            borderTop: '1px solid #e5e5e5',
+            borderTop: `1px solid ${theme.palette.border.default}`,
           }}
         >
-          <Typography fontSize={'14px'} color="#737373" sx={{ cursor: 'default' }}>
+          <Typography
+            sx={{ fontSize: '14px', color: theme.palette.text.secondary, cursor: 'default' }}
+          >
             © TidyMind, Inc. 2025
           </Typography>
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4 }}>
             <Link
               href="#"
               underline="none"
-              color="#737373"
-              fontSize={'14px'}
               sx={{
+                fontSize: '14px',
+                color: theme.palette.text.secondary,
                 '&:hover': {
-                  color: '#0a0a0a',
+                  color: theme.palette.text.primary,
                 },
               }}
             >
@@ -259,11 +263,11 @@ const Footer = () => {
             <Link
               href="#"
               underline="none"
-              color="#737373"
-              fontSize={'14px'}
               sx={{
+                fontSize: '14px',
+                color: theme.palette.text.secondary,
                 '&:hover': {
-                  color: '#0a0a0a',
+                  color: theme.palette.text.primary,
                 },
               }}
             >
@@ -272,11 +276,11 @@ const Footer = () => {
             <Link
               href="#"
               underline="none"
-              color="#737373"
-              fontSize={'14px'}
               sx={{
+                fontSize: '14px',
+                color: theme.palette.text.secondary,
                 '&:hover': {
-                  color: '#0a0a0a',
+                  color: theme.palette.text.primary,
                 },
               }}
             >

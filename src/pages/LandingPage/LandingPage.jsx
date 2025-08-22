@@ -1,11 +1,13 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Button, Input, Typography } from '@mui/material';
+import { Button, Input, Typography, useTheme } from '@mui/material';
 import { Box } from '@mui/system';
 import { Mic } from 'lucide-react';
 import { Image } from 'lucide-react';
 import React from 'react';
 
 const LandingPage = () => {
+  const theme = useTheme();
+
   return (
     <Box
       sx={{
@@ -15,7 +17,7 @@ const LandingPage = () => {
         alignItems: 'center',
         width: '100%',
         height: '100vh',
-        backgroundColor: '#e5ebf9',
+        background: theme.palette.background.default,
       }}
     >
       <Box
@@ -24,17 +26,38 @@ const LandingPage = () => {
           flexDirection: ' column',
           justifyContent: 'center',
           alignItems: 'center',
+          paddingInline: '1rem',
           marginBottom: 5,
-          paddingInline: { xs: 5, md: 0 },
         }}
       >
-        <Typography component="p" sx={{ textAlign: 'center', color: '#ff6801', marginBottom: 4 }}>
+        <Typography
+          sx={{
+            textAlign: 'center',
+            fontSize: '0.875rem',
+            fontWeight: 900,
+            letterSpacing: 2,
+            color: theme.palette.text.accent,
+            marginBottom: 4,
+          }}
+        >
           TIDYMIND WORKS
         </Typography>
-        <Typography component="h1" sx={{ textAlign: 'center', fontSize: 48, marginBottom: 4 }}>
+        <Typography
+          component="h1"
+          sx={{
+            fontFamily: '"Playfair Display", serif',
+            fontWeight: 700,
+            textAlign: 'center',
+            fontSize: { md: 48, xs: 36 },
+            marginBottom: 4,
+          }}
+        >
           Drop your thoughts.
         </Typography>
-        <Typography component="p" sx={{ textAlign: 'center', fontSize: 18, color: '#9b9697b3' }}>
+        <Typography
+          component="p"
+          sx={{ textAlign: 'center', fontSize: 18, color: theme.palette.text.secondary }}
+        >
           Every random note, every fleeting idea, TidyMind captures it all.
           <br />
           Instantly organized with tasks added to your calendar.
@@ -55,7 +78,7 @@ const LandingPage = () => {
           marginBottom: 10,
           transition: 'all 0.3s ease',
           '&:focus-within': {
-            border: '1px solid #a1a1a1',
+            border: `1px solid ${theme.palette.border.strong}`,
           },
         }}
       >
@@ -74,7 +97,7 @@ const LandingPage = () => {
               boxSizing: 'border-box',
               '&::placeholder': {
                 fontSize: '14px',
-                color: '#9ca3af',
+                color: theme.palette.text.secondary,
                 opacity: 1,
               },
               '&::-webkit-scrollbar': {

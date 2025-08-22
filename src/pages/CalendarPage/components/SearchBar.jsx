@@ -7,7 +7,7 @@ const SearchBar = () => (
     sx={{
       display: 'flex',
       alignItems: 'center',
-      width: 280,
+      width: { xs: '100%', sm: 280 },
       height: 42,
       borderRadius: '25px',
       border: '1px solid #e0e0e0',

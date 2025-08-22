@@ -18,7 +18,9 @@ const CalendarSidebar = () => {
         height: '100%',
       }}
     >
-      <MiniCalendar />
+      <Box sx={{ display: { xs: 'none', lg: 'block' } }}>
+        <MiniCalendar />
+      </Box>
       <TaskCountHeatmap />
     </Box>
   );

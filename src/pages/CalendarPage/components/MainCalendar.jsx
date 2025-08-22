@@ -191,12 +191,10 @@ const MainCalendar = () => {
     );
   };
 
-  // Get the current event data from state
   const currentEvent = selectedEventId
     ? events.find((event) => event._id === selectedEventId)
     : null;
 
-  // Format event for modal (matching FullCalendar event structure)
   const formattedEvent = currentEvent
     ? {
         id: currentEvent._id,

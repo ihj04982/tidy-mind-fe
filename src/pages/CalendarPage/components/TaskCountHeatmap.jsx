@@ -19,18 +19,75 @@ const MONTH_LABELS = [
   'Dec',
 ];
 
-const generateCalendarData = (year, month) => {
+const MOCK_TASK_DATA = {
+  '2025-08-01': 5,
+  '2025-08-02': 8,
+  '2025-08-03': 3,
+  '2025-08-04': 2,
+  '2025-08-05': 6,
+  '2025-08-06': 4,
+  '2025-08-07': 7,
+  '2025-08-08': 3,
+  '2025-08-09': 12,
+  '2025-08-10': 5,
+  '2025-08-11': 8,
+  '2025-08-12': 4,
+  '2025-08-13': 9,
+  '2025-08-14': 5,
+  '2025-08-15': 8,
+  '2025-08-16': 3,
+  '2025-08-17': 2,
+  '2025-08-18': 6,
+  '2025-08-19': 4,
+  '2025-08-20': 7,
+  '2025-08-21': 3,
+  '2025-08-22': 2,
+  '2025-08-23': 1,
+  '2025-08-24': 0,
+  '2025-08-25': 0,
+  '2025-08-26': 0,
+  '2025-08-27': 0,
+  '2025-08-28': 0,
+  '2025-08-29': 0,
+  '2025-08-30': 0,
+  '2025-08-31': 0,
+};
+
+const transformDataToGrid = (taskData, year, month) => {
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const grid = [];
+
+  for (let week = 0; week < 6; week++) {
+    const weekData = [];
+
+    for (let day = 0; day < 7; day++) {
+      const cellIndex = week * 7 + day;
+      const dayNumber = cellIndex - firstDay + 1;
+
+      if (cellIndex < firstDay || dayNumber > daysInMonth) {
+        weekData.push(0);
+      } else {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(dayNumber).padStart(2, '0')}`;
+        weekData.push(taskData[dateStr] || 0);
+      }
+    }
+    grid.push(weekData);
+  }
+
+  return grid;
+};
+
+const generateCalendarStructure = (year, month) => {
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const daysInPrevMonth = new Date(year, month, 0).getDate();
 
-  const calendarData = [];
   const dayNumbers = [];
   let dayCounter = 1;
   let nextMonthCounter = 1;
 
   for (let week = 0; week < 6; week++) {
-    const weekData = [];
     const weekDays = [];
 
     for (let day = 0; day < 7; day++) {
@@ -38,22 +95,18 @@ const generateCalendarData = (year, month) => {
 
       if (cellIndex < firstDay) {
         weekDays.push(daysInPrevMonth - firstDay + day + 1);
-        weekData.push(0);
       } else if (dayCounter <= daysInMonth) {
         weekDays.push(dayCounter);
-        weekData.push(Math.floor(Math.random() * 13));
         dayCounter++;
       } else {
         weekDays.push(nextMonthCounter);
-        weekData.push(0);
         nextMonthCounter++;
       }
     }
-    calendarData.push(weekData);
     dayNumbers.push(weekDays);
   }
 
-  return { calendarData, dayNumbers, firstDay, daysInMonth };
+  return { dayNumbers, firstDay, daysInMonth };
 };
 
 const TaskCountHeatmap = () => {
@@ -76,8 +129,13 @@ const TaskCountHeatmap = () => {
     return COLORS.veryHigh;
   };
 
-  const { calendarData, dayNumbers, firstDay, daysInMonth } = useMemo(
-    () => generateCalendarData(currentDate.getFullYear(), currentDate.getMonth()),
+  const { dayNumbers, firstDay, daysInMonth } = useMemo(
+    () => generateCalendarStructure(currentDate.getFullYear(), currentDate.getMonth()),
+    [currentDate],
+  );
+
+  const calendarData = useMemo(
+    () => transformDataToGrid(MOCK_TASK_DATA, currentDate.getFullYear(), currentDate.getMonth()),
     [currentDate],
   );
 

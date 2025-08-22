@@ -6,7 +6,7 @@ import globals from 'globals';
 
 export default [
   {
-    ignores: ['node_modules/**', 'dist/**', 'build/**', 'coverage/**', 'vite.config.js'],
+    ignores: ['node_modules/**', 'dist/**', 'build/**', 'coverage/**'],
   },
   {
     files: ['**/*.{js,mjs,cjs,jsx}'],
@@ -47,6 +47,7 @@ export default [
       ],
       'import/no-unresolved': 'error',
       'react-hooks/rules-of-hooks': 'error',
+      'react/prop-types': 'off',
     },
   },
 ];

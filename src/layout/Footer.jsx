@@ -25,7 +25,7 @@ const Footer = () => {
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
               <Typography
                 sx={{
-                  fontSize: '16px',
+                  fontSize: '1rem',
                   fontWeight: 'bold',
                   color: theme.palette.text.primary,
                   marginBottom: '12px',
@@ -80,7 +80,7 @@ const Footer = () => {
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
               <Typography
                 sx={{
-                  fontSize: '16px',
+                  fontSize: '1rem',
                   fontWeight: 'bold',
                   color: theme.palette.text.primary,
                   marginBottom: '12px',
@@ -136,7 +136,7 @@ const Footer = () => {
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
               <Typography
                 sx={{
-                  fontSize: '16px',
+                  fontSize: '1rem',
                   fontWeight: 'bold',
                   color: theme.palette.text.primary,
                   marginBottom: '12px',
@@ -178,7 +178,7 @@ const Footer = () => {
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
               <Typography
                 sx={{
-                  fontSize: '16px',
+                  fontSize: '1rem',
                   fontWeight: 'bold',
                   color: theme.palette.text.primary,
                   marginBottom: '12px',

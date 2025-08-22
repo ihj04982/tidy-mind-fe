@@ -12,13 +12,13 @@ const CalendarSidebar = () => {
         flexDirection: {
           xs: 'column',
           sm: 'row',
-          lg: 'column',
+          md: 'column',
         },
         gap: 2,
         height: '100%',
       }}
     >
-      <Box sx={{ display: { xs: 'none', lg: 'block' } }}>
+      <Box sx={{ display: { xs: 'none', md: 'block' } }}>
         <MiniCalendar />
       </Box>
       <TaskCountHeatmap />

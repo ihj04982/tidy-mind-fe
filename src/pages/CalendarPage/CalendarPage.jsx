@@ -10,15 +10,15 @@ const CalendarPage = () => (
       sx={{
         display: 'flex',
         gap: 2,
-        flexDirection: { xs: 'column', lg: 'row' },
-        alignItems: { xs: 'stretch', lg: 'flex-start' },
+        flexDirection: { xs: 'column', md: 'row' },
+        alignItems: 'stretch',
       }}
     >
       <Box
         sx={{
-          width: { xs: '100%', lg: '300px' },
+          width: { xs: '100%', md: '280px' },
           flexShrink: 0,
-          order: { xs: 2, lg: 1 },
+          order: { xs: 2, md: 1 },
           display: 'flex',
           flexDirection: 'column',
         }}
@@ -30,7 +30,7 @@ const CalendarPage = () => (
         sx={{
           flex: 1,
           minWidth: 0,
-          order: { xs: 1, lg: 2 },
+          order: { xs: 1, md: 2 },
           display: 'flex',
           flexDirection: 'column',
         }}

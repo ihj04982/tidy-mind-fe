@@ -154,6 +154,7 @@ const TaskCountHeatmap = () => {
       sx={{
         p: 3,
         borderRadius: 2,
+        width: '100%',
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 2, gap: 1 }}>

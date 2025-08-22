@@ -91,7 +91,8 @@ const MiniCalendar = () => {
       sx={{
         p: 3,
         borderRadius: 2,
-        minHeight: { lg: '480px' },
+        width: '100%',
+        minHeight: { md: '480px' },
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 2, gap: 1 }}>

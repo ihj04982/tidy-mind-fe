@@ -3,14 +3,13 @@ import { useTheme } from '@mui/material/styles';
 import { Trash2 } from 'lucide-react';
 import React from 'react';
 
-import { CATEGORIES } from '../../../constants/note.constants';
 import { formatRelativeDate } from '../../../utils/dateUtils';
 
 const NoteCard = ({ note, isSelected, onSelect, onToggleDone, onDeleteNote }) => {
   const theme = useTheme();
 
-  const category = Object.values(CATEGORIES).find((cat) => cat.id === note.categoryId);
-  const isWithDateType = category?.type === 'withDate';
+  const category = note.category;
+  const hasCompletion = note.completion !== null;
 
   const handleClick = () => {
     onSelect(note);
@@ -27,7 +26,7 @@ const NoteCard = ({ note, isSelected, onSelect, onToggleDone, onDeleteNote }) =>
     e.stopPropagation();
 
     if (onToggleDone) {
-      onToggleDone(note._id, !note.dateMeta?.done);
+      onToggleDone(note._id, !note.completion?.isCompleted);
     }
   };
 
@@ -49,9 +48,9 @@ const NoteCard = ({ note, isSelected, onSelect, onToggleDone, onDeleteNote }) =>
       >
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, marginBottom: 0.5 }}>
-            {isWithDateType && (
+            {hasCompletion && (
               <Checkbox
-                checked={note.dateMeta?.done || false}
+                checked={note.completion?.isCompleted || false}
                 onChange={handleCheckboxClick}
                 size="small"
                 sx={{ padding: 0, marginRight: 0.5 }}
@@ -65,8 +64,8 @@ const NoteCard = ({ note, isSelected, onSelect, onToggleDone, onDeleteNote }) =>
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
-                textDecoration: note.dateMeta?.done ? 'line-through' : 'none',
-                opacity: note.dateMeta?.done ? 0.6 : 1,
+                textDecoration: note.completion?.isCompleted ? 'line-through' : 'none',
+                opacity: note.completion?.isCompleted ? 0.6 : 1,
               }}
             >
               {note.title}

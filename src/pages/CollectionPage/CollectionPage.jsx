@@ -17,24 +17,26 @@ const CollectionPage = () => {
     setSelectedNote(note);
   };
 
-  const handleCategoryFilter = (categoryId) => {
-    if (categoryId === 'all') {
+  const handleCategoryFilter = (categoryName) => {
+    if (categoryName === 'all') {
       setFilteredNotes(mockNotes);
     } else {
-      setFilteredNotes(mockNotes.filter((note) => note.categoryId === categoryId));
+      setFilteredNotes(mockNotes.filter((note) => note.category.name === categoryName));
     }
   };
 
-  const handleToggleDone = (noteId, done) => {
+  const handleToggleDone = (noteId, isCompleted) => {
     setFilteredNotes((prev) =>
       prev.map((note) =>
         note._id === noteId
           ? {
               ...note,
-              dateMeta: {
-                ...note.dateMeta,
-                done,
-              },
+              completion: note.completion
+                ? {
+                    ...note.completion,
+                    isCompleted,
+                  }
+                : null,
             }
           : note,
       ),
@@ -43,14 +45,16 @@ const CollectionPage = () => {
     if (selectedNote?._id === noteId) {
       setSelectedNote((prev) => ({
         ...prev,
-        dateMeta: {
-          ...prev.dateMeta,
-          done,
-        },
+        completion: prev.completion
+          ? {
+              ...prev.completion,
+              isCompleted,
+            }
+          : null,
       }));
     }
 
-    console.log(`Note ${noteId} done status changed to: ${done}`);
+    console.log(`Note ${noteId} completion status changed to: ${isCompleted}`);
   };
 
   const handleDeleteNote = (noteId) => {

@@ -9,7 +9,13 @@ import CloudinaryUploadWidget from '../../utils/CloudinaryUploadWidget';
 
 const LandingPage = () => {
   const theme = useTheme();
-  const { transcript, listening, toggleListening } = useSpeechToText();
+  const {
+    transcript,
+    listening,
+    toggleListening,
+    browserSupportsSpeechRecognition,
+    isMicrophoneAvailable,
+  } = useSpeechToText();
   const [inputValue, setInputValue] = useState('');
   const [imgURLs, setImgURLs] = useState([]);
   const MAX_IMAGE_COUNT = 5;
@@ -316,6 +322,7 @@ const LandingPage = () => {
             <Button
               onClick={toggleListening}
               disableRipple
+              disabled={!browserSupportsSpeechRecognition}
               sx={{
                 minWidth: '40px',
                 height: '40px',
@@ -344,7 +351,7 @@ const LandingPage = () => {
           </Box>
         )}
         <Button
-          disabled={listening}
+          disabled={listening || !browserSupportsSpeechRecognition || !isMicrophoneAvailable}
           disableRipple
           sx={{
             position: 'absolute',

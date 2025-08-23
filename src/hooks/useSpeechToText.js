@@ -1,9 +1,21 @@
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 const useSpeechToText = () => {
-  const { listening, resetTranscript, finalTranscript } = useSpeechRecognition();
+  const {
+    listening,
+    resetTranscript,
+    finalTranscript,
+    browserSupportsSpeechRecognition,
+    isMicrophoneAvailable,
+  } = useSpeechRecognition();
 
   const toggleListening = () => {
+    if (!isMicrophoneAvailable) {
+      return alert('마이크 사용 권한 제한됨.');
+    }
+    if (!browserSupportsSpeechRecognition) {
+      return alert('마이크 사용 불가한 브라우저입니다.');
+    }
     if (listening) {
       SpeechRecognition.stopListening();
     } else {
@@ -35,6 +47,8 @@ const useSpeechToText = () => {
     stopListening,
     startListening,
     resetTranscript,
+    browserSupportsSpeechRecognition,
+    isMicrophoneAvailable,
   };
 };
 

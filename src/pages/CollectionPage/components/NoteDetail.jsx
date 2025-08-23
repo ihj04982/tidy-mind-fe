@@ -151,7 +151,13 @@ const NoteDetail = ({ note, onBack, isMobile, onToggleDone, onDeleteNote }) => {
             </Box>
           </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+            }}
+          >
             {!isEditing ? (
               <>
                 <IconButton onClick={handleDelete} size="small">
@@ -174,7 +180,20 @@ const NoteDetail = ({ note, onBack, isMobile, onToggleDone, onDeleteNote }) => {
           </Box>
         </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+            flexWrap: 'wrap',
+            overflow: 'auto',
+            '&::-webkit-scrollbar': {
+              display: 'none',
+            },
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+          }}
+        >
           {isEditing ? (
             <Select
               value={editedCategoryId}

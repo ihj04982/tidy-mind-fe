@@ -15,7 +15,7 @@ export const CATEGORIES = {
     id: 'reminder',
     name: 'Reminder',
     color: '#FD7642',
-    type: 'withDate',
+    type: 'general',
   },
   WORK: {
     id: 'work',

@@ -36,7 +36,7 @@ const NoteList = ({
           Collections
         </Typography>
 
-        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
+        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
           <Button
             variant={selectedCategory === 'all' ? 'contained' : 'outlined'}
             onClick={() => handleCategoryClick('all')}

@@ -1,4 +1,4 @@
-import { Box, Grid, Paper } from '@mui/material';
+import { Container, Grid, Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import React, { useState } from 'react';
@@ -59,15 +59,18 @@ const CollectionPage = () => {
   };
 
   return (
-    <Box
+    <Container
       sx={{
-        minHeight: '100%',
-        backgroundColor: theme.palette.background.default,
-        padding: { xs: 2, md: 3 },
-        paddingTop: { xs: 8, md: 10 },
+        my: 10,
+        height: 'calc(100vh - 120px)',
+        maxHeight: 'calc(100vh - 120px)',
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: 0,
+        overflow: 'hidden',
       }}
     >
-      <Grid container spacing={3} sx={{ height: '100%' }}>
+      <Grid container spacing={3} sx={{ height: '100%', flex: 1, minHeight: 0, maxHeight: '100%' }}>
         <Grid
           size={{ xs: 12, md: 6, lg: 7 }}
           sx={{
@@ -75,6 +78,8 @@ const CollectionPage = () => {
               xs: selectedNote ? 'block' : 'none',
               md: 'block',
             },
+            height: '100%',
+            maxHeight: '100%',
           }}
         >
           <Paper
@@ -83,7 +88,9 @@ const CollectionPage = () => {
               backgroundColor: theme.palette.background.paper,
               borderRadius: 2,
               boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-              overflow: 'hidden',
+              overflow: 'auto',
+              display: 'flex',
+              flexDirection: 'column',
             }}
           >
             <NoteDetail
@@ -103,6 +110,8 @@ const CollectionPage = () => {
               xs: selectedNote ? 'none' : 'block',
               md: 'block',
             },
+            height: '100%',
+            maxHeight: '100%',
           }}
         >
           <Paper
@@ -111,7 +120,9 @@ const CollectionPage = () => {
               backgroundColor: theme.palette.background.paper,
               borderRadius: 2,
               boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-              overflow: 'hidden',
+              overflow: 'auto',
+              display: 'flex',
+              flexDirection: 'column',
             }}
           >
             <NoteList
@@ -125,7 +136,7 @@ const CollectionPage = () => {
           </Paper>
         </Grid>
       </Grid>
-    </Box>
+    </Container>
   );
 };
 

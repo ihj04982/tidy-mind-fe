@@ -11,7 +11,7 @@ const LandingPage = () => {
   const theme = useTheme();
   const { transcript, listening, toggleListening } = useSpeechToText();
   const [inputValue, setInputValue] = useState('');
-  const [imgURLs, setImgURLs] = useState('');
+  const [imgURLs, setImgURLs] = useState([]);
   const MAX_IMAGE_COUNT = 5;
 
   useEffect(() => {

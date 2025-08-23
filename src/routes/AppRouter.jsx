@@ -7,7 +7,7 @@ import LoginPage from '../pages/AuthPage/LoginPage/LoginPage.jsx';
 import RegisterPage from '../pages/AuthPage/RegisterPage/RegisterPage.jsx';
 import CalendarPage from '../pages/CalendarPage/CalendarPage.jsx';
 import CollectionPage from '../pages/CollectionPage/CollectionPage';
-import LandingPage from '../pages/LandingPage.jsx';
+import LandingPage from '../pages/LandingPage/LandingPage.jsx';
 
 const AppRouter = () => {
   return (

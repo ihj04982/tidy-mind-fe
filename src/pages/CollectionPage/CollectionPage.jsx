@@ -62,8 +62,8 @@ const CollectionPage = () => {
     <Container
       sx={{
         my: 10,
-        height: 'calc(100vh - 120px)',
-        maxHeight: 'calc(100vh - 120px)',
+        height: 'calc(100vh - 100px)',
+        maxHeight: 'calc(100vh - 100px)',
         display: 'flex',
         flexDirection: 'column',
         minHeight: 0,

@@ -344,7 +344,7 @@ const LandingPage = () => {
           </Box>
         )}
         <Button
-          disabled={listening ? true : ''}
+          disabled={listening}
           disableRipple
           sx={{
             position: 'absolute',

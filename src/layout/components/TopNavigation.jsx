@@ -159,6 +159,7 @@ const TopNavigation = () => {
         sx={{
           display: { xs: 'flex', md: 'none' },
           justifyContent: 'end',
+          alignItems: 'center',
           position: 'fixed',
           backgroundColor: hasScrolled ? '#e5ebf98d' : theme.palette.background.default,
           boxShadow: hasScrolled ? '0px 0px 10px rgba(68, 68, 68, 0.3)' : 0,
@@ -167,13 +168,13 @@ const TopNavigation = () => {
           left: 0,
           right: 0,
           top: 0,
-          padding: '1rem 0.5rem 0.7rem',
+          padding: '0.725rem 1rem',
         }}
       >
         <Button
           sx={{
             display: { xs: 'flex', md: 'none' },
-            width: 40,
+            minWidth: 40,
             height: 40,
           }}
           onClick={toggleDrawer(true)}
@@ -209,8 +210,8 @@ const TopNavigation = () => {
           display: { xs: 'none', md: 'flex' },
           alignItems: 'center',
           justifyContent: 'end',
-          paddingBottom: '20px',
-          paddingTop: '32px',
+          paddingBottom: '1rem',
+          paddingTop: '1rem',
           paddingRight: 4,
           transition: 'all 0.3s ease',
           zIndex: 10,

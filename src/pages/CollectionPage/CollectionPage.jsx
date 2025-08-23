@@ -1,4 +1,4 @@
-import { Box, Grid, Paper } from '@mui/material';
+import { Container, Grid, Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import React, { useState } from 'react';
@@ -17,24 +17,26 @@ const CollectionPage = () => {
     setSelectedNote(note);
   };
 
-  const handleCategoryFilter = (categoryId) => {
-    if (categoryId === 'all') {
+  const handleCategoryFilter = (categoryName) => {
+    if (categoryName === 'all') {
       setFilteredNotes(mockNotes);
     } else {
-      setFilteredNotes(mockNotes.filter((note) => note.categoryId === categoryId));
+      setFilteredNotes(mockNotes.filter((note) => note.category.name === categoryName));
     }
   };
 
-  const handleToggleDone = (noteId, done) => {
+  const handleToggleDone = (noteId, isCompleted) => {
     setFilteredNotes((prev) =>
       prev.map((note) =>
         note._id === noteId
           ? {
               ...note,
-              dateMeta: {
-                ...note.dateMeta,
-                done,
-              },
+              completion: note.completion
+                ? {
+                    ...note.completion,
+                    isCompleted,
+                  }
+                : null,
             }
           : note,
       ),
@@ -43,14 +45,16 @@ const CollectionPage = () => {
     if (selectedNote?._id === noteId) {
       setSelectedNote((prev) => ({
         ...prev,
-        dateMeta: {
-          ...prev.dateMeta,
-          done,
-        },
+        completion: prev.completion
+          ? {
+              ...prev.completion,
+              isCompleted,
+            }
+          : null,
       }));
     }
 
-    console.log(`Note ${noteId} done status changed to: ${done}`);
+    console.log(`Note ${noteId} completion status changed to: ${isCompleted}`);
   };
 
   const handleDeleteNote = (noteId) => {
@@ -59,15 +63,18 @@ const CollectionPage = () => {
   };
 
   return (
-    <Box
+    <Container
       sx={{
-        minHeight: '100%',
-        backgroundColor: theme.palette.background.default,
-        padding: { xs: 2, md: 3 },
-        paddingTop: { xs: 8, md: 10 },
+        my: 10,
+        height: 'calc(100vh - 100px)',
+        maxHeight: 'calc(100vh - 100px)',
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: 0,
+        overflow: 'hidden',
       }}
     >
-      <Grid container spacing={3} sx={{ height: '100%' }}>
+      <Grid container spacing={3} sx={{ height: '100%', flex: 1, minHeight: 0, maxHeight: '100%' }}>
         <Grid
           size={{ xs: 12, md: 6, lg: 7 }}
           sx={{
@@ -75,6 +82,8 @@ const CollectionPage = () => {
               xs: selectedNote ? 'block' : 'none',
               md: 'block',
             },
+            height: '100%',
+            maxHeight: '100%',
           }}
         >
           <Paper
@@ -83,7 +92,9 @@ const CollectionPage = () => {
               backgroundColor: theme.palette.background.paper,
               borderRadius: 2,
               boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-              overflow: 'hidden',
+              overflow: 'auto',
+              display: 'flex',
+              flexDirection: 'column',
             }}
           >
             <NoteDetail
@@ -103,6 +114,8 @@ const CollectionPage = () => {
               xs: selectedNote ? 'none' : 'block',
               md: 'block',
             },
+            height: '100%',
+            maxHeight: '100%',
           }}
         >
           <Paper
@@ -111,7 +124,9 @@ const CollectionPage = () => {
               backgroundColor: theme.palette.background.paper,
               borderRadius: 2,
               boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-              overflow: 'hidden',
+              overflow: 'auto',
+              display: 'flex',
+              flexDirection: 'column',
             }}
           >
             <NoteList
@@ -125,7 +140,7 @@ const CollectionPage = () => {
           </Paper>
         </Grid>
       </Grid>
-    </Box>
+    </Container>
   );
 };
 

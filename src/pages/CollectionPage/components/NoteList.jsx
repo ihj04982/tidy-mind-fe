@@ -18,9 +18,9 @@ const NoteList = ({
   const [selectedCategory, setSelectedCategory] = useState('all');
   const groupedNotes = groupNotesByDate(notes);
 
-  const handleCategoryClick = (categoryId) => {
-    setSelectedCategory(categoryId);
-    onCategoryFilter(categoryId);
+  const handleCategoryClick = (categoryName) => {
+    setSelectedCategory(categoryName);
+    onCategoryFilter(categoryName);
   };
 
   return (
@@ -36,7 +36,7 @@ const NoteList = ({
           Collections
         </Typography>
 
-        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
+        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
           <Button
             variant={selectedCategory === 'all' ? 'contained' : 'outlined'}
             onClick={() => handleCategoryClick('all')}
@@ -54,12 +54,12 @@ const NoteList = ({
             All
           </Button>
           {Object.values(CATEGORIES).map((category) => {
-            const isSelected = selectedCategory === category.id;
+            const isSelected = selectedCategory === category.name;
             return (
               <Button
-                key={category.id}
+                key={category.name}
                 variant={isSelected ? 'contained' : 'outlined'}
-                onClick={() => handleCategoryClick(category.id)}
+                onClick={() => handleCategoryClick(category.name)}
                 color="inherit"
                 size="small"
                 sx={{

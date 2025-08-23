@@ -26,18 +26,16 @@ const NoteDetail = ({ note, onBack, isMobile, onToggleDone, onDeleteNote }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(note?.content || '');
   const [editedTitle, setEditedTitle] = useState(note?.title || '');
-  const [editedCategoryId, setEditedCategoryId] = useState(note?.categoryId || '');
+  const [editedCategoryName, setEditedCategoryName] = useState(note?.category?.name || '');
   const [editedDueDate, setEditedDueDate] = useState(
-    note?.withDate && note?.dateMeta?.dueDate ? new Date(note.dateMeta.dueDate) : null,
+    note?.completion?.dueDate ? new Date(note.completion.dueDate) : null,
   );
-  const [editedDone, setEditedDone] = useState(
-    note?.withDate ? note?.dateMeta?.done || false : false,
+  const [editedIsCompleted, setEditedIsCompleted] = useState(
+    note?.completion?.isCompleted || false,
   );
 
-  const category = note
-    ? Object.values(CATEGORIES).find((cat) => cat.id === note.categoryId)
-    : null;
-  const isWithDateType = category?.type === 'withDate';
+  const category = note?.category || null;
+  const hasCompletion = note?.completion !== null;
 
   if (!note) {
     return (
@@ -66,11 +64,9 @@ const NoteDetail = ({ note, onBack, isMobile, onToggleDone, onDeleteNote }) => {
     setIsEditing(true);
     setEditedContent(note.content);
     setEditedTitle(note.title || '');
-    setEditedCategoryId(note.categoryId || '');
-    setEditedDueDate(
-      note.withDate && note.dateMeta?.dueDate ? new Date(note.dateMeta.dueDate) : null,
-    );
-    setEditedDone(note.withDate ? note.dateMeta?.done || false : false);
+    setEditedCategoryName(note.category?.name || '');
+    setEditedDueDate(note.completion?.dueDate ? new Date(note.completion.dueDate) : null);
+    setEditedIsCompleted(note.completion?.isCompleted || false);
   };
 
   const handleSave = () => {
@@ -78,9 +74,9 @@ const NoteDetail = ({ note, onBack, isMobile, onToggleDone, onDeleteNote }) => {
     console.log('Saving with data:', {
       content: editedContent,
       title: editedTitle,
-      categoryId: editedCategoryId,
+      categoryName: editedCategoryName,
       dueDate: editedDueDate,
-      done: editedDone,
+      isCompleted: editedIsCompleted,
     });
   };
 
@@ -88,11 +84,9 @@ const NoteDetail = ({ note, onBack, isMobile, onToggleDone, onDeleteNote }) => {
     setIsEditing(false);
     setEditedContent(note.content);
     setEditedTitle(note.title || '');
-    setEditedCategoryId(note.categoryId || '');
-    setEditedDueDate(
-      note.withDate && note.dateMeta?.dueDate ? new Date(note.dateMeta.dueDate) : null,
-    );
-    setEditedDone(note.withDate ? note.dateMeta?.done || false : false);
+    setEditedCategoryName(note.category?.name || '');
+    setEditedDueDate(note.completion?.dueDate ? new Date(note.completion.dueDate) : null);
+    setEditedIsCompleted(note.completion?.isCompleted || false);
   };
 
   const handleDelete = () => {
@@ -100,8 +94,8 @@ const NoteDetail = ({ note, onBack, isMobile, onToggleDone, onDeleteNote }) => {
   };
 
   const handleCheckboxClick = () => {
-    if (onToggleDone && note?.withDate) {
-      onToggleDone(note._id, !note.dateMeta?.done);
+    if (onToggleDone && note?.completion) {
+      onToggleDone(note._id, !note.completion?.isCompleted);
     }
   };
 
@@ -151,7 +145,13 @@ const NoteDetail = ({ note, onBack, isMobile, onToggleDone, onDeleteNote }) => {
             </Box>
           </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+            }}
+          >
             {!isEditing ? (
               <>
                 <IconButton onClick={handleDelete} size="small">
@@ -174,11 +174,24 @@ const NoteDetail = ({ note, onBack, isMobile, onToggleDone, onDeleteNote }) => {
           </Box>
         </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+            flexWrap: 'wrap',
+            overflow: 'auto',
+            '&::-webkit-scrollbar': {
+              display: 'none',
+            },
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+          }}
+        >
           {isEditing ? (
             <Select
-              value={editedCategoryId}
-              onChange={(e) => setEditedCategoryId(e.target.value)}
+              value={editedCategoryName}
+              onChange={(e) => setEditedCategoryName(e.target.value)}
               size="small"
               sx={{
                 fontSize: '0.75rem',
@@ -189,7 +202,7 @@ const NoteDetail = ({ note, onBack, isMobile, onToggleDone, onDeleteNote }) => {
               }}
             >
               {Object.values(CATEGORIES).map((category) => (
-                <MenuItem key={category.id} value={category.id} sx={{ fontSize: '0.75rem' }}>
+                <MenuItem key={category.name} value={category.name} sx={{ fontSize: '0.75rem' }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Box
                       sx={{
@@ -237,7 +250,7 @@ const NoteDetail = ({ note, onBack, isMobile, onToggleDone, onDeleteNote }) => {
             </Typography>
           </Box>
 
-          {note.withDate && (
+          {note.completion && (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               <AlertCircle size={14} color={theme.palette.text.secondary} />
               {isEditing ? (
@@ -259,20 +272,20 @@ const NoteDetail = ({ note, onBack, isMobile, onToggleDone, onDeleteNote }) => {
                   variant="body2"
                   sx={{ color: theme.palette.text.secondary, fontSize: '0.75rem' }}
                 >
-                  {note.dateMeta ? formatDueDate(note.dateMeta.dueDate) : 'No due date'}
+                  {note.completion ? formatDueDate(note.completion.dueDate) : 'No due date'}
                 </Typography>
               )}
             </Box>
           )}
 
-          {isWithDateType && (
+          {hasCompletion && (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               {isEditing ? (
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={editedDone}
-                      onChange={(e) => setEditedDone(e.target.checked)}
+                      checked={editedIsCompleted}
+                      onChange={(e) => setEditedIsCompleted(e.target.checked)}
                       size="small"
                       sx={{ padding: 0 }}
                     />
@@ -287,7 +300,7 @@ const NoteDetail = ({ note, onBack, isMobile, onToggleDone, onDeleteNote }) => {
               ) : (
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                   <Checkbox
-                    checked={note.dateMeta?.done || false}
+                    checked={note.completion?.isCompleted || false}
                     onChange={handleCheckboxClick}
                     size="small"
                     sx={{ padding: 0 }}

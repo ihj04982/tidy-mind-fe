@@ -37,7 +37,9 @@ export const mockNotes = [
     title: 'Project Planning Notes',
     content:
       'Need to review the quarterly goals and set up team meetings for next sprint. Key points:\n- Update project timeline\n- Schedule stakeholder review\n- Prepare presentation materials\n- Follow up with design team',
-    images: [],
+    images: [
+      'https://res.cloudinary.com/ddw9xklog/image/upload/v1756020638/s05mwwhlbyrbqznvpmxg.png',
+    ],
     category: CATEGORIES.TASK,
     completion: {
       dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
@@ -79,7 +81,12 @@ export const mockNotes = [
     title: 'Book Recommendations',
     content:
       'Books to read this month:\n1. "Atomic Habits" by James Clear\n2. "Deep Work" by Cal Newport\n3. "The Pragmatic Programmer"\n4. "Designing Data-Intensive Applications"',
-    images: [],
+    images: [
+      'https://res.cloudinary.com/ddw9xklog/image/upload/v1756020709/ovy5hqdol5wi6s053q6v.jpg',
+      'https://res.cloudinary.com/ddw9xklog/image/upload/v1756020779/cgi7bqhbmtla1obnfkqt.webp',
+      'https://res.cloudinary.com/ddw9xklog/image/upload/v1756020779/xlacucmtkggs848otds7.jpg',
+      'https://res.cloudinary.com/ddw9xklog/image/upload/v1756020904/nzvp2cbfaxvmm1jao6ms.jpg',
+    ],
     category: CATEGORIES.PERSONAL,
     completion: null,
     createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
@@ -174,5 +181,25 @@ export const mockNotes = [
     },
     createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
     updatedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
+  },
+  {
+    _id: '12',
+    userId: 'user-1',
+    title: 'Image Test',
+    content: 'Image Test',
+    images: [
+      'https://res.cloudinary.com/ddw9xklog/image/upload/v1756017580/l4q9ydstzy5rdjira7cl.png',
+      'https://res.cloudinary.com/ddw9xklog/image/upload/v1756017580/cgx4a6nhd1ayijwmtnfn.png',
+      'https://res.cloudinary.com/ddw9xklog/image/upload/v1756017580/oqtacaskdgnurmytcpbe.png',
+      'https://res.cloudinary.com/ddw9xklog/image/upload/v1756017580/x4onyhjqeo7tws9k9rdx.png',
+      'https://res.cloudinary.com/ddw9xklog/image/upload/v1756017580/pgjekmva8lwhdgdegimp.png',
+    ],
+    category: CATEGORIES.TASK,
+    completion: {
+      dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      isCompleted: false,
+    },
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
 ];

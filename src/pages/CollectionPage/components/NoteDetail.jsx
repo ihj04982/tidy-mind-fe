@@ -8,9 +8,21 @@ import {
   MenuItem,
   Checkbox,
   FormControlLabel,
+  Grid,
+  Dialog,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { ArrowLeft, Edit2, Save, X, Calendar, Trash, Clock, AlertCircle } from 'lucide-react';
+import {
+  ArrowLeft,
+  Edit2,
+  Save,
+  X,
+  Calendar,
+  Trash,
+  Clock,
+  AlertCircle,
+  ZoomIn,
+} from 'lucide-react';
 import React, { useState } from 'react';
 
 import { CATEGORIES } from '../../../constants/note.constants';
@@ -36,6 +48,8 @@ const NoteDetail = ({ note, onBack, isMobile, onToggleDone, onDeleteNote }) => {
 
   const category = note?.category || null;
   const hasCompletion = note?.completion !== null;
+
+  const [selectedImage, setSelectedImage] = useState(null);
 
   if (!note) {
     return (
@@ -345,6 +359,125 @@ const NoteDetail = ({ note, onBack, isMobile, onToggleDone, onDeleteNote }) => {
           </Typography>
         )}
       </Box>
+
+      {note.images.length > 0 && (
+        <>
+          <Typography
+            sx={{
+              borderTop: `1px solid ${theme.palette.border.default}`,
+              paddingTop: 3,
+              paddingInline: 3,
+              color: theme.palette.text.secondary,
+              fontSize: '0.75rem',
+              fontWeight: 600,
+            }}
+          >
+            ATTACHMENTS ({note.images.length})
+          </Typography>
+
+          <Grid
+            container
+            sx={{
+              display: 'flex',
+              justifyContent: 'start',
+              alignItems: 'center',
+              padding: 2,
+            }}
+          >
+            {note.images.map((image, idx) => (
+              <Grid
+                key={idx}
+                size={{ xs: 4, sm: 2.4, md: 4, lg: 2.4 }}
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  padding: 1,
+                }}
+              >
+                <Box
+                  onClick={() => setSelectedImage(image)}
+                  sx={{
+                    position: 'relative',
+                    width: '100px',
+                    height: '100px',
+                    borderRadius: '8px',
+                    overflow: 'hidden',
+                    boxShadow: '1px 1px 3px #00000037',
+                    '&:hover img': { transform: 'scale(1.05)' },
+                    '&:hover .zoom-icon': { opacity: 1 },
+                  }}
+                >
+                  <img
+                    src={image}
+                    alt={`image ${idx}`}
+                    style={{
+                      objectFit: 'cover',
+                      width: '100%',
+                      height: '100%',
+                      cursor: 'pointer',
+                      transition: 'transform 0.3s ease',
+                    }}
+                  />
+
+                  <Box
+                    className="zoom-icon"
+                    sx={{
+                      position: 'absolute',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      width: '100%',
+                      height: '100%',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      opacity: 0,
+                      transition: 'opacity 0.3s ease',
+                      color: '#fff',
+                      backgroundColor: 'rgba(0,0,0,0.4)',
+                      padding: '4px',
+                    }}
+                  >
+                    <ZoomIn size={'1.2rem'} />
+                  </Box>
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+        </>
+      )}
+      <Dialog open={!!selectedImage} onClose={() => setSelectedImage(null)} maxWidth="lg">
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', p: 2 }}>
+          <Box>
+            <IconButton
+              onClick={() => setSelectedImage(null)}
+              sx={{
+                position: 'absolute',
+                top: 16,
+                right: 16,
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                },
+              }}
+            >
+              <X size={20} strokeWidth={3} />
+            </IconButton>
+          </Box>
+          {selectedImage && (
+            <img
+              src={selectedImage}
+              alt="img"
+              style={{
+                maxWidth: '100%',
+                maxHeight: '80vh',
+                objectFit: 'contain',
+              }}
+            />
+          )}
+        </Box>
+      </Dialog>
     </Box>
   );
 };

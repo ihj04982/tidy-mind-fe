@@ -1,6 +1,6 @@
 import { Box, Typography, Chip, IconButton, Checkbox } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { Trash2 } from 'lucide-react';
+import { Image, Trash2 } from 'lucide-react';
 import React from 'react';
 
 import { formatRelativeDate } from '../../../utils/dateUtils';
@@ -70,6 +70,9 @@ const NoteCard = ({ note, isSelected, onSelect, onToggleDone, onDeleteNote }) =>
             >
               {note.title}
             </Typography>
+            {note.images.length > 0 && (
+              <Image size={'1rem'} strokeWidth={1.7} color={theme.palette.border.strong} />
+            )}
           </Box>
 
           <Typography

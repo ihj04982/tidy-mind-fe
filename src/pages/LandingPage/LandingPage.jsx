@@ -1,14 +1,20 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Button, Input, Typography, useTheme } from '@mui/material';
+import { Button, Chip, Input, Typography, useTheme } from '@mui/material';
 import { Box, keyframes } from '@mui/system';
 import { Circle, Image, Mic, Square, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { getSuggestions } from '../../features/suggest/suggestSlice';
 import useSpeechToText from '../../hooks/useSpeechToText';
 import CloudinaryUploadWidget from '../../utils/CloudinaryUploadWidget';
 
 const LandingPage = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
+
+  const { suggestion, loading: isLoadingSuggestion } = useSelector((state) => state.suggest);
+
   const {
     transcript,
     listening,
@@ -28,6 +34,30 @@ const LandingPage = () => {
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
+  };
+
+  const handleSubmit = () => {
+    if (listening) return;
+
+    const hasContent = inputValue.trim().length > 0;
+    const hasImages = imgURLs.length > 0;
+
+    if (hasContent || hasImages) {
+      dispatch(
+        getSuggestions({
+          content: inputValue,
+          images: imgURLs,
+        }),
+      );
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    // Submit on Enter key (but not Shift+Enter for multiline)
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
   };
 
   const uploadImage = (url) => {
@@ -250,6 +280,7 @@ const LandingPage = () => {
         <Input
           value={inputValue}
           onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
           disabled={listening && true}
           sx={{
             display: `${listening ? 'none' : 'flex'}`,
@@ -320,9 +351,9 @@ const LandingPage = () => {
             }}
           >
             <Button
+              disabled={listening || !browserSupportsSpeechRecognition || !isMicrophoneAvailable}
               onClick={toggleListening}
               disableRipple
-              disabled={!browserSupportsSpeechRecognition}
               sx={{
                 minWidth: '40px',
                 height: '40px',
@@ -351,7 +382,8 @@ const LandingPage = () => {
           </Box>
         )}
         <Button
-          disabled={listening || !browserSupportsSpeechRecognition || !isMicrophoneAvailable}
+          onClick={handleSubmit}
+          disabled={listening || (!inputValue.trim() && imgURLs.length === 0)}
           disableRipple
           sx={{
             position: 'absolute',
@@ -379,6 +411,44 @@ const LandingPage = () => {
           <AddIcon sx={{ width: '16px', fill: 'white' }} />
         </Button>
       </Box>
+
+      {/* 카테고리 분류 표시 / 제목 / 마감일 시각 표시 (지울 예정)*/}
+      {(suggestion || isLoadingSuggestion) && (
+        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'center' }}>
+          <Chip
+            label={isLoadingSuggestion ? 'AI is thinking...' : suggestion?.category?.name}
+            size="small"
+            sx={{
+              backgroundColor: isLoadingSuggestion ? '#e0e0e0' : suggestion?.category?.color,
+              color: '#fff',
+              fontWeight: 500,
+              animation: isLoadingSuggestion ? `${pulse} 1.5s ease-in-out infinite` : 'none',
+            }}
+          />
+          {suggestion?.title && !isLoadingSuggestion && (
+            <Chip
+              label={`Title: ${suggestion.title}`}
+              size="small"
+              sx={{
+                backgroundColor: '#f5f5f5',
+                color: '#333',
+                fontWeight: 500,
+              }}
+            />
+          )}
+          {suggestion?.completion?.dueDate && !isLoadingSuggestion && (
+            <Chip
+              label={`Due: ${new Date(suggestion.completion.dueDate).toLocaleDateString()}`}
+              size="small"
+              sx={{
+                backgroundColor: '#e3f2fd',
+                color: '#1976d2',
+                fontWeight: 500,
+              }}
+            />
+          )}
+        </Box>
+      )}
     </Box>
   );
 };

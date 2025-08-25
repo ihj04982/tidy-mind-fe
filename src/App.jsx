@@ -1,10 +1,13 @@
 import React from 'react';
 
+import AppRouter from './routes/AppRouter.jsx';
+import ThemeRegistry from './theme/themeProvider.jsx';
+
 function App() {
   return (
-    <>
-      <h1>Hello World</h1>
-    </>
+    <ThemeRegistry>
+      <AppRouter />
+    </ThemeRegistry>
   );
 }
 

@@ -24,6 +24,12 @@ export default [
       react: {
         version: 'detect',
       },
+      'import/resolver': {
+        node: {
+          extensions: ['.js', '.jsx', '.ts', '.tsx'],
+          moduleDirectory: ['node_modules', 'src'],
+        },
+      },
     },
   },
   js.configs.recommended,
@@ -41,6 +47,7 @@ export default [
       ],
       'import/no-unresolved': 'error',
       'react-hooks/rules-of-hooks': 'error',
+      'react/prop-types': 'off',
     },
   },
 ];

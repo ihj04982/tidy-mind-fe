@@ -9,23 +9,55 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
+import { useGoogleLogin } from '@react-oauth/google';
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+
+import { clearError, googleLogin, login } from '../../../../features/auth/authSlice';
+import { useToast } from '../../../../hooks/useToast';
+import { loginValidater } from '../../../../utils/validater';
 
 export default function LoginForm() {
   const theme = useTheme();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { addToast } = useToast();
+  const { isLoading, error } = useSelector((state) => state.auth);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const isLoading = false; // 필요 시 로딩 상태 연결
+
+  // 에러 메시지
+  const [errors, setErrors] = useState({
+    email: '',
+    password: '',
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login');
+    const isValid = loginValidater({ email, password, setErrors });
+    if (!isValid) return;
+    const response = await dispatch(login({ email, password }));
+    if (login.fulfilled.match(response)) {
+      dispatch(clearError());
+      addToast('로그인 성공!', { severity: 'success' });
+      navigate('/');
+    }
   };
 
-  const handleGoogleLogin = async () => {
-    console.log('Google login');
-  };
+  const handleGoogleLogin = useGoogleLogin({
+    flow: 'auth-code',
+    onSuccess: async (codeResponse) => {
+      const response = await dispatch(googleLogin({ code: codeResponse.code }));
+
+      if (googleLogin.fulfilled.match(response)) {
+        dispatch(clearError());
+        addToast('로그인 성공!', { severity: 'success' });
+        navigate('/');
+      }
+    },
+  });
 
   return (
     <Card
@@ -64,7 +96,7 @@ export default function LoginForm() {
         <form onSubmit={handleSubmit}>
           {/* Email */}
           <TextField
-            type="email"
+            type="text"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -73,7 +105,10 @@ export default function LoginForm() {
             size="small"
             variant="outlined"
             autoComplete="email"
+            error={!!errors.email}
+            helperText={errors.email}
           />
+
           {/* Password */}
           <TextField
             type="password"
@@ -85,22 +120,24 @@ export default function LoginForm() {
             size="small"
             variant="outlined"
             sx={{ mt: '0.25rem' }}
+            error={!!errors.password}
+            helperText={errors.password}
           />
 
-          {/* Forgot password */}
-          <Box sx={{ textAlign: 'right', mt: '0.375rem' }}>
-            <Link
-              href="/forgot-password"
-              underline="none"
+          {/* Error message */}
+          {error && (
+            <Typography
               sx={{
-                fontSize: '0.875rem',
-                color: theme.palette.text.secondary,
-                '&:hover': { color: theme.palette.text.primary },
+                textAlign: 'center',
+                fontSize: '0.75rem',
+                mt: '0.5rem',
+                fontWeight: 400,
+                color: theme.palette.text.error,
               }}
             >
-              Forgot password?
-            </Link>
-          </Box>
+              {error}
+            </Typography>
+          )}
 
           {/* Submit */}
           <Button
@@ -178,7 +215,8 @@ export default function LoginForm() {
         >
           {`Don't have an account? `}
           <Link
-            href="/register"
+            component={RouterLink}
+            to="/register"
             underline="none"
             sx={{
               fontWeight: 600,

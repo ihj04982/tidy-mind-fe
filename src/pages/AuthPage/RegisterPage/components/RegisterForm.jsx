@@ -15,14 +15,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 import { clearError, googleLogin, register } from '../../../../features/auth/authSlice';
-import { useToast } from '../../../../hooks/useToast';
 import { registerValidater } from '../../../../utils/validater';
 
 export default function RegisterForm() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { addToast } = useToast();
   const { isLoading, error } = useSelector((state) => state.auth);
 
   // form 데이터
@@ -46,7 +44,6 @@ export default function RegisterForm() {
     const response = await dispatch(register({ name, email, password }));
     if (register.fulfilled.match(response)) {
       dispatch(clearError());
-      addToast('회원가입 성공!', { severity: 'success' });
       navigate('/login');
     }
   };
@@ -58,7 +55,6 @@ export default function RegisterForm() {
 
       if (googleLogin.fulfilled.match(response)) {
         dispatch(clearError());
-        addToast('로그인 성공!', { severity: 'success' });
         navigate('/');
       }
     },

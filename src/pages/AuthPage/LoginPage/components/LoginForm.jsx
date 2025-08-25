@@ -15,14 +15,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 import { clearError, googleLogin, login } from '../../../../features/auth/authSlice';
-import { useToast } from '../../../../hooks/useToast';
 import { loginValidater } from '../../../../utils/validater';
 
 export default function LoginForm() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { addToast } = useToast();
   const { isLoading, error } = useSelector((state) => state.auth);
 
   const [email, setEmail] = useState('');
@@ -41,7 +39,6 @@ export default function LoginForm() {
     const response = await dispatch(login({ email, password }));
     if (login.fulfilled.match(response)) {
       dispatch(clearError());
-      addToast('로그인 성공!', { severity: 'success' });
       navigate('/');
     }
   };
@@ -53,7 +50,6 @@ export default function LoginForm() {
 
       if (googleLogin.fulfilled.match(response)) {
         dispatch(clearError());
-        addToast('로그인 성공!', { severity: 'success' });
         navigate('/');
       }
     },

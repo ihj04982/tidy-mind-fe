@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 
 import { api, extractErrorMessage } from '../../utils/api';
+import { showToast } from '../toast/toastSlice';
 
 const initialState = {
   user: null,
@@ -12,9 +13,10 @@ const initialState = {
 // 회원가입
 export const register = createAsyncThunk(
   'auth/register',
-  async ({ name, email, password }, { rejectWithValue }) => {
+  async ({ name, email, password }, { rejectWithValue, dispatch }) => {
     try {
       const { data } = await api.post('/auth/register', { name, email, password });
+      dispatch(showToast({ message: data.message, severity: 'success' }));
 
       return data; // { message, user }
     } catch (error) {
@@ -26,9 +28,10 @@ export const register = createAsyncThunk(
 // 로그인
 export const login = createAsyncThunk(
   'auth/login',
-  async ({ email, password }, { rejectWithValue }) => {
+  async ({ email, password }, { rejectWithValue, dispatch }) => {
     try {
       const { data } = await api.post('/auth/login', { email, password });
+      dispatch(showToast({ message: data.message, severity: 'success' }));
 
       return data; // { message, token, user }
     } catch (err) {
@@ -40,9 +43,10 @@ export const login = createAsyncThunk(
 // 구글 로그인
 export const googleLogin = createAsyncThunk(
   'auth/google',
-  async ({ code }, { rejectWithValue }) => {
+  async ({ code }, { rejectWithValue, dispatch }) => {
     try {
       const { data } = await api.post('/auth/google', { code });
+      dispatch(showToast({ message: data.message, severity: 'success' }));
 
       return data; // { message, token, user }
     } catch (err) {

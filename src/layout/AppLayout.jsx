@@ -5,6 +5,7 @@ import { Outlet } from 'react-router-dom';
 import LeftNavigation from './components/LeftNavigation.jsx';
 import TopNavigation from './components/TopNavigation.jsx';
 import Footer from './Footer.jsx';
+import ToastMessage from '../common/component/ToastMessage.jsx';
 
 const AppLayout = () => {
   return (
@@ -35,6 +36,7 @@ const AppLayout = () => {
         </Box>
         <Footer />
       </Box>
+      <ToastMessage />
     </Box>
   );
 };

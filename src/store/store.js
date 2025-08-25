@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import suggestReducer from '../features/suggest/suggestSlice';
+import uiReducer from '../features/common/uiSlice';
+import noteReducer from '../features/note/noteSlice';
 
 const store = configureStore({
   reducer: {
-    suggest: suggestReducer,
+    note: noteReducer,
+    ui: uiReducer,
   },
 });
 

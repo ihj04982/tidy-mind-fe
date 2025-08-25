@@ -1,19 +1,22 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Button, Chip, Input, Typography, useTheme } from '@mui/material';
+import { Button, CircularProgress, Input, Typography, useTheme } from '@mui/material';
 import { Box, keyframes } from '@mui/system';
 import { Circle, Image, Mic, Square, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
-import { getSuggestions } from '../../features/suggest/suggestSlice';
+import { hideToastMessage } from '../../features/common/uiSlice';
+import { createNoteWithSuggestion } from '../../features/note/noteSlice';
 import useSpeechToText from '../../hooks/useSpeechToText';
 import CloudinaryUploadWidget from '../../utils/CloudinaryUploadWidget';
 
 const LandingPage = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const { suggestion, loading: isLoadingSuggestion } = useSelector((state) => state.suggest);
+  const { loading: isSaving, error } = useSelector((state) => state.note);
 
   const {
     transcript,
@@ -27,33 +30,54 @@ const LandingPage = () => {
   const MAX_IMAGE_COUNT = 5;
 
   useEffect(() => {
+    dispatch(hideToastMessage());
+  }, [dispatch]);
+
+  useEffect(() => {
     if (transcript) {
       setInputValue((prev) => prev + transcript);
     }
   }, [transcript]);
 
+  useEffect(() => {
+    if (error && error.includes('로그인')) {
+      const timer = setTimeout(() => {
+        window.location.href = '/login';
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
 
-  const handleSubmit = () => {
-    if (listening) return;
+  const handleSubmit = async () => {
+    if (listening || isSaving) return;
 
     const hasContent = inputValue.trim().length > 0;
     const hasImages = imgURLs.length > 0;
 
     if (hasContent || hasImages) {
-      dispatch(
-        getSuggestions({
-          content: inputValue,
+      const result = await dispatch(
+        createNoteWithSuggestion({
+          content: inputValue.trim(),
           images: imgURLs,
         }),
       );
+
+      if (createNoteWithSuggestion.fulfilled.match(result)) {
+        setInputValue('');
+        setImgURLs([]);
+
+        setTimeout(() => {
+          navigate('/collections');
+        }, 2000);
+      }
     }
   };
 
   const handleKeyDown = (e) => {
-    // Submit on Enter key (but not Shift+Enter for multiline)
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit();
@@ -383,7 +407,7 @@ const LandingPage = () => {
         )}
         <Button
           onClick={handleSubmit}
-          disabled={listening || (!inputValue.trim() && imgURLs.length === 0)}
+          disabled={listening || isSaving || (!inputValue.trim() && imgURLs.length === 0)}
           disableRipple
           sx={{
             position: 'absolute',
@@ -394,7 +418,7 @@ const LandingPage = () => {
             padding: 0,
             margin: 2,
             borderRadius: '30px',
-            backgroundColor: '#c0ccf2',
+            backgroundColor: isSaving ? '#a0aacf' : '#c0ccf2',
             boxShadow: '0 0 3px #0000003c',
             transition: 'all 0.2s ease',
             '&:hover': {
@@ -408,47 +432,15 @@ const LandingPage = () => {
             },
           }}
         >
-          <AddIcon sx={{ width: '16px', fill: 'white' }} />
+          {isSaving ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <CircularProgress size={16} sx={{ color: 'white' }} />
+            </Box>
+          ) : (
+            <AddIcon sx={{ width: '16px', fill: 'white' }} />
+          )}
         </Button>
       </Box>
-
-      {/* 카테고리 분류 표시 / 제목 / 마감일 시각 표시 (지울 예정)*/}
-      {(suggestion || isLoadingSuggestion) && (
-        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <Chip
-            label={isLoadingSuggestion ? 'AI is thinking...' : suggestion?.category?.name}
-            size="small"
-            sx={{
-              backgroundColor: isLoadingSuggestion ? '#e0e0e0' : suggestion?.category?.color,
-              color: '#fff',
-              fontWeight: 500,
-              animation: isLoadingSuggestion ? `${pulse} 1.5s ease-in-out infinite` : 'none',
-            }}
-          />
-          {suggestion?.title && !isLoadingSuggestion && (
-            <Chip
-              label={`Title: ${suggestion.title}`}
-              size="small"
-              sx={{
-                backgroundColor: '#f5f5f5',
-                color: '#333',
-                fontWeight: 500,
-              }}
-            />
-          )}
-          {suggestion?.completion?.dueDate && !isLoadingSuggestion && (
-            <Chip
-              label={`Due: ${new Date(suggestion.completion.dueDate).toLocaleDateString()}`}
-              size="small"
-              sx={{
-                backgroundColor: '#e3f2fd',
-                color: '#1976d2',
-                fontWeight: 500,
-              }}
-            />
-          )}
-        </Box>
-      )}
     </Box>
   );
 };

@@ -1,12 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import uiReducer from '../features/common/uiSlice';
-import noteReducer from '../features/note/noteSlice';
+import noteReducer from './note/noteSlice';
+import toastReducer from './toast/toastSlice';
 
 const store = configureStore({
   reducer: {
     note: noteReducer,
-    ui: uiReducer,
+    toast: toastReducer,
   },
 });
 

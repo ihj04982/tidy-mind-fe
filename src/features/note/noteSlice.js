@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import api, { extractErrorMessage } from '../../utils/api';
-import { showToastMessage } from '../common/uiSlice';
+import { showToast } from '../toast/toastSlice';
 
 export const createNoteWithSuggestion = createAsyncThunk(
   'note/createWithSuggestion',
@@ -24,7 +24,7 @@ export const createNoteWithSuggestion = createAsyncThunk(
       const noteResponse = await api.post('/notes', noteData);
 
       dispatch(
-        showToastMessage({
+        showToast({
           message: '노트가 성공적으로 저장되었습니다!',
           status: 'success',
         }),
@@ -35,7 +35,7 @@ export const createNoteWithSuggestion = createAsyncThunk(
       if (error.response?.status === 401) {
         const authError = '로그인이 필요합니다. 5초 후 로그인 페이지로 이동합니다.';
         dispatch(
-          showToastMessage({
+          showToast({
             message: authError,
             status: 'warning',
           }),
@@ -44,7 +44,7 @@ export const createNoteWithSuggestion = createAsyncThunk(
       }
       const errorMessage = extractErrorMessage(error);
       dispatch(
-        showToastMessage({
+        showToast({
           message: errorMessage,
           status: 'error',
         }),

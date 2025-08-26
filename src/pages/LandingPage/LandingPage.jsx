@@ -6,8 +6,8 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { hideToastMessage } from '../../features/common/uiSlice';
 import { createNoteWithSuggestion } from '../../features/note/noteSlice';
+import { toastCleared } from '../../features/toast/toastSlice';
 import useSpeechToText from '../../hooks/useSpeechToText';
 import CloudinaryUploadWidget from '../../utils/CloudinaryUploadWidget';
 
@@ -30,7 +30,7 @@ const LandingPage = () => {
   const MAX_IMAGE_COUNT = 5;
 
   useEffect(() => {
-    dispatch(hideToastMessage());
+    dispatch(toastCleared());
   }, [dispatch]);
 
   useEffect(() => {

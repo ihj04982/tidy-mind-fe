@@ -188,6 +188,7 @@ const LandingPage = () => {
                 src={url}
                 alt={`img-${index}`}
                 sx={{
+                  objectFit: 'cover',
                   width: 80,
                   height: 80,
                   borderRadius: '0.5rem',

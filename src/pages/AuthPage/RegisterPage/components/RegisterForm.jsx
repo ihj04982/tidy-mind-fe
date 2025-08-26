@@ -9,24 +9,56 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
+import { useGoogleLogin } from '@react-oauth/google';
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+
+import { clearError, googleLogin, register } from '../../../../features/auth/authSlice';
+import { registerValidater } from '../../../../utils/validater';
 
 export default function RegisterForm() {
   const theme = useTheme();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isLoading, error } = useSelector((state) => state.auth);
 
+  // form 데이터
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const isLoading = false; // 필요 시 로딩 상태 연결
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  // 에러 메시지
+  const [errors, setErrors] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Register');
+    const isValid = registerValidater({ name, email, password, confirmPassword, setErrors });
+    if (!isValid) return;
+    const response = await dispatch(register({ name, email, password }));
+    if (register.fulfilled.match(response)) {
+      dispatch(clearError());
+      navigate('/login');
+    }
   };
 
-  const handleGoogleLogin = async () => {
-    console.log('Google login');
-  };
+  const handleGoogleLogin = useGoogleLogin({
+    flow: 'auth-code',
+    onSuccess: async (codeResponse) => {
+      const response = await dispatch(googleLogin({ code: codeResponse.code }));
+
+      if (googleLogin.fulfilled.match(response)) {
+        dispatch(clearError());
+        navigate('/');
+      }
+    },
+  });
 
   return (
     <Card
@@ -73,10 +105,12 @@ export default function RegisterForm() {
             required
             size="small"
             variant="outlined"
+            error={!!errors.name}
+            helperText={errors.name}
           />
           {/* Email */}
           <TextField
-            type="email"
+            type="text"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -86,6 +120,8 @@ export default function RegisterForm() {
             variant="outlined"
             autoComplete="email"
             sx={{ mt: '0.25rem' }}
+            error={!!errors.email}
+            helperText={errors.email}
           />
           {/* Password */}
           <TextField
@@ -98,23 +134,46 @@ export default function RegisterForm() {
             size="small"
             variant="outlined"
             sx={{ mt: '0.25rem' }}
+            error={!!errors.password}
+            helperText={errors.password}
           />
-          <span
-            href="/forgot-password"
-            style={{
-              fontSize: '0.875rem',
-              color: theme.palette.text.secondary,
-            }}
-          >
-            Must be at least 8 characters
-          </span>
+
+          {/* Confirm Password */}
+          <TextField
+            type="password"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            fullWidth
+            required
+            size="small"
+            variant="outlined"
+            sx={{ mt: '0.25rem' }}
+            error={!!errors.confirmPassword}
+            helperText={errors.confirmPassword}
+          />
+
+          {/* Error message */}
+          {error && (
+            <Typography
+              sx={{
+                textAlign: 'center',
+                fontSize: '0.75rem',
+                mt: '0.5rem',
+                fontWeight: 400,
+                color: theme.palette.text.error,
+              }}
+            >
+              {error}
+            </Typography>
+          )}
 
           {/* Submit */}
           <Button
             type="submit"
             variant="contained"
             fullWidth
-            disabled={isLoading || !name || !email || !password}
+            disabled={isLoading || !name || !email || !password || !confirmPassword}
             sx={{
               mt: '1rem',
               height: '2rem',
@@ -185,12 +244,13 @@ export default function RegisterForm() {
         >
           {`Already have an account? `}
           <Link
-            href="/login"
+            component={RouterLink}
+            to="/login"
             underline="none"
             sx={{
               fontWeight: 600,
-              color: theme.palette.text.accent,
-              '&:hover': { color: theme.palette.text.primary },
+              color: 'text.accent',
+              '&:hover': { color: 'text.primary' },
             }}
           >
             Sign in

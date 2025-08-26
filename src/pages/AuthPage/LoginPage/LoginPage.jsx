@@ -1,11 +1,20 @@
 import { Box, Link, Typography, useTheme } from '@mui/material';
 import { MoveLeft } from 'lucide-react';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { Link as RouterLink } from 'react-router-dom';
 
 import LoginForm from './components/LoginForm.jsx';
+import { clearError } from '../../../features/auth/authSlice.js';
 
 export default function LoginPage() {
   const theme = useTheme();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(clearError());
+  }, [dispatch]);
+
   return (
     <Box
       sx={{
@@ -20,7 +29,8 @@ export default function LoginPage() {
       <Box sx={{ width: '100%', maxWidth: 360 }}>
         {/* Back to home */}
         <Link
-          href="/"
+          component={RouterLink}
+          to="/"
           underline="none"
           sx={{
             display: 'inline-flex',
@@ -31,6 +41,7 @@ export default function LoginPage() {
             transition: 'color 0.2s ease',
             '&:hover': { color: theme.palette.text.primary },
           }}
+          onClick={() => dispatch(clearError())}
         >
           <MoveLeft size={15} />
           <Typography component="span" fontSize={12}>

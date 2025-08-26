@@ -7,21 +7,8 @@ export const createNoteWithSuggestion = createAsyncThunk(
   'note/createWithSuggestion',
   async ({ content, images = [] }, { dispatch, rejectWithValue }) => {
     try {
-      // 1. AI 제안 받기
-      const suggestResponse = await api.post('/suggest', { content, images });
-      const suggestion = suggestResponse.data;
-
-      // 2. 제안된 데이터로 노트 데이터 구성
-      const noteData = {
-        title: suggestion.title,
-        content: suggestion.content || content,
-        images: suggestion.images || images,
-        category: suggestion.category,
-        completion: suggestion.completion,
-      };
-
-      // 3. 노트 저장 API 호출
-      const noteResponse = await api.post('/notes', noteData);
+      // AI suggestions과 함께 노트 생성
+      const response = await api.post('/notes/suggest', { content, images });
 
       dispatch(
         showToast({
@@ -30,7 +17,7 @@ export const createNoteWithSuggestion = createAsyncThunk(
         }),
       );
 
-      return noteResponse.data;
+      return response.data;
     } catch (error) {
       if (error.response?.status === 401) {
         const authError = '로그인이 필요합니다. 5초 후 로그인 페이지로 이동합니다.';
@@ -55,11 +42,26 @@ export const createNoteWithSuggestion = createAsyncThunk(
   },
 );
 
+// 유저가 note를 수정 후, 저장 전 새로운 suggestion을 preview 할 수 있는 기능 구현 시 사용 (바로 저장 x)
+export const previewSuggestion = createAsyncThunk(
+  'note/previewSuggestion',
+  async ({ content, images = [] }, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/suggest', { content, images });
+      return response.data;
+    } catch (error) {
+      const errorMessage = extractErrorMessage(error);
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+
 const noteSlice = createSlice({
   name: 'note',
   initialState: {
     notes: [],
     currentNote: null,
+    previewNote: null, // preview용 (저장 전)
     loading: false,
     error: null,
     saveSuccess: false,
@@ -71,8 +73,12 @@ const noteSlice = createSlice({
     clearSaveSuccess: (state) => {
       state.saveSuccess = false;
     },
+    clearPreview: (state) => {
+      state.previewNote = null;
+    },
     resetNoteState: (state) => {
       state.currentNote = null;
+      state.previewNote = null;
       state.error = null;
       state.loading = false;
       state.saveSuccess = false;
@@ -96,9 +102,25 @@ const noteSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
         state.saveSuccess = false;
+      })
+      // suggestion 저장 전 미리보기 기능 구현 시 사용
+      .addCase(previewSuggestion.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.previewNote = null;
+      })
+      .addCase(previewSuggestion.fulfilled, (state, action) => {
+        state.loading = false;
+        state.previewNote = action.payload;
+        state.error = null;
+      })
+      .addCase(previewSuggestion.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.previewNote = null;
       });
   },
 });
 
-export const { clearError, clearSaveSuccess, resetNoteState } = noteSlice.actions;
+export const { clearError, clearSaveSuccess, clearPreview, resetNoteState } = noteSlice.actions;
 export default noteSlice.reducer;

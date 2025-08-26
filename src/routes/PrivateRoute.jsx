@@ -2,11 +2,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, Outlet } from 'react-router-dom';
 
-import LoadingPage from '../layout/LoadingPage.jsx';
-
 const PrivateRoute = () => {
-  const { user, isLoading } = useSelector((state) => state.auth);
-  if (isLoading) return <LoadingPage />;
+  const { user } = useSelector((state) => state.auth);
   return user ? <Outlet /> : <Navigate to="/login" replace />;
 };
 

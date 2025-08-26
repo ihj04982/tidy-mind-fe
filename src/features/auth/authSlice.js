@@ -59,7 +59,7 @@ export const googleLogin = createAsyncThunk(
 export const hydrate = createAsyncThunk('auth/hydrate', async (_, { rejectWithValue }) => {
   try {
     const token = sessionStorage.getItem('token');
-    if (!token) return;
+    if (!token) return { user: null };
     const { data } = await api.get('/auth/hydrate');
 
     return data; // { message, user }

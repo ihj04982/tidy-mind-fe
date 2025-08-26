@@ -2,17 +2,22 @@ import { Button, Drawer, Typography } from '@mui/material';
 import { Box, useTheme } from '@mui/system';
 import { FolderOpen, Calendar, User, Moon, AlignJustify, X, LogOut } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import ProfileMenu from './ProfileMenu.jsx';
 import Logo from '../../assets/logo.png';
+import { logout } from '../../features/auth/authSlice.js';
 
 const TopNavigation = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
+  const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     setOpen(false);
@@ -132,7 +137,7 @@ const TopNavigation = () => {
           <Typography fontSize={'14px'}>Dark Mode</Typography>
         </Button>
         <Button
-          onClick={() => navigate('/login')}
+          onClick={() => navigate(user ? dispatch(logout()) : '/login')}
           sx={{
             display: 'flex',
             justifyContent: 'start',
@@ -147,7 +152,7 @@ const TopNavigation = () => {
           }}
         >
           <LogOut width={16} />
-          <Typography fontSize={'14px'}>Login / Sign Up</Typography>
+          <Typography fontSize={'14px'}>{user ? 'Logout' : 'Login / Sign Up'}</Typography>
         </Button>
       </Box>
     </Box>
@@ -228,18 +233,22 @@ const TopNavigation = () => {
         >
           <Moon color="#737373" size={20} strokeWidth={1.5} />
         </Button>
-        <Button
-          onClick={() => navigate('/login')}
-          disableRipple
-          sx={{
-            minWidth: '48px',
-            height: '48px',
-            padding: 0,
-            borderRadius: '30px',
-          }}
-        >
-          <User color="#737373" size={20} strokeWidth={1.5} />
-        </Button>
+        {user ? (
+          <ProfileMenu />
+        ) : (
+          <Button
+            onClick={() => navigate('/login')}
+            disableRipple
+            sx={{
+              minWidth: '48px',
+              height: '48px',
+              padding: 0,
+              borderRadius: '30px',
+            }}
+          >
+            <User color="#737373" size={20} strokeWidth={1.5} />
+          </Button>
+        )}
       </Box>
     </>
   );

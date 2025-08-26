@@ -4,10 +4,10 @@ import { Navigate, Outlet } from 'react-router-dom';
 
 import LoadingPage from '../layout/LoadingPage.jsx';
 
-const PrivateRoute = () => {
+const PublicRouter = () => {
   const { user, isLoading } = useSelector((state) => state.auth);
   if (isLoading) return <LoadingPage />;
-  return user ? <Outlet /> : <Navigate to="/login" replace />;
+  return user ? <Navigate to="/" replace /> : <Outlet />;
 };
 
-export default PrivateRoute;
+export default PublicRouter;

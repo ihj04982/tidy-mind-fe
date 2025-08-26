@@ -55,16 +55,25 @@ export const googleLogin = createAsyncThunk(
   },
 );
 
+// 유저 복구
+export const hydrate = createAsyncThunk('auth/hydrate', async (_, { rejectWithValue }) => {
+  try {
+    const token = sessionStorage.getItem('token');
+    if (!token) return;
+    const { data } = await api.get('/auth/hydrate');
+
+    return data; // { message, user }
+  } catch (err) {
+    return rejectWithValue(extractErrorMessage(err));
+  }
+});
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
     clearError(state) {
       state.error = null;
-    },
-    // 새로고침 후 저장된 토큰으로 유저 복구
-    hydrateFromStorage(state) {
-      state.token = sessionStorage.getItem('token');
     },
     // 로그아웃
     logout(state) {
@@ -90,6 +99,18 @@ const authSlice = createSlice({
         state.error = action.payload;
       })
 
+      // 유저 복구
+      .addCase(hydrate.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(hydrate.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = action.payload.user;
+      })
+      .addCase(hydrate.rejected, (state) => {
+        state.isLoading = false;
+      })
+
       // 로그인
       .addMatcher(isAnyOf(login.pending, googleLogin.pending), (state) => {
         state.isLoading = true;
@@ -110,5 +131,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { clearError, hydrateFromStorage, logout } = authSlice.actions;
+export const { clearError, logout } = authSlice.actions;
 export default authSlice.reducer;

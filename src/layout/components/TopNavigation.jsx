@@ -44,7 +44,6 @@ const TopNavigation = () => {
     >
       <Box>
         <Box
-          onClick={() => navigate('/')}
           sx={{
             display: 'flex',
             justifyContent: 'space-between',
@@ -54,6 +53,7 @@ const TopNavigation = () => {
           }}
         >
           <Box
+            onClick={() => navigate('/')}
             sx={{
               width: '120px',
               height: '31px',

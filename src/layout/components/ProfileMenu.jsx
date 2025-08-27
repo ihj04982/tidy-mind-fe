@@ -1,4 +1,13 @@
-import { Box, IconButton, ListItemIcon, Menu, MenuItem, Tooltip, Divider } from '@mui/material';
+import {
+  Box,
+  IconButton,
+  ListItemIcon,
+  Menu,
+  MenuItem,
+  Tooltip,
+  Divider,
+  useTheme,
+} from '@mui/material';
 import { LogOut, User } from 'lucide-react';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -6,6 +15,7 @@ import { useDispatch } from 'react-redux';
 import { logout } from '../../features/auth/authSlice';
 
 export default function ProfileMenu() {
+  const theme = useTheme();
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -38,7 +48,7 @@ export default function ProfileMenu() {
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
           >
-            <User color="#737373" size={20} strokeWidth={1.5} />
+            <User color={theme.palette.text.primary} size={20} strokeWidth={1.5} />
           </IconButton>
         </Tooltip>
       </Box>

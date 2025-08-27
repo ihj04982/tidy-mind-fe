@@ -1,6 +1,6 @@
 import { Button, Drawer, Typography } from '@mui/material';
 import { Box, useTheme } from '@mui/system';
-import { FolderOpen, Calendar, User, Moon, AlignJustify, X, LogOut } from 'lucide-react';
+import { FolderOpen, Calendar, User, AlignJustify, X, LogOut } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import ProfileMenu from './ProfileMenu.jsx';
 import Logo from '../../assets/logo.png';
 import { logout } from '../../features/auth/authSlice.js';
+import ThemeToggle from '../../theme/ThemeToggle.jsx';
 
 const TopNavigation = () => {
   const theme = useTheme();
@@ -119,23 +120,7 @@ const TopNavigation = () => {
           borderTop: `1px solid  ${theme.palette.border.default}`,
         }}
       >
-        <Button
-          sx={{
-            display: 'flex',
-            justifyContent: 'start',
-            alignContent: 'center',
-            gap: '0.875rem',
-            color: theme.palette.text.primary,
-            padding: '8px 12px',
-            marginBottom: '0.5rem',
-            fontSize: '14px',
-            height: '3rem',
-            width: '100%',
-          }}
-        >
-          <Moon width={16} />
-          <Typography fontSize={'14px'}>Dark Mode</Typography>
-        </Button>
+        <ThemeToggle variant="drawer" />
         <Button
           onClick={() => navigate(user ? dispatch(logout()) : '/login')}
           sx={{
@@ -222,17 +207,7 @@ const TopNavigation = () => {
           zIndex: 10,
         }}
       >
-        <Button
-          disableRipple
-          sx={{
-            minWidth: '48px',
-            height: '48px',
-            padding: 0,
-            borderRadius: '30px',
-          }}
-        >
-          <Moon color="#737373" size={20} strokeWidth={1.5} />
-        </Button>
+        <ThemeToggle variant="default" />
         {user ? (
           <ProfileMenu />
         ) : (
@@ -246,7 +221,7 @@ const TopNavigation = () => {
               borderRadius: '30px',
             }}
           >
-            <User color="#737373" size={20} strokeWidth={1.5} />
+            <User color={theme.palette.text.primary} size={20} strokeWidth={1.5} />
           </Button>
         )}
       </Box>

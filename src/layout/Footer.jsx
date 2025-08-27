@@ -36,7 +36,8 @@ const Footer = () => {
                 component="img"
                 src={isDarkMode ? LogoLight : LogoDark}
                 sx={{
-                  height: '30px',
+                  mt: '4px',
+                  width: '80px',
                   objectFit: 'contain',
                 }}
               />

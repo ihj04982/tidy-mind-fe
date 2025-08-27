@@ -1,55 +1,27 @@
-import {
-  Box,
-  Typography,
-  Chip,
-  IconButton,
-  TextField,
-  Select,
-  MenuItem,
-  Checkbox,
-  FormControlLabel,
-  Grid,
-  Dialog,
-} from '@mui/material';
+import { Box, Typography, TextField, Dialog, IconButton } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import {
-  ArrowLeft,
-  Edit2,
-  Save,
-  X,
-  Calendar,
-  Trash,
-  Clock,
-  AlertCircle,
-  ZoomIn,
-} from 'lucide-react';
+import { X } from 'lucide-react';
 import React, { useState } from 'react';
 
-import { CATEGORIES } from '../../../constants/note.constants';
-import {
-  formatDate,
-  formatTime,
-  formatDueDate,
-  formatDateForInput,
-} from '../../../utils/dateUtils';
+import NoteAttachments from './NoteAttachments';
+import NoteDetailHeader from './NoteDetailHeader';
+import { useNoteEditor } from '../hooks/useNoteEditor';
 
-const NoteDetail = ({ note, onBack, isMobile, onToggleDone, onDeleteNote }) => {
+const NoteDetail = ({ note, onBack, isMobile, onDeleteNote }) => {
   const theme = useTheme();
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedContent, setEditedContent] = useState(note?.content || '');
-  const [editedTitle, setEditedTitle] = useState(note?.title || '');
-  const [editedCategoryName, setEditedCategoryName] = useState(note?.category?.name || '');
-  const [editedDueDate, setEditedDueDate] = useState(
-    note?.completion?.dueDate ? new Date(note.completion.dueDate) : null,
-  );
-  const [editedIsCompleted, setEditedIsCompleted] = useState(
-    note?.completion?.isCompleted || false,
-  );
-
-  const category = note?.category || null;
-  const hasCompletion = note?.completion !== null;
-
   const [selectedImage, setSelectedImage] = useState(null);
+
+  const {
+    isEditing,
+    draft,
+    setDraft,
+    requiresCompletion,
+    handleEdit,
+    handleSave,
+    handleCancel,
+    handleDeleteImage,
+    handleAddImage,
+  } = useNoteEditor(note);
 
   if (!note) {
     return (
@@ -74,379 +46,83 @@ const NoteDetail = ({ note, onBack, isMobile, onToggleDone, onDeleteNote }) => {
     );
   }
 
-  const handleEdit = () => {
-    setIsEditing(true);
-    setEditedContent(note.content);
-    setEditedTitle(note.title || '');
-    setEditedCategoryName(note.category?.name || '');
-    setEditedDueDate(note.completion?.dueDate ? new Date(note.completion.dueDate) : null);
-    setEditedIsCompleted(note.completion?.isCompleted || false);
-  };
-
-  const handleSave = () => {
-    setIsEditing(false);
-    console.log('Saving with data:', {
-      content: editedContent,
-      title: editedTitle,
-      categoryName: editedCategoryName,
-      dueDate: editedDueDate,
-      isCompleted: editedIsCompleted,
-    });
-  };
-
-  const handleCancel = () => {
-    setIsEditing(false);
-    setEditedContent(note.content);
-    setEditedTitle(note.title || '');
-    setEditedCategoryName(note.category?.name || '');
-    setEditedDueDate(note.completion?.dueDate ? new Date(note.completion.dueDate) : null);
-    setEditedIsCompleted(note.completion?.isCompleted || false);
-  };
-
-  const handleDelete = () => {
-    onDeleteNote(note._id);
-  };
-
-  const handleCheckboxClick = () => {
-    if (onToggleDone && note?.completion) {
-      onToggleDone(note._id, !note.completion?.isCompleted);
-    }
-  };
-
   return (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <Box
-        sx={{
-          padding: 3,
-          borderBottom: `1px solid ${theme.palette.border.default}`,
-          backgroundColor: theme.palette.background.paper,
-        }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: 2,
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            {isMobile && (
-              <IconButton onClick={onBack} size="small">
-                <ArrowLeft size={20} />
-              </IconButton>
-            )}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              {isEditing ? (
-                <TextField
-                  value={editedTitle}
-                  onChange={(e) => setEditedTitle(e.target.value)}
-                  variant="standard"
-                  placeholder="Enter title..."
-                  sx={{
-                    '& .MuiInputBase-input': {
-                      fontSize: '1.5rem',
-                      fontWeight: 500,
-                      color: theme.palette.text.primary,
-                    },
-                  }}
-                />
-              ) : (
-                <Typography variant="h5" sx={{ color: theme.palette.text.primary }}>
-                  {note.title || 'Untitled Note'}
-                </Typography>
-              )}
-            </Box>
-          </Box>
+      <NoteDetailHeader
+        note={note}
+        isEditing={isEditing}
+        draft={draft}
+        setDraft={setDraft}
+        isMobile={isMobile}
+        onBack={onBack}
+        onEdit={handleEdit}
+        onSave={handleSave}
+        onCancel={handleCancel}
+        onDelete={onDeleteNote}
+        requiresCompletion={requiresCompletion}
+      />
 
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-            }}
-          >
-            {!isEditing ? (
-              <>
-                <IconButton onClick={handleDelete} size="small">
-                  <Trash size={18} />
-                </IconButton>
-                <IconButton onClick={handleEdit} size="small">
-                  <Edit2 size={18} />
-                </IconButton>
-              </>
-            ) : (
-              <>
-                <IconButton onClick={handleSave} size="small" color="primary">
-                  <Save size={18} />
-                </IconButton>
-                <IconButton onClick={handleCancel} size="small">
-                  <X size={18} />
-                </IconButton>
-              </>
-            )}
-          </Box>
-        </Box>
-
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 2,
-            flexWrap: 'wrap',
-            overflow: 'auto',
-            '&::-webkit-scrollbar': {
-              display: 'none',
-            },
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none',
-          }}
-        >
-          {isEditing ? (
-            <Select
-              value={editedCategoryName}
-              onChange={(e) => setEditedCategoryName(e.target.value)}
-              size="small"
+      {isEditing ? (
+        <form onSubmit={handleSave} style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+          <Box sx={{ flex: 1, padding: 3, overflow: 'auto', minHeight: 0 }}>
+            <TextField
+              multiline
+              fullWidth
+              value={draft?.content || ''}
+              onChange={(e) => setDraft((prev) => ({ ...prev, content: e.target.value }))}
+              variant="outlined"
+              placeholder="Write your note content..."
               sx={{
-                fontSize: '0.75rem',
-                minWidth: '120px',
-                '& .MuiSelect-select': {
-                  padding: '2px 8px',
+                height: '100%',
+                '& .MuiOutlinedInput-root': {
+                  height: '100%',
+                  alignItems: 'flex-start',
+                },
+                '& .MuiInputBase-input': {
+                  fontSize: '0.875rem',
                 },
               }}
-            >
-              {Object.values(CATEGORIES).map((category) => (
-                <MenuItem key={category.name} value={category.name} sx={{ fontSize: '0.75rem' }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Box
-                      sx={{
-                        width: 8,
-                        height: 8,
-                        borderRadius: '50%',
-                        backgroundColor: category.color,
-                      }}
-                    />
-                    {category.name}
-                  </Box>
-                </MenuItem>
-              ))}
-            </Select>
-          ) : (
-            <Chip
-              label={category?.name || 'Unknown'}
-              size="small"
-              sx={{
-                backgroundColor: category?.color || theme.palette.text.secondary,
-                color: '#FFFFFF',
-                fontSize: '0.75rem',
-                height: '24px',
-              }}
             />
-          )}
-
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-            <Calendar size={14} color={theme.palette.text.secondary} />
-            <Typography
-              variant="body2"
-              sx={{ color: theme.palette.text.secondary, fontSize: '0.75rem' }}
-            >
-              {formatDate(note.createdAt)}
-            </Typography>
           </Box>
-
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-            <Clock size={14} color={theme.palette.text.secondary} />
-            <Typography
-              variant="body2"
-              sx={{ color: theme.palette.text.secondary, fontSize: '0.75rem' }}
-            >
-              {formatTime(note.createdAt)}
-            </Typography>
-          </Box>
-
-          {note.completion && (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <AlertCircle size={14} color={theme.palette.text.secondary} />
-              {isEditing ? (
-                <input
-                  type="date"
-                  value={editedDueDate ? formatDateForInput(editedDueDate) : ''}
-                  onChange={(e) =>
-                    setEditedDueDate(e.target.value ? new Date(e.target.value) : null)
-                  }
-                  style={{
-                    fontSize: '0.75rem',
-                    height: '24px',
-                    border: `1px solid ${theme.palette.border.default}`,
-                    borderRadius: '4px',
-                  }}
-                />
-              ) : (
-                <Typography
-                  variant="body2"
-                  sx={{ color: theme.palette.text.secondary, fontSize: '0.75rem' }}
-                >
-                  {note.completion ? formatDueDate(note.completion.dueDate) : 'No due date'}
-                </Typography>
-              )}
-            </Box>
-          )}
-
-          {hasCompletion && (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              {isEditing ? (
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={editedIsCompleted}
-                      onChange={(e) => setEditedIsCompleted(e.target.checked)}
-                      size="small"
-                      sx={{ padding: 0 }}
-                    />
-                  }
-                  label={
-                    <Typography variant="body2" sx={{ fontSize: '0.75rem' }}>
-                      Done
-                    </Typography>
-                  }
-                  sx={{ margin: 0 }}
-                />
-              ) : (
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                  <Checkbox
-                    checked={note.completion?.isCompleted || false}
-                    onChange={handleCheckboxClick}
-                    size="small"
-                    sx={{ padding: 0 }}
-                  />
-                  <Typography variant="body2" sx={{ fontSize: '0.75rem' }}>
-                    Done
-                  </Typography>
-                </Box>
-              )}
-            </Box>
-          )}
-        </Box>
-      </Box>
-
-      <Box sx={{ flex: 1, padding: 3, overflow: 'auto' }}>
-        {isEditing ? (
+        </form>
+      ) : (
+        <Box sx={{ flex: 1, padding: 3, overflow: 'auto', minHeight: 0 }}>
           <TextField
             multiline
             fullWidth
-            value={editedContent}
-            onChange={(e) => setEditedContent(e.target.value)}
+            value={note.content}
+            readOnly
+            variant="outlined"
             sx={{
+              height: '100%',
+              '& .MuiOutlinedInput-root': {
+                height: '100%',
+                alignItems: 'flex-start',
+                backgroundColor: 'transparent',
+              },
               '& .MuiInputBase-input': {
                 fontSize: '0.875rem',
                 lineHeight: 1.6,
+                color: theme.palette.text.primary,
+              },
+              '& .MuiOutlinedInput-notchedOutline': {
+                border: 'none',
               },
             }}
-            minRows={20}
           />
-        ) : (
-          <Typography
-            variant="body1"
-            sx={{
-              color: theme.palette.text.primary,
-              fontSize: '0.875rem',
-              lineHeight: 1.6,
-              whiteSpace: 'pre-wrap',
-              wordWrap: 'break-word',
-            }}
-          >
-            {note.content}
-          </Typography>
-        )}
-      </Box>
-
-      {note.images.length > 0 && (
-        <>
-          <Typography
-            sx={{
-              borderTop: `1px solid ${theme.palette.border.default}`,
-              paddingTop: 3,
-              paddingInline: 3,
-              color: theme.palette.text.secondary,
-              fontSize: '0.75rem',
-              fontWeight: 600,
-            }}
-          >
-            ATTACHMENTS ({note.images.length})
-          </Typography>
-
-          <Grid
-            container
-            sx={{
-              display: 'flex',
-              justifyContent: 'start',
-              alignItems: 'center',
-              padding: 2,
-            }}
-          >
-            {note.images.map((image, idx) => (
-              <Grid
-                key={idx}
-                size={{ xs: 4, sm: 2.4, md: 4, lg: 2.4 }}
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  padding: 1,
-                }}
-              >
-                <Box
-                  onClick={() => setSelectedImage(image)}
-                  sx={{
-                    position: 'relative',
-                    width: '100px',
-                    height: '100px',
-                    borderRadius: '8px',
-                    overflow: 'hidden',
-                    boxShadow: '1px 1px 3px #00000037',
-                    '&:hover img': { transform: 'scale(1.05)' },
-                    '&:hover .zoom-icon': { opacity: 1 },
-                  }}
-                >
-                  <img
-                    src={image}
-                    alt={`image ${idx}`}
-                    style={{
-                      objectFit: 'cover',
-                      width: '100%',
-                      height: '100%',
-                      cursor: 'pointer',
-                      transition: 'transform 0.3s ease',
-                    }}
-                  />
-
-                  <Box
-                    className="zoom-icon"
-                    sx={{
-                      position: 'absolute',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      width: '100%',
-                      height: '100%',
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                      opacity: 0,
-                      transition: 'opacity 0.3s ease',
-                      color: '#fff',
-                      backgroundColor: 'rgba(0,0,0,0.4)',
-                      padding: '4px',
-                    }}
-                  >
-                    <ZoomIn size={'1.2rem'} />
-                  </Box>
-                </Box>
-              </Grid>
-            ))}
-          </Grid>
-        </>
+        </Box>
       )}
+
+      {(isEditing ? draft?.images || [] : note.images).length > 0 && (
+        <NoteAttachments
+          images={isEditing ? draft?.images || [] : note.images}
+          isEditing={isEditing}
+          onDeleteImage={handleDeleteImage}
+          onImageClick={(img) => setSelectedImage(img)}
+          onAddImage={handleAddImage}
+        />
+      )}
+
       <Dialog open={!!selectedImage} onClose={() => setSelectedImage(null)} maxWidth="lg">
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', p: 2 }}>
           <Box>
@@ -457,9 +133,6 @@ const NoteDetail = ({ note, onBack, isMobile, onToggleDone, onDeleteNote }) => {
                 top: 16,
                 right: 16,
                 color: 'white',
-                '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                },
               }}
             >
               <X size={20} strokeWidth={3} />

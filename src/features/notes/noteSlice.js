@@ -12,7 +12,7 @@ const initialState = {
 // 노트 목록 조회
 export const getNotes = createAsyncThunk(
   'notes/getNotes',
-  async ({ category, isCompleted }, { rejectWithValue }) => {
+  async ({ category, isCompleted }, { dispatch }) => {
     try {
       const params = {};
       if (category) params.category = category;
@@ -21,63 +21,66 @@ export const getNotes = createAsyncThunk(
       const { data } = await api.get('/notes', { params });
       return data.notes;
     } catch (error) {
-      return rejectWithValue(extractErrorMessage(error));
+      const errorMessage = extractErrorMessage(error);
+      dispatch(showToast({ message: errorMessage, severity: 'error' }));
+      throw error;
     }
   },
 );
 
 // 노트 상세 조회
-export const getNote = createAsyncThunk('notes/getNote', async (noteId, { rejectWithValue }) => {
+export const getNote = createAsyncThunk('notes/getNote', async (noteId, { dispatch }) => {
   try {
     const { data } = await api.get(`/notes/${noteId}`);
     return data.note;
   } catch (error) {
-    return rejectWithValue(extractErrorMessage(error));
+    const errorMessage = extractErrorMessage(error);
+    dispatch(showToast({ message: errorMessage, severity: 'error' }));
+    throw error;
   }
 });
 
 // 노트 생성
-export const createNote = createAsyncThunk(
-  'notes/createNote',
-  async (noteData, { rejectWithValue }) => {
-    try {
-      const { data } = await api.post('/notes', noteData);
-      return data.note;
-    } catch (error) {
-      return rejectWithValue(extractErrorMessage(error));
-    }
-  },
-);
+export const createNote = createAsyncThunk('notes/createNote', async (noteData, { dispatch }) => {
+  try {
+    const { data } = await api.post('/notes', noteData);
+    dispatch(showToast({ message: data.message, severity: 'success' }));
+    return data.note;
+  } catch (error) {
+    const errorMessage = extractErrorMessage(error);
+    dispatch(showToast({ message: errorMessage, severity: 'error' }));
+    throw error;
+  }
+});
 
 // 노트 수정
 export const updateNote = createAsyncThunk(
   'notes/updateNote',
-  async ({ noteId, noteData }, { rejectWithValue, dispatch }) => {
+  async ({ noteId, noteData }, { dispatch }) => {
     try {
       const { data } = await api.put(`/notes/${noteId}`, noteData);
-      dispatch(showToast({ message: '노트가 성공적으로 저장되었습니다!', severity: 'success' }));
+      dispatch(showToast({ message: data.message, severity: 'success' }));
       return data.note;
     } catch (error) {
-      dispatch(showToast({ message: '노트 저장 중 오류가 발생했습니다.', severity: 'error' }));
-      return rejectWithValue(extractErrorMessage(error));
+      const errorMessage = extractErrorMessage(error);
+      dispatch(showToast({ message: errorMessage, severity: 'error' }));
+      throw error;
     }
   },
 );
 
 // 노트 삭제
-export const deleteNote = createAsyncThunk(
-  'notes/deleteNote',
-  async (noteId, { rejectWithValue, dispatch }) => {
-    try {
-      await api.delete(`/notes/${noteId}`);
-      dispatch(showToast({ message: '노트가 삭제되었습니다.', severity: 'success' }));
-      return noteId;
-    } catch (error) {
-      dispatch(showToast({ message: '노트 삭제 중 오류가 발생했습니다.', severity: 'error' }));
-      return rejectWithValue(extractErrorMessage(error));
-    }
-  },
-);
+export const deleteNote = createAsyncThunk('notes/deleteNote', async (noteId, { dispatch }) => {
+  try {
+    const { data } = await api.delete(`/notes/${noteId}`);
+    dispatch(showToast({ message: data.message, severity: 'success' }));
+    return noteId;
+  } catch (error) {
+    const errorMessage = extractErrorMessage(error);
+    dispatch(showToast({ message: errorMessage, severity: 'error' }));
+    throw error;
+  }
+});
 
 const noteSlice = createSlice({
   name: 'notes',
@@ -91,16 +94,6 @@ const noteSlice = createSlice({
     },
     clearSelectedNote(state) {
       state.selectedNote = null;
-    },
-    updateNoteInList(state, action) {
-      const updatedNote = action.payload;
-      const index = state.notes.findIndex((note) => note._id === updatedNote._id);
-      if (index !== -1) {
-        state.notes[index] = updatedNote;
-      }
-      if (state.selectedNote?._id === updatedNote._id) {
-        state.selectedNote = updatedNote;
-      }
     },
   },
   extraReducers: (builder) => {
@@ -179,6 +172,5 @@ const noteSlice = createSlice({
   },
 });
 
-export const { clearError, setSelectedNote, clearSelectedNote, updateNoteInList } =
-  noteSlice.actions;
+export const { clearError, setSelectedNote, clearSelectedNote } = noteSlice.actions;
 export default noteSlice.reducer;

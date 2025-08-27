@@ -7,7 +7,7 @@ import NoteAttachments from './NoteAttachments';
 import NoteDetailHeader from './NoteDetailHeader';
 import { useNoteEditor } from '../hooks/useNoteEditor';
 
-const NoteDetail = ({ note, onBack, isMobile, onDeleteNote }) => {
+const NoteDetail = ({ note, onBack, isMobile, onDeleteNote, onToggleDone }) => {
   const theme = useTheme();
   const [selectedImage, setSelectedImage] = useState(null);
 
@@ -48,22 +48,22 @@ const NoteDetail = ({ note, onBack, isMobile, onDeleteNote }) => {
 
   return (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <NoteDetailHeader
-        note={note}
-        isEditing={isEditing}
-        draft={draft}
-        setDraft={setDraft}
-        isMobile={isMobile}
-        onBack={onBack}
-        onEdit={handleEdit}
-        onSave={handleSave}
-        onCancel={handleCancel}
-        onDelete={onDeleteNote}
-        requiresCompletion={requiresCompletion}
-      />
-
       {isEditing ? (
         <form onSubmit={handleSave} style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+          <NoteDetailHeader
+            note={note}
+            isEditing={isEditing}
+            draft={draft}
+            setDraft={setDraft}
+            isMobile={isMobile}
+            onBack={onBack}
+            onEdit={handleEdit}
+            onCancel={handleCancel}
+            onDelete={onDeleteNote}
+            onToggleDone={onToggleDone}
+            requiresCompletion={requiresCompletion}
+          />
+
           <Box sx={{ flex: 1, padding: 3, overflow: 'auto', minHeight: 0 }}>
             <TextField
               multiline
@@ -84,43 +84,70 @@ const NoteDetail = ({ note, onBack, isMobile, onDeleteNote }) => {
               }}
             />
           </Box>
+
+          {(isEditing ? draft?.images || [] : note.images).length > 0 && (
+            <NoteAttachments
+              images={isEditing ? draft?.images || [] : note.images}
+              isEditing={isEditing}
+              onDeleteImage={handleDeleteImage}
+              onImageClick={(img) => setSelectedImage(img)}
+              onAddImage={handleAddImage}
+            />
+          )}
         </form>
       ) : (
-        <Box sx={{ flex: 1, padding: 3, overflow: 'auto', minHeight: 0 }}>
-          <TextField
-            multiline
-            fullWidth
-            value={note.content}
-            readOnly
-            variant="outlined"
-            sx={{
-              height: '100%',
-              '& .MuiOutlinedInput-root': {
-                height: '100%',
-                alignItems: 'flex-start',
-                backgroundColor: 'transparent',
-              },
-              '& .MuiInputBase-input': {
-                fontSize: '0.875rem',
-                lineHeight: 1.6,
-                color: theme.palette.text.primary,
-              },
-              '& .MuiOutlinedInput-notchedOutline': {
-                border: 'none',
-              },
-            }}
+        <>
+          <NoteDetailHeader
+            note={note}
+            isEditing={isEditing}
+            draft={draft}
+            setDraft={setDraft}
+            isMobile={isMobile}
+            onBack={onBack}
+            onEdit={handleEdit}
+            onSave={handleSave}
+            onCancel={handleCancel}
+            onDelete={onDeleteNote}
+            onToggleDone={onToggleDone}
+            requiresCompletion={requiresCompletion}
           />
-        </Box>
-      )}
 
-      {(isEditing ? draft?.images || [] : note.images).length > 0 && (
-        <NoteAttachments
-          images={isEditing ? draft?.images || [] : note.images}
-          isEditing={isEditing}
-          onDeleteImage={handleDeleteImage}
-          onImageClick={(img) => setSelectedImage(img)}
-          onAddImage={handleAddImage}
-        />
+          <Box sx={{ flex: 1, padding: 3, overflow: 'auto', minHeight: 0 }}>
+            <TextField
+              multiline
+              fullWidth
+              value={note.content}
+              readOnly
+              variant="outlined"
+              sx={{
+                height: '100%',
+                '& .MuiOutlinedInput-root': {
+                  height: '100%',
+                  alignItems: 'flex-start',
+                  backgroundColor: 'transparent',
+                },
+                '& .MuiInputBase-input': {
+                  fontSize: '0.875rem',
+                  lineHeight: 1.6,
+                  color: theme.palette.text.primary,
+                },
+                '& .MuiOutlinedInput-notchedOutline': {
+                  border: 'none',
+                },
+              }}
+            />
+          </Box>
+
+          {(isEditing ? draft?.images || [] : note.images).length > 0 && (
+            <NoteAttachments
+              images={isEditing ? draft?.images || [] : note.images}
+              isEditing={isEditing}
+              onDeleteImage={handleDeleteImage}
+              onImageClick={(img) => setSelectedImage(img)}
+              onAddImage={handleAddImage}
+            />
+          )}
+        </>
       )}
 
       <Dialog open={!!selectedImage} onClose={() => setSelectedImage(null)} maxWidth="lg">

@@ -24,9 +24,9 @@ const NoteDetailHeader = ({
   isMobile,
   onBack,
   onEdit,
-  onSave,
   onCancel,
   onDelete,
+  onToggleDone,
   requiresCompletion,
 }) => {
   const theme = useTheme();
@@ -50,6 +50,8 @@ const NoteDetailHeader = ({
   const handleIsCompletedChange = (e) => {
     if (isEditing) {
       setDraft((prev) => ({ ...prev, isCompleted: e.target.checked }));
+    } else if (onToggleDone) {
+      onToggleDone(note._id, e.target.checked);
     }
   };
 
@@ -116,7 +118,7 @@ const NoteDetailHeader = ({
             </>
           ) : (
             <>
-              <IconButton onClick={onSave} size="small" color="primary">
+              <IconButton type="submit" size="small" color="primary">
                 <Save size={18} />
               </IconButton>
               <IconButton onClick={onCancel} size="small">

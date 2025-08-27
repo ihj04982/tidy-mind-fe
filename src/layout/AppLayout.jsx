@@ -5,37 +5,41 @@ import { Outlet } from 'react-router-dom';
 import LeftNavigation from './components/LeftNavigation.jsx';
 import TopNavigation from './components/TopNavigation.jsx';
 import Footer from './Footer.jsx';
+import ToastMessage from '../features/toast/ToastMessage.jsx';
 
 const AppLayout = () => {
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-      <LeftNavigation />
-      <Box
-        sx={{
-          position: 'relative',
-          marginLeft: { xs: 0, md: '80px' },
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          backgroundColor: 'transparent',
-        }}
-      >
-        <TopNavigation />
-
+    <>
+      <ToastMessage />
+      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+        <LeftNavigation />
         <Box
           sx={{
+            position: 'relative',
+            marginLeft: { xs: 0, md: '80px' },
+            flex: 1,
             display: 'flex',
             flexDirection: 'column',
-            minHeight: 0,
-            flex: 1,
-            overflow: 'hidden',
+            backgroundColor: 'transparent',
           }}
         >
-          <Outlet />
+          <TopNavigation />
+
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              minHeight: 0,
+              flex: 1,
+              overflow: 'hidden',
+            }}
+          >
+            <Outlet />
+          </Box>
+          <Footer />
         </Box>
-        <Footer />
       </Box>
-    </Box>
+    </>
   );
 };
 

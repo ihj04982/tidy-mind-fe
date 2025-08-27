@@ -1,65 +1,60 @@
 import { Container, Grid, Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import NoteDetail from './components/NoteDetail';
 import NoteList from './components/NoteList';
-import { mockNotes } from '../../constants/note.constants';
+import {
+  getNotes,
+  setSelectedNote,
+  clearSelectedNote,
+  updateNote,
+  deleteNote,
+} from '../../features/notes/noteSlice';
 
 const CollectionPage = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const [selectedNote, setSelectedNote] = useState(mockNotes[0]);
-  const [filteredNotes, setFilteredNotes] = useState(mockNotes);
+  const dispatch = useDispatch();
+
+  const { notes, selectedNote } = useSelector((state) => state.notes);
+  const [currentCategory, setCurrentCategory] = useState('all');
+
+  useEffect(() => {
+    const params = currentCategory === 'all' ? {} : { category: currentCategory };
+    dispatch(getNotes(params));
+  }, [dispatch, currentCategory]);
 
   const handleNoteSelect = (note) => {
-    setSelectedNote(note);
+    dispatch(setSelectedNote(note));
   };
 
   const handleCategoryFilter = (categoryName) => {
-    if (categoryName === 'all') {
-      setFilteredNotes(mockNotes);
-    } else {
-      setFilteredNotes(mockNotes.filter((note) => note.category.name === categoryName));
-    }
+    setCurrentCategory(categoryName);
   };
 
   const handleToggleDone = (noteId, isCompleted) => {
-    setFilteredNotes((prev) =>
-      prev.map((note) =>
-        note._id === noteId
-          ? {
-              ...note,
-              completion: note.completion
-                ? {
-                    ...note.completion,
-                    isCompleted,
-                  }
-                : null,
-            }
-          : note,
-      ),
-    );
+    const note = notes.find((n) => n._id === noteId);
+    if (!note) return;
 
-    if (selectedNote?._id === noteId) {
-      setSelectedNote((prev) => ({
-        ...prev,
-        completion: prev.completion
-          ? {
-              ...prev.completion,
-              isCompleted,
-            }
-          : null,
-      }));
-    }
+    const updatedNote = {
+      ...note,
+      completion: note.completion
+        ? {
+            ...note.completion,
+            isCompleted,
+          }
+        : null,
+    };
 
-    console.log(`Note ${noteId} completion status changed to: ${isCompleted}`);
+    dispatch(updateNote({ noteId, noteData: updatedNote }));
   };
 
   const handleDeleteNote = (noteId) => {
-    setFilteredNotes((prev) => prev.filter((note) => note._id !== noteId));
-    setSelectedNote(null);
+    dispatch(deleteNote(noteId));
+    dispatch(clearSelectedNote());
   };
 
   return (
@@ -99,7 +94,7 @@ const CollectionPage = () => {
           >
             <NoteDetail
               note={selectedNote}
-              onBack={() => setSelectedNote(null)}
+              onBack={() => dispatch(clearSelectedNote())}
               isMobile={isMobile}
               onToggleDone={handleToggleDone}
               onDeleteNote={handleDeleteNote}
@@ -130,12 +125,13 @@ const CollectionPage = () => {
             }}
           >
             <NoteList
-              notes={filteredNotes}
+              notes={notes}
               selectedNote={selectedNote}
               onNoteSelect={handleNoteSelect}
               onCategoryFilter={handleCategoryFilter}
               onToggleDone={handleToggleDone}
               onDeleteNote={handleDeleteNote}
+              currentCategory={currentCategory}
             />
           </Paper>
         </Grid>

@@ -1,6 +1,6 @@
 import { Box, Typography, Stack, Button } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import React, { useState } from 'react';
+import React from 'react';
 
 import NoteCard from './NoteCard';
 import { CATEGORIES } from '../../../constants/note.constants';
@@ -13,13 +13,12 @@ const NoteList = ({
   onCategoryFilter,
   onToggleDone,
   onDeleteNote,
+  currentCategory = 'all',
 }) => {
   const theme = useTheme();
-  const [selectedCategory, setSelectedCategory] = useState('all');
   const groupedNotes = groupNotesByDate(notes);
 
   const handleCategoryClick = (categoryName) => {
-    setSelectedCategory(categoryName);
     onCategoryFilter(categoryName);
   };
 
@@ -38,23 +37,23 @@ const NoteList = ({
 
         <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
           <Button
-            variant={selectedCategory === 'all' ? 'contained' : 'outlined'}
+            variant={currentCategory === 'all' ? 'contained' : 'outlined'}
             onClick={() => handleCategoryClick('all')}
             size="small"
             color="inherit"
             sx={{
               fontSize: '0.75rem',
               backgroundColor:
-                selectedCategory === 'all' ? theme.palette.text.secondary : 'transparent',
-              color: selectedCategory === 'all' ? '#FFFFFF' : theme.palette.text.secondary,
-              fontWeight: selectedCategory === 'all' ? 600 : 400,
+                currentCategory === 'all' ? theme.palette.text.secondary : 'transparent',
+              color: currentCategory === 'all' ? 'white' : theme.palette.text.secondary,
+              fontWeight: currentCategory === 'all' ? 600 : 400,
               borderRadius: '14px',
             }}
           >
             All
           </Button>
           {Object.values(CATEGORIES).map((category) => {
-            const isSelected = selectedCategory === category.name;
+            const isSelected = currentCategory === category.name;
             return (
               <Button
                 key={category.name}
@@ -65,7 +64,7 @@ const NoteList = ({
                 sx={{
                   fontSize: '0.75rem',
                   backgroundColor: isSelected ? category.color : 'transparent',
-                  color: isSelected ? '#FFFFFF' : category.color,
+                  color: isSelected ? 'white' : category.color,
                   borderColor: category.color,
                   fontWeight: isSelected ? 600 : 400,
                   borderRadius: '14px',

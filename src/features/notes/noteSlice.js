@@ -72,18 +72,8 @@ export const createNoteWithSuggestion = createAsyncThunk(
         }),
       );
 
-      return response.data.note; // Note 객체만 반환
+      return response.data.note;
     } catch (error) {
-      if (error.response?.status === 401) {
-        const authError = '로그인이 필요합니다. 5초 후 로그인 페이지로 이동합니다.';
-        dispatch(
-          showToast({
-            message: authError,
-            severity: 'warning',
-          }),
-        );
-        return rejectWithValue(authError);
-      }
       const errorMessage = extractErrorMessage(error);
       dispatch(
         showToast({

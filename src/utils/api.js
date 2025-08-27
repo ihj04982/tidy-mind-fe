@@ -19,6 +19,13 @@ api.interceptors.request.use((request) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // 401 인증 에러 중앙 처리
+    if (error.response?.status === 401) {
+      sessionStorage.removeItem('token');
+      if (!window.location.pathname.includes('/login')) {
+        window.location.href = '/login';
+      }
+    }
     return Promise.reject(error);
   },
 );

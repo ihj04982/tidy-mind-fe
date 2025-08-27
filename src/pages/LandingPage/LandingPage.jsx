@@ -16,7 +16,7 @@ const LandingPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { loading: isSaving, error } = useSelector((state) => state.notes);
+  const { loading: isSaving } = useSelector((state) => state.notes);
 
   const {
     transcript,
@@ -39,14 +39,7 @@ const LandingPage = () => {
     }
   }, [transcript]);
 
-  useEffect(() => {
-    if (error && error.includes('로그인')) {
-      const timer = setTimeout(() => {
-        window.location.href = '/login';
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [error]);
+  // Authentication is handled by backend/interceptor - no client-side redirects
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);

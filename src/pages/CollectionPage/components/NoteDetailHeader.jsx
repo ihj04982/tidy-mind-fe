@@ -43,7 +43,7 @@ const NoteDetailHeader = ({
   const handleDueDateChange = (e) => {
     setDraft((prev) => ({
       ...prev,
-      dueDate: e.target.value ? new Date(e.target.value) : null,
+      dueDate: e.target.value ? new Date(`${e.target.value}T00:00:00`) : null,
     }));
   };
 

@@ -151,9 +151,17 @@ const TopNavigation = () => {
           justifyContent: 'end',
           alignItems: 'center',
           position: 'fixed',
-          backgroundColor: hasScrolled ? '#e5ebf98d' : theme.palette.background.default,
-          boxShadow: hasScrolled ? '0px 0px 10px rgba(68, 68, 68, 0.3)' : 0,
-          backdropFilter: hasScrolled ? 'blur(6px)' : 0,
+          backgroundColor: hasScrolled
+            ? theme.palette.mode === 'dark'
+              ? `${theme.palette.background.paper}B3`
+              : `${theme.palette.background.default}8C`
+            : theme.palette.background.default,
+          boxShadow: hasScrolled
+            ? `0px 0px 10px ${
+                theme.palette.mode === 'dark' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.15)'
+              }`
+            : 0,
+          backdropFilter: hasScrolled ? 'blur(10px)' : 0,
           zIndex: 111,
           left: 0,
           right: 0,
@@ -194,9 +202,17 @@ const TopNavigation = () => {
           top: 0,
           left: 0,
           right: 0,
-          backgroundColor: hasScrolled ? '#e5ebf98d' : theme.palette.background.default,
-          boxShadow: hasScrolled ? '0px 0px 10px rgba(68, 68, 68, 0.3)' : 0,
-          backdropFilter: hasScrolled ? 'blur(6px)' : 0,
+          backgroundColor: hasScrolled
+            ? theme.palette.mode === 'dark'
+              ? `${theme.palette.background.paper}B3` // 70% opacity
+              : `${theme.palette.background.default}8C` // 55% opacity
+            : theme.palette.background.default,
+          boxShadow: hasScrolled
+            ? `0px 0px 10px ${
+                theme.palette.mode === 'dark' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.15)'
+              }`
+            : 0,
+          backdropFilter: hasScrolled ? 'blur(10px)' : 0,
           display: { xs: 'none', md: 'flex' },
           alignItems: 'center',
           justifyContent: 'end',

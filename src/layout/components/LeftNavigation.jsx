@@ -1,4 +1,4 @@
-import { Button, useTheme } from '@mui/material';
+import { Button, Tooltip, useTheme } from '@mui/material';
 import { Box } from '@mui/system';
 import { FolderOpen, Calendar } from 'lucide-react';
 import React from 'react';
@@ -42,20 +42,60 @@ const LeftNavigation = () => {
           cursor: 'pointer',
         }}
       />
-      <Button
-        disableRipple
-        onClick={() => navigate('/collections')}
-        sx={{ padding: 0, color: theme.palette.text.primary }}
+      <Tooltip
+        title="Collections"
+        placement="right"
+        arrow
+        sx={{
+          '& .MuiTooltip-tooltip': {
+            backgroundColor:
+              theme.palette.mode === 'dark' ? theme.palette.grey[800] : theme.palette.grey[700],
+            color: theme.palette.common.white,
+            padding: '6px 12px',
+            borderRadius: '6px',
+          },
+          '& .MuiTooltip-arrow': {
+            color:
+              theme.palette.mode === 'dark' ? theme.palette.grey[800] : theme.palette.grey[700],
+          },
+        }}
       >
-        <FolderOpen width={23} cursor={'pointer'} />
-      </Button>
-      <Button
-        disableRipple
-        onClick={() => navigate('/calendar')}
-        sx={{ padding: 0, color: theme.palette.text.primary }}
+        <Button
+          disableRipple
+          onClick={() => navigate('/collections')}
+          sx={{ padding: 0, color: theme.palette.text.primary }}
+        >
+          <FolderOpen width={23} cursor={'pointer'} />
+        </Button>
+      </Tooltip>
+      <Tooltip
+        title="Calendar"
+        placement="right"
+        arrow
+        sx={{
+          '& .MuiTooltip-tooltip': {
+            backgroundColor:
+              theme.palette.mode === 'dark' ? theme.palette.grey[800] : theme.palette.grey[700],
+            color: theme.palette.common.white,
+            fontSize: '12px',
+            fontWeight: 500,
+            padding: '6px 12px',
+            borderRadius: '6px',
+          },
+          '& .MuiTooltip-arrow': {
+            color:
+              theme.palette.mode === 'dark' ? theme.palette.grey[800] : theme.palette.grey[700],
+          },
+        }}
       >
-        <Calendar width={23} cursor={'pointer'} />
-      </Button>
+        <Button
+          disableRipple
+          onClick={() => navigate('/calendar')}
+          sx={{ padding: 0, color: theme.palette.text.primary }}
+        >
+          <Calendar width={23} cursor={'pointer'} />
+        </Button>
+      </Tooltip>
     </Box>
   );
 };

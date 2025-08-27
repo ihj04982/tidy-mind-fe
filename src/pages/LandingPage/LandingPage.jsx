@@ -248,7 +248,8 @@ const LandingPage = () => {
           height: '120px',
           width: { xs: '80%', md: '60%', lg: '55%', xl: '45%' },
           border: `1px solid ${listening ? theme.palette.text.accent : 'transparent'}`,
-          backgroundColor: '#f3f5fd',
+          backgroundColor:
+            theme.palette.mode === 'dark' ? theme.palette.background.paper : '#f3f5fd',
           borderRadius: 8,
           overflow: 'hidden',
           padding: '16px 92px 48px 24px',
@@ -331,10 +332,12 @@ const LandingPage = () => {
                 backgroundColor: 'transparent',
               },
               '&::-webkit-scrollbar-thumb': {
-                backgroundColor: '#d1d5db',
+                backgroundColor:
+                  theme.palette.mode === 'dark' ? theme.palette.border.default : '#d1d5db',
                 borderRadius: '3px',
                 '&:hover': {
-                  backgroundColor: '#9ca3af',
+                  backgroundColor:
+                    theme.palette.mode === 'dark' ? theme.palette.border.strong : '#9ca3af',
                 },
               },
             },

@@ -4,11 +4,13 @@ import { FolderOpen, Calendar } from 'lucide-react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import Logo from '../../assets/logo.png';
+import LogoDark from '../../assets/logo.png';
+import LogoLight from '../../assets/tm_side_white.png';
 
 const LeftNavigation = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const isDarkMode = theme.palette.mode === 'dark';
 
   return (
     <Box
@@ -31,7 +33,7 @@ const LeftNavigation = () => {
       <Box
         onClick={() => navigate('/')}
         component="img"
-        src={Logo}
+        src={isDarkMode ? LogoLight : LogoDark}
         alt="logo"
         sx={{
           width: 24,

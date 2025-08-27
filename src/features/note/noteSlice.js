@@ -13,7 +13,7 @@ export const createNoteWithSuggestion = createAsyncThunk(
       dispatch(
         showToast({
           message: '노트가 성공적으로 저장되었습니다!',
-          status: 'success',
+          severity: 'success',
         }),
       );
 
@@ -24,7 +24,7 @@ export const createNoteWithSuggestion = createAsyncThunk(
         dispatch(
           showToast({
             message: authError,
-            status: 'warning',
+            severity: 'warning',
           }),
         );
         return rejectWithValue(authError);
@@ -33,7 +33,7 @@ export const createNoteWithSuggestion = createAsyncThunk(
       dispatch(
         showToast({
           message: errorMessage,
-          status: 'error',
+          severity: 'error',
         }),
       );
 

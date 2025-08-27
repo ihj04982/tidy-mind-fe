@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { createNoteWithSuggestion } from '../../features/note/noteSlice';
+import { createNoteWithSuggestion } from '../../features/notes/noteSlice';
 import { toastCleared } from '../../features/toast/toastSlice';
 import useSpeechToText from '../../hooks/useSpeechToText';
 import CloudinaryUploadWidget from '../../utils/CloudinaryUploadWidget';
@@ -16,7 +16,7 @@ const LandingPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { loading: isSaving, error } = useSelector((state) => state.note);
+  const { loading: isSaving, error } = useSelector((state) => state.notes);
 
   const {
     transcript,

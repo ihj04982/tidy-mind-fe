@@ -62,12 +62,11 @@ export const createNoteWithSuggestion = createAsyncThunk(
   'notes/createWithSuggestion',
   async ({ content, images = [] }, { dispatch, rejectWithValue }) => {
     try {
-      // AI suggestions과 함께 노트 생성
       const response = await api.post('/notes/suggest', { content, images });
 
       dispatch(
         showToast({
-          message: '노트가 성공적으로 저장되었습니다!',
+          message: response.data.message,
           severity: 'success',
         }),
       );

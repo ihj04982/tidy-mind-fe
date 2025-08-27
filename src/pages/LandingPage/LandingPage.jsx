@@ -39,8 +39,6 @@ const LandingPage = () => {
     }
   }, [transcript]);
 
-  // Authentication is handled by backend/interceptor - no client-side redirects
-
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };

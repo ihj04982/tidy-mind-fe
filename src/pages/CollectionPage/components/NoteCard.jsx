@@ -59,8 +59,6 @@ const NoteCard = ({ note, isSelected, onSelect, onToggleDone, onDeleteNote }) =>
             <Typography
               variant="subtitle2"
               sx={{
-                color: theme.palette.text.primary,
-                fontWeight: 500,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',

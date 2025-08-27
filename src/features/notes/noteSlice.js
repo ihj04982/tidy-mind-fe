@@ -72,7 +72,7 @@ export const createNoteWithSuggestion = createAsyncThunk(
         }),
       );
 
-      return response.data;
+      return response.data.note; // Note 객체만 반환
     } catch (error) {
       if (error.response?.status === 401) {
         const authError = '로그인이 필요합니다. 5초 후 로그인 페이지로 이동합니다.';
@@ -214,9 +214,9 @@ const noteSlice = createSlice({
       })
       .addCase(createNoteWithSuggestion.fulfilled, (state, action) => {
         state.loading = false;
-        state.currentNote = action.payload.note || action.payload; // 생성된 노트를 현재 노트로 설정
-        if (action.payload.note || action.payload) {
-          state.notes.unshift(action.payload.note || action.payload); // 노트 목록 맨 앞에 추가
+        state.currentNote = action.payload; // 생성된 노트를 현재 노트로 설정
+        if (action.payload) {
+          state.notes.unshift(action.payload); // 노트 목록 맨 앞에 추가
         }
         state.saveSuccess = true;
         state.error = null;

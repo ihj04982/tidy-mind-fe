@@ -12,23 +12,7 @@ const initialState = {
   isLoadingDetail: false,
 };
 
-const SELECTED_NOTE_ID_KEY = 'selectedNoteId';
-
-const getPersistedSelectedNoteId = () => sessionStorage.getItem(SELECTED_NOTE_ID_KEY);
-
-const saveSelectedNoteIdToSession = (note) => {
-  if (note?._id) {
-    sessionStorage.setItem(SELECTED_NOTE_ID_KEY, note._id);
-  } else {
-    sessionStorage.removeItem(SELECTED_NOTE_ID_KEY);
-  }
-};
-
 const selectInitialSelectedNote = (notes) => {
-  const persistedSelectedNoteId = getPersistedSelectedNoteId();
-  if (persistedSelectedNoteId) {
-    return null;
-  }
   return notes[0] || null;
 };
 
@@ -42,11 +26,6 @@ export const getNotes = createAsyncThunk(
       if (isCompleted !== undefined) params.isCompleted = isCompleted;
 
       const { data } = await api.get('/notes', { params });
-
-      const persistedSelectedNoteId = getPersistedSelectedNoteId();
-      if (persistedSelectedNoteId) {
-        dispatch(getNote(persistedSelectedNoteId));
-      }
 
       return data.notes;
     } catch (error) {
@@ -133,11 +112,9 @@ const noteSlice = createSlice({
     },
     setSelectedNote(state, action) {
       state.selectedNote = action.payload;
-      saveSelectedNoteIdToSession(action.payload);
     },
     clearSelectedNote(state) {
       state.selectedNote = null;
-      saveSelectedNoteIdToSession(null);
     },
   },
   extraReducers: (builder) => {
@@ -152,7 +129,6 @@ const noteSlice = createSlice({
         state.notes = action.payload;
         state.isLoadingList = false;
         state.selectedNote = selectInitialSelectedNote(state.notes);
-        saveSelectedNoteIdToSession(state.selectedNote);
       })
       .addCase(getNotes.rejected, (state, action) => {
         state.error = action.payload;
@@ -193,7 +169,15 @@ const noteSlice = createSlice({
       })
       .addCase(updateNote.fulfilled, (state, action) => {
         state.error = null;
-        state.selectedNote = action.payload;
+        const updatedNote = action.payload;
+
+        state.notes = state.notes.map((note) =>
+          note._id === updatedNote._id ? updatedNote : note,
+        );
+
+        if (state.selectedNote?._id === updatedNote._id) {
+          state.selectedNote = updatedNote;
+        }
       })
       .addCase(updateNote.rejected, (state, action) => {
         state.error = action.payload;

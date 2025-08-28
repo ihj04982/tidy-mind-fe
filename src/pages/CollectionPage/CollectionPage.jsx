@@ -44,7 +44,6 @@ const CollectionPage = () => {
         noteData: {
           completion: {
             isCompleted,
-            completedAt: isCompleted ? new Date() : null,
           },
         },
       }),

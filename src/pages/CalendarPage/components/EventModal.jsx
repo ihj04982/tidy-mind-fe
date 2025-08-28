@@ -52,8 +52,7 @@ const EventModal = ({ open, onClose, event, onStatusChange }) => {
             id="event-modal-title"
             variant="h5"
             sx={{
-              fontFamily: '"playfair-display", serif',
-              fontWeight: 400,
+              fontWeight: 600,
               color: theme.palette.text.primary,
               flex: 1,
               pr: 2,

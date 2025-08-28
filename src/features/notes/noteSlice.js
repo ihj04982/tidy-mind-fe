@@ -5,6 +5,7 @@ import { showToast } from '../toast/toastSlice';
 
 const initialState = {
   notes: [],
+  status: { monthlyNotes: [], dailyCounts: [], total: 0 },
   selectedNote: null,
   error: null,
   isLoadingList: false,
@@ -110,6 +111,19 @@ export const deleteNote = createAsyncThunk('notes/deleteNote', async (noteId, { 
   }
 });
 
+// Completed Task, Reminder
+export const getStatus = createAsyncThunk('notes/getStatus', async (query, { dispatch }) => {
+  try {
+    const response = await api.get('/notes/status', { params: { ...query } });
+
+    return response.data.data;
+  } catch (error) {
+    const errorMessage = extractErrorMessage(error);
+    dispatch(showToast({ message: errorMessage, severity: 'error' }));
+    throw error;
+  }
+});
+
 const noteSlice = createSlice({
   name: 'notes',
   initialState,
@@ -198,6 +212,18 @@ const noteSlice = createSlice({
         }
       })
       .addCase(deleteNote.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+
+      // Completed Task, Reminder
+      .addCase(getStatus.pending, (state) => {
+        state.error = null;
+      })
+      .addCase(getStatus.fulfilled, (state, action) => {
+        state.error = null;
+        state.status = action.payload;
+      })
+      .addCase(getStatus.rejected, (state, action) => {
         state.error = action.payload;
       });
   },

@@ -7,6 +7,28 @@ const initialState = {
   notes: [],
   selectedNote: null,
   error: null,
+  isLoadingList: false,
+  isLoadingDetail: false,
+};
+
+const SELECTED_NOTE_ID_KEY = 'selectedNoteId';
+
+const getPersistedSelectedNoteId = () => sessionStorage.getItem(SELECTED_NOTE_ID_KEY);
+
+const saveSelectedNoteIdToSession = (note) => {
+  if (note?._id) {
+    sessionStorage.setItem(SELECTED_NOTE_ID_KEY, note._id);
+  } else {
+    sessionStorage.removeItem(SELECTED_NOTE_ID_KEY);
+  }
+};
+
+const selectInitialSelectedNote = (notes) => {
+  const persistedSelectedNoteId = getPersistedSelectedNoteId();
+  if (persistedSelectedNoteId) {
+    return null;
+  }
+  return notes[0] || null;
 };
 
 // 노트 목록 조회
@@ -19,6 +41,12 @@ export const getNotes = createAsyncThunk(
       if (isCompleted !== undefined) params.isCompleted = isCompleted;
 
       const { data } = await api.get('/notes', { params });
+
+      const persistedSelectedNoteId = getPersistedSelectedNoteId();
+      if (persistedSelectedNoteId) {
+        dispatch(getNote(persistedSelectedNoteId));
+      }
+
       return data.notes;
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
@@ -91,9 +119,11 @@ const noteSlice = createSlice({
     },
     setSelectedNote(state, action) {
       state.selectedNote = action.payload;
+      saveSelectedNoteIdToSession(action.payload);
     },
     clearSelectedNote(state) {
       state.selectedNote = null;
+      saveSelectedNoteIdToSession(null);
     },
   },
   extraReducers: (builder) => {
@@ -101,25 +131,33 @@ const noteSlice = createSlice({
       // 노트 목록 조회
       .addCase(getNotes.pending, (state) => {
         state.error = null;
+        state.isLoadingList = true;
       })
       .addCase(getNotes.fulfilled, (state, action) => {
         state.error = null;
         state.notes = action.payload;
+        state.isLoadingList = false;
+        state.selectedNote = selectInitialSelectedNote(state.notes);
+        saveSelectedNoteIdToSession(state.selectedNote);
       })
       .addCase(getNotes.rejected, (state, action) => {
         state.error = action.payload;
+        state.isLoadingList = false;
       })
 
       // 노트 상세 조회
       .addCase(getNote.pending, (state) => {
         state.error = null;
+        state.isLoadingDetail = true;
       })
       .addCase(getNote.fulfilled, (state, action) => {
         state.error = null;
         state.selectedNote = action.payload;
+        state.isLoadingDetail = false;
       })
       .addCase(getNote.rejected, (state, action) => {
         state.error = action.payload;
+        state.isLoadingDetail = false;
       })
 
       // 노트 생성
@@ -141,14 +179,7 @@ const noteSlice = createSlice({
       })
       .addCase(updateNote.fulfilled, (state, action) => {
         state.error = null;
-        const updatedNote = action.payload;
-        const index = state.notes.findIndex((note) => note._id === updatedNote._id);
-        if (index !== -1) {
-          state.notes[index] = updatedNote;
-        }
-        if (state.selectedNote?._id === updatedNote._id) {
-          state.selectedNote = updatedNote;
-        }
+        state.selectedNote = action.payload;
       })
       .addCase(updateNote.rejected, (state, action) => {
         state.error = action.payload;

@@ -5,7 +5,7 @@ import React from 'react';
 import TaskBoard from './TaskBoard.jsx';
 import TaskCountHeatmap from './TaskCountHeatmap.jsx';
 
-const CalendarSidebar = ({ currentDate }) => {
+const CalendarSidebar = ({ currentDate, status }) => {
   return (
     <Box
       sx={{
@@ -16,8 +16,8 @@ const CalendarSidebar = ({ currentDate }) => {
       }}
     >
       {/* <MiniCalendar /> */}
-      <TaskCountHeatmap currentDate={currentDate} />
-      <TaskBoard currentDate={currentDate} />
+      <TaskCountHeatmap status={status} currentDate={currentDate} />
+      <TaskBoard status={status} currentDate={currentDate} />
     </Box>
   );
 };

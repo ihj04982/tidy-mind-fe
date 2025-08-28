@@ -2,25 +2,18 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import FullCalendar from '@fullcalendar/react';
 import { alpha, Box, Paper, useTheme } from '@mui/material';
 import { useMediaQuery } from '@mui/system';
-import React, { useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import EventModal from './EventModal.jsx';
 import { getStatus, updateNote } from '../../../features/notes/noteSlice.js';
 
-const MainCalendar = ({ currentDate, onDateChange }) => {
+const MainCalendar = ({ status, currentDate, onDateChange }) => {
   const dispatch = useDispatch();
-  const { status } = useSelector((state) => state.notes);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [selectedEventId, setSelectedEventId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-
-  useEffect(() => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth() + 1;
-    dispatch(getStatus({ year, month }));
-  }, [dispatch, currentDate]);
 
   // 달력 정보 반영
   const handleDatesSet = (dateInfo) => {

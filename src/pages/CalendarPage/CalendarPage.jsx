@@ -1,11 +1,22 @@
-import { Box, Container, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import { Box, CircularProgress, Container, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import CalendarSidebar from './components/CalendarSidebar.jsx';
 import MainCalendar from './components/MainCalendar.jsx';
+import { getStatus } from '../../features/notes/noteSlice.js';
 
 const CalendarPage = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const dispatch = useDispatch();
+  const { status, loading } = useSelector((state) => state.notes);
+
+  // 중앙에서 데이터 관리
+  useEffect(() => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth() + 1;
+    dispatch(getStatus({ year, month }));
+  }, [dispatch, currentDate]);
 
   const todayDate = currentDate.toLocaleDateString('en-US', {
     weekday: 'long',
@@ -18,6 +29,14 @@ const CalendarPage = () => {
   const handleDateChange = (newDate) => {
     setCurrentDate(newDate);
   };
+
+  if (loading) {
+    return (
+      <Container sx={{ my: 10, display: 'flex', justifyContent: 'center' }}>
+        <CircularProgress />
+      </Container>
+    );
+  }
 
   return (
     <Container sx={{ my: 10 }}>
@@ -50,7 +69,7 @@ const CalendarPage = () => {
             flexDirection: 'column',
           }}
         >
-          <MainCalendar currentDate={currentDate} onDateChange={handleDateChange} />
+          <MainCalendar status={status} currentDate={currentDate} onDateChange={handleDateChange} />
         </Box>
 
         <Box
@@ -62,7 +81,7 @@ const CalendarPage = () => {
             flexDirection: 'column',
           }}
         >
-          <CalendarSidebar currentDate={currentDate} />
+          <CalendarSidebar status={status} currentDate={currentDate} />
         </Box>
       </Box>
     </Container>

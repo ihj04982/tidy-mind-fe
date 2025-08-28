@@ -8,21 +8,14 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useDispatch } from 'react-redux';
 
 import { getStatus, updateNote } from '../../../features/notes/noteSlice';
 
-const TaskBoard = ({ currentDate }) => {
+const TaskBoard = ({ status, currentDate }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
-  const { status } = useSelector((state) => state.notes);
-
-  useEffect(() => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth() + 1;
-    dispatch(getStatus({ year, month }));
-  }, [dispatch, currentDate]);
 
   const filteredList = status?.monthlyNotes.filter((note) => note.completion.isCompleted !== true);
 

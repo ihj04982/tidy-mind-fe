@@ -1,9 +1,7 @@
 import { Box, Paper, Typography, useTheme } from '@mui/material';
-import React, { useMemo, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useMemo } from 'react';
 
 import { MONTH_LABELS } from '../../../constants/calendar.constants';
-import { getStatus } from '../../../features/notes/noteSlice';
 import { getColors } from '../../../theme/theme';
 
 const transformDataToGrid = (taskData, year, month) => {
@@ -64,16 +62,8 @@ const generateCalendarStructure = (year, month) => {
   return { dayNumbers, firstDay, daysInMonth };
 };
 
-const TaskCountHeatmap = ({ currentDate }) => {
-  const dispatch = useDispatch();
-  const { status } = useSelector((state) => state.notes);
+const TaskCountHeatmap = ({ status, currentDate }) => {
   const theme = useTheme();
-
-  useEffect(() => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth() + 1;
-    dispatch(getStatus({ year, month }));
-  }, [dispatch, currentDate]);
 
   const COLORS = getColors(theme.palette.mode);
 

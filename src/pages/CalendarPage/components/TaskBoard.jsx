@@ -17,7 +17,7 @@ const TaskBoard = ({ status, currentDate }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
 
-  const filteredList = status?.monthlyNotes.filter((note) => note.completion.isCompleted !== true);
+  const filteredList = status?.monthlyNotes.filter((note) => note.completion?.isCompleted !== true);
 
   const handleToggleDone = (noteId, isCompleted) => {
     const note = filteredList.find((n) => n._id === noteId);

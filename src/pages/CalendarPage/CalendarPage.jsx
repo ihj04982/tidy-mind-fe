@@ -1,11 +1,11 @@
 import { Box, Container, Typography } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 
 import CalendarSidebar from './components/CalendarSidebar.jsx';
 import MainCalendar from './components/MainCalendar.jsx';
 
 const CalendarPage = () => {
-  const currentDate = new Date();
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   const todayDate = currentDate.toLocaleDateString('en-US', {
     weekday: 'long',
@@ -13,6 +13,11 @@ const CalendarPage = () => {
     day: 'numeric',
     year: 'numeric',
   });
+
+  // 달력 변경 값 반영
+  const handleDateChange = (newDate) => {
+    setCurrentDate(newDate);
+  };
 
   return (
     <Container sx={{ my: 10 }}>
@@ -45,7 +50,7 @@ const CalendarPage = () => {
             flexDirection: 'column',
           }}
         >
-          <MainCalendar currentDate={currentDate} />
+          <MainCalendar currentDate={currentDate} onDateChange={handleDateChange} />
         </Box>
 
         <Box

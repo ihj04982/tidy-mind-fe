@@ -2,8 +2,12 @@ import { Link, Typography } from '@mui/material';
 import { Box, Grid, useTheme } from '@mui/system';
 import React from 'react';
 
+import LogoDark from '../assets/tm_side_black0.png';
+import LogoLight from '../assets/tm_side_white0.png';
+
 const Footer = () => {
   const theme = useTheme();
+  const isDarkMode = theme.palette.mode === 'dark';
 
   return (
     <Box
@@ -22,58 +26,21 @@ const Footer = () => {
       >
         <Grid container>
           <Grid size={{ xs: 6, md: 3 }} sx={{ paddingBottom: 4 }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-              <Typography
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'flex-start',
+              }}
+            >
+              <Box
+                component="img"
+                src={isDarkMode ? LogoLight : LogoDark}
                 sx={{
-                  fontSize: '1rem',
-                  fontWeight: 'bold',
-                  color: theme.palette.text.primary,
-                  marginBottom: '12px',
+                  mt: '4px',
+                  width: '80px',
+                  objectFit: 'contain',
                 }}
-              >
-                About
-              </Typography>
-              <Typography
-                sx={{
-                  fontSize: '14px',
-                  color: theme.palette.text.secondary,
-                  marginBottom: '8px',
-                  cursor: 'pointer',
-                  '&:hover': {
-                    color: theme.palette.text.primary,
-                  },
-                }}
-              >
-                Why TidyMind
-              </Typography>
-              <Typography
-                sx={{
-                  fontSize: '14px',
-                  color: theme.palette.text.secondary,
-                  marginBottom: '8px',
-                  cursor: 'pointer',
-
-                  '&:hover': {
-                    color: theme.palette.text.primary,
-                  },
-                }}
-              >
-                Our Pricing
-              </Typography>
-              <Typography
-                sx={{
-                  fontSize: '14px',
-                  color: theme.palette.text.secondary,
-                  marginBottom: '8px',
-                  cursor: 'pointer',
-
-                  '&:hover': {
-                    color: theme.palette.text.primary,
-                  },
-                }}
-              >
-                How it Works
-              </Typography>
+              />
             </Box>
           </Grid>
           <Grid size={{ xs: 6, md: 3 }} sx={{ paddingBottom: 4 }}>

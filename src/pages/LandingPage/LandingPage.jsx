@@ -1,14 +1,23 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Button, Input, Typography, useTheme } from '@mui/material';
+import { Button, CircularProgress, Input, Typography, useTheme } from '@mui/material';
 import { Box, keyframes } from '@mui/system';
 import { Circle, Image, Mic, Square, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
+import { createNoteWithSuggestion } from '../../features/notes/noteSlice';
+import { toastCleared } from '../../features/toast/toastSlice';
 import useSpeechToText from '../../hooks/useSpeechToText';
 import CloudinaryUploadWidget from '../../utils/CloudinaryUploadWidget';
 
 const LandingPage = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { loading: isSaving } = useSelector((state) => state.notes);
+
   const {
     transcript,
     listening,
@@ -21,6 +30,10 @@ const LandingPage = () => {
   const MAX_IMAGE_COUNT = 5;
 
   useEffect(() => {
+    dispatch(toastCleared());
+  }, [dispatch]);
+
+  useEffect(() => {
     if (transcript) {
       setInputValue((prev) => prev + transcript);
     }
@@ -28,6 +41,43 @@ const LandingPage = () => {
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
+  };
+
+  const handleSubmit = async () => {
+    if (listening || isSaving) return;
+
+    const hasContent = inputValue.trim().length > 0;
+    const hasImages = imgURLs.length > 0;
+
+    if (hasContent || hasImages) {
+      try {
+        await dispatch(
+          createNoteWithSuggestion({
+            content: inputValue.trim(),
+            images: imgURLs,
+          }),
+        ).unwrap();
+
+        setInputValue('');
+        setImgURLs([]);
+        setTimeout(() => {
+          navigate('/collections');
+        }, 2000);
+      } catch (error) {
+        if (error?.status === 401) {
+          setTimeout(() => {
+            navigate('/login');
+          }, 1500);
+        }
+      }
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
   };
 
   const uploadImage = (url) => {
@@ -194,7 +244,8 @@ const LandingPage = () => {
           height: '120px',
           width: { xs: '80%', md: '60%', lg: '55%', xl: '45%' },
           border: `1px solid ${listening ? theme.palette.text.accent : 'transparent'}`,
-          backgroundColor: '#f3f5fd',
+          backgroundColor:
+            theme.palette.mode === 'dark' ? theme.palette.background.paper : '#f3f5fd',
           borderRadius: 8,
           overflow: 'hidden',
           padding: '16px 92px 48px 24px',
@@ -251,6 +302,7 @@ const LandingPage = () => {
         <Input
           value={inputValue}
           onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
           disabled={listening && true}
           sx={{
             display: `${listening ? 'none' : 'flex'}`,
@@ -276,10 +328,12 @@ const LandingPage = () => {
                 backgroundColor: 'transparent',
               },
               '&::-webkit-scrollbar-thumb': {
-                backgroundColor: '#d1d5db',
+                backgroundColor:
+                  theme.palette.mode === 'dark' ? theme.palette.border.default : '#d1d5db',
                 borderRadius: '3px',
                 '&:hover': {
-                  backgroundColor: '#9ca3af',
+                  backgroundColor:
+                    theme.palette.mode === 'dark' ? theme.palette.border.strong : '#9ca3af',
                 },
               },
             },
@@ -321,9 +375,9 @@ const LandingPage = () => {
             }}
           >
             <Button
+              disabled={listening || !browserSupportsSpeechRecognition || !isMicrophoneAvailable}
               onClick={toggleListening}
               disableRipple
-              disabled={!browserSupportsSpeechRecognition}
               sx={{
                 minWidth: '40px',
                 height: '40px',
@@ -352,7 +406,8 @@ const LandingPage = () => {
           </Box>
         )}
         <Button
-          disabled={listening || !browserSupportsSpeechRecognition || !isMicrophoneAvailable}
+          onClick={handleSubmit}
+          disabled={listening || isSaving || (!inputValue.trim() && imgURLs.length === 0)}
           disableRipple
           sx={{
             position: 'absolute',
@@ -363,7 +418,7 @@ const LandingPage = () => {
             padding: 0,
             margin: 2,
             borderRadius: '30px',
-            backgroundColor: '#c0ccf2',
+            backgroundColor: isSaving ? '#a0aacf' : '#c0ccf2',
             boxShadow: '0 0 3px #0000003c',
             transition: 'all 0.2s ease',
             '&:hover': {
@@ -377,7 +432,13 @@ const LandingPage = () => {
             },
           }}
         >
-          <AddIcon sx={{ width: '16px', fill: 'white' }} />
+          {isSaving ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <CircularProgress size={16} sx={{ color: 'white' }} />
+            </Box>
+          ) : (
+            <AddIcon sx={{ width: '16px', fill: 'white' }} />
+          )}
         </Button>
       </Box>
     </Box>

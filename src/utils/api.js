@@ -23,6 +23,8 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       sessionStorage.removeItem('token');
       if (!window.location.pathname.includes('/login')) {
+        const message = '로그인 후 이용해주세요.';
+        alert(message);
         window.location.href = '/login';
       }
     }
@@ -36,5 +38,3 @@ export function extractErrorMessage(error) {
   if (error.response?.data?.error) return error.response.data.error;
   return error.message || '요청 처리 중 오류가 발생했습니다.';
 }
-
-export default api;

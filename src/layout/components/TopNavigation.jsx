@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import ProfileMenu from './ProfileMenu.jsx';
+import UserInfoModal from './UserInfoModal.jsx';
 import Logo from '../../assets/logo.png';
 import { logout } from '../../features/auth/authSlice.js';
 import ThemeToggle from '../../theme/ThemeToggle.jsx';
@@ -17,6 +18,7 @@ const TopNavigation = () => {
   const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
+  const [openUserInfo, setOpenUserInfo] = useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
   const { user } = useSelector((state) => state.auth);
 
@@ -225,7 +227,10 @@ const TopNavigation = () => {
       >
         <ThemeToggle variant="default" />
         {user ? (
-          <ProfileMenu />
+          <>
+            <ProfileMenu setOpenUserInfo={setOpenUserInfo} />
+            <UserInfoModal open={openUserInfo} onClose={() => setOpenUserInfo(false)} user={user} />
+          </>
         ) : (
           <Button
             onClick={() => navigate('/login')}

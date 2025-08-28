@@ -5,7 +5,7 @@ import { showToast } from '../toast/toastSlice';
 
 const initialState = {
   notes: [],
-  status: { monthlyNotes: [] },
+  status: { monthlyNotes: [], dailyCounts: [], total: 0 },
   selectedNote: null,
   error: null,
 };

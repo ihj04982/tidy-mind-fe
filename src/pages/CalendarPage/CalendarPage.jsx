@@ -15,7 +15,7 @@ const CalendarPage = () => {
   });
 
   return (
-    <Container sx={{ my: 20 }}>
+    <Container sx={{ my: 10 }}>
       <Typography
         variant="body2"
         sx={{
@@ -25,7 +25,7 @@ const CalendarPage = () => {
           textAlign: 'left',
         }}
       >
-        {todayDate} • Tasks
+        {todayDate}
       </Typography>
 
       <Box
@@ -38,26 +38,26 @@ const CalendarPage = () => {
       >
         <Box
           sx={{
-            width: { xs: '100%', md: '280px' },
-            flexShrink: 0,
-            order: { xs: 2, md: 1 },
+            flex: 1,
+            minWidth: 0,
+            order: { xs: 1, md: 1 },
             display: 'flex',
             flexDirection: 'column',
           }}
         >
-          <CalendarSidebar />
+          <MainCalendar currentDate={currentDate} />
         </Box>
 
         <Box
           sx={{
-            flex: 1,
-            minWidth: 0,
-            order: { xs: 1, md: 2 },
+            width: { xs: '100%', md: '280px' },
+            flexShrink: 0,
+            order: { xs: 2, md: 2 },
             display: 'flex',
             flexDirection: 'column',
           }}
         >
-          <MainCalendar />
+          <CalendarSidebar currentDate={currentDate} />
         </Box>
       </Box>
     </Container>

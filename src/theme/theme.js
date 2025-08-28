@@ -46,3 +46,22 @@ export const makeTheme = (mode = 'light') =>
       button: { textTransform: 'none' },
     },
   });
+
+export const getColors = (mode) => {
+  if (mode === 'dark') {
+    return {
+      empty: 'transparent',
+      low: '#aad6daff',
+      medium: '#66b8c7ff',
+      high: '#34aec4ff',
+      veryHigh: '#0081acff',
+    };
+  }
+  return {
+    empty: 'transparent',
+    low: '#c3cef4',
+    medium: '#8ea5e7',
+    high: '#5078e5',
+    veryHigh: '#0943e5',
+  };
+};

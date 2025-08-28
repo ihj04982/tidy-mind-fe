@@ -86,7 +86,7 @@ export const deleteNote = createAsyncThunk('notes/deleteNote', async (noteId, { 
 // Completed Task, Reminder
 export const getStatus = createAsyncThunk('notes/getStatus', async (query, { dispatch }) => {
   try {
-    const response = await api.get('notes/status', { params: { ...query } });
+    const response = await api.get('/notes/status', { params: { ...query } });
 
     return response.data.data;
   } catch (error) {

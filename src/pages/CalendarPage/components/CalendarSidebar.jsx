@@ -1,27 +1,23 @@
 import { Box } from '@mui/material';
 import React from 'react';
 
-import MiniCalendar from './MiniCalendar.jsx';
+// import MiniCalendar from './MiniCalendar.jsx';
+import TaskBoard from './TaskBoard.jsx';
 import TaskCountHeatmap from './TaskCountHeatmap.jsx';
 
-const CalendarSidebar = () => {
+const CalendarSidebar = ({ currentDate, status }) => {
   return (
     <Box
       sx={{
         display: 'flex',
-        flexDirection: {
-          xs: 'column',
-          sm: 'row',
-          md: 'column',
-        },
+        flexDirection: 'column',
         gap: 2,
         height: '100%',
       }}
     >
-      <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-        <MiniCalendar />
-      </Box>
-      <TaskCountHeatmap />
+      {/* <MiniCalendar /> */}
+      <TaskCountHeatmap status={status} currentDate={currentDate} />
+      <TaskBoard status={status} currentDate={currentDate} />
     </Box>
   );
 };

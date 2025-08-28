@@ -2,7 +2,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import FullCalendar from '@fullcalendar/react';
 import { alpha, Box, Paper, useTheme } from '@mui/material';
 import { useMediaQuery } from '@mui/system';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import EventModal from './EventModal.jsx';
@@ -14,6 +14,8 @@ const MainCalendar = ({ status, currentDate, onDateChange }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [selectedEventId, setSelectedEventId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {}, [theme.palette.mode]);
 
   // 달력 정보 반영
   const handleDatesSet = (dateInfo) => {
@@ -230,7 +232,7 @@ const MainCalendar = ({ status, currentDate, onDateChange }) => {
       return filteredList;
     }
     return [];
-  }, [status]);
+  }, [status, theme]);
 
   const currentEvent = selectedEventId
     ? status.monthlyNotes.find((event) => event._id === selectedEventId)

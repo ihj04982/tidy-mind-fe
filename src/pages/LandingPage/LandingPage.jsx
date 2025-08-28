@@ -50,20 +50,25 @@ const LandingPage = () => {
     const hasImages = imgURLs.length > 0;
 
     if (hasContent || hasImages) {
-      const result = await dispatch(
-        createNoteWithSuggestion({
-          content: inputValue.trim(),
-          images: imgURLs,
-        }),
-      );
+      try {
+        await dispatch(
+          createNoteWithSuggestion({
+            content: inputValue.trim(),
+            images: imgURLs,
+          }),
+        ).unwrap();
 
-      if (createNoteWithSuggestion.fulfilled.match(result)) {
         setInputValue('');
         setImgURLs([]);
-
         setTimeout(() => {
           navigate('/collections');
         }, 2000);
+      } catch (error) {
+        if (error?.status === 401) {
+          setTimeout(() => {
+            navigate('/login');
+          }, 1500);
+        }
       }
     }
   };

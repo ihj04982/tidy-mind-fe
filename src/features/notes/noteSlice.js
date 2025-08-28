@@ -75,6 +75,19 @@ export const createNoteWithSuggestion = createAsyncThunk(
       return response.data.note;
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
+
+      // Show toast with appropriate message for 401
+      if (error.response?.status === 401) {
+        dispatch(
+          showToast({
+            message: '로그인이 필요합니다.',
+            severity: 'error',
+          }),
+        );
+        // Pass the full error object so component can check status
+        return rejectWithValue({ message: errorMessage, status: 401, originalError: error });
+      }
+
       dispatch(
         showToast({
           message: errorMessage,

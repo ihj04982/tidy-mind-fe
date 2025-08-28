@@ -12,6 +12,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 
 import { getStatus, updateNote } from '../../../features/notes/noteSlice';
+import { formatRelativeDate } from '../../../utils/dateUtils';
 
 const TaskBoard = ({ status, currentDate }) => {
   const theme = useTheme();
@@ -133,7 +134,7 @@ const TaskBoard = ({ status, currentDate }) => {
                       color="text.secondary"
                       sx={{ whiteSpace: 'nowrap' }}
                     >
-                      {new Date(note.completion.dueDate).toLocaleDateString()}
+                      {formatRelativeDate(note.completion.dueDate)}
                     </Typography>
                   </Box>
                 </ListItemText>

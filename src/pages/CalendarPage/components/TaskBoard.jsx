@@ -30,7 +30,10 @@ const TaskBoard = ({ status, currentDate }) => {
             ...note.completion,
             isCompleted,
           }
-        : null,
+        : {
+            isCompleted,
+            dueDate: new Date().toISOString(),
+          },
     };
 
     dispatch(updateNote({ noteId, noteData: updatedNote })).then(() => {

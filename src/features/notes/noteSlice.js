@@ -7,13 +7,8 @@ const initialState = {
   notes: [],
   status: { monthlyNotes: [], dailyCounts: [], total: 0 },
   selectedNote: null,
-  currentNote: null,
-  previewNote: null, // preview용 (저장 전)
-  loading: false,
   error: null,
-  saveSuccess: false,
-  isLoadingList: false,
-  isLoadingDetail: false,
+  loading: false,
 };
 
 const selectInitialSelectedNote = (notes) => {
@@ -44,19 +39,6 @@ export const getNotes = createAsyncThunk(
 export const getNote = createAsyncThunk('notes/getNote', async (noteId, { dispatch }) => {
   try {
     const { data } = await api.get(`/notes/${noteId}`);
-    return data.note;
-  } catch (error) {
-    const errorMessage = extractErrorMessage(error);
-    dispatch(showToast({ message: errorMessage, severity: 'error' }));
-    throw error;
-  }
-});
-
-// 노트 생성
-export const createNote = createAsyncThunk('notes/createNote', async (noteData, { dispatch }) => {
-  try {
-    const { data } = await api.post('/notes', noteData);
-    dispatch(showToast({ message: data.message, severity: 'success' }));
     return data.note;
   } catch (error) {
     const errorMessage = extractErrorMessage(error);
@@ -102,20 +84,6 @@ export const createNoteWithSuggestion = createAsyncThunk(
         }),
       );
 
-      return rejectWithValue(errorMessage);
-    }
-  },
-);
-
-// 유저가 note를 수정 후, 저장 전 새로운 suggestion을 preview 할 수 있는 기능 구현 시 사용 (바로 저장 x)
-export const previewSuggestion = createAsyncThunk(
-  'notes/previewSuggestion',
-  async ({ content, images = [] }, { rejectWithValue }) => {
-    try {
-      const response = await api.post('/suggest', { content, images });
-      return response.data;
-    } catch (error) {
-      const errorMessage = extractErrorMessage(error);
       return rejectWithValue(errorMessage);
     }
   },
@@ -170,24 +138,11 @@ const noteSlice = createSlice({
     clearError(state) {
       state.error = null;
     },
-    clearSaveSuccess(state) {
-      state.saveSuccess = false;
-    },
-    clearPreview(state) {
-      state.previewNote = null;
-    },
     setSelectedNote(state, action) {
       state.selectedNote = action.payload;
     },
     clearSelectedNote(state) {
       state.selectedNote = null;
-    },
-    resetNoteState(state) {
-      state.currentNote = null;
-      state.previewNote = null;
-      state.error = null;
-      state.loading = false;
-      state.saveSuccess = false;
     },
   },
   extraReducers: (builder) => {
@@ -195,90 +150,58 @@ const noteSlice = createSlice({
       // 노트 목록 조회
       .addCase(getNotes.pending, (state) => {
         state.error = null;
-        state.isLoadingList = true;
+        state.loading = true;
       })
       .addCase(getNotes.fulfilled, (state, action) => {
         state.error = null;
         state.notes = action.payload;
-        state.isLoadingList = false;
+        state.loading = false;
         state.selectedNote = selectInitialSelectedNote(state.notes);
       })
       .addCase(getNotes.rejected, (state, action) => {
         state.error = action.payload;
-        state.isLoadingList = false;
+        state.loading = false;
       })
 
       // 노트 상세 조회
       .addCase(getNote.pending, (state) => {
         state.error = null;
-        state.isLoadingDetail = true;
+        state.loading = true;
       })
       .addCase(getNote.fulfilled, (state, action) => {
         state.error = null;
         state.selectedNote = action.payload;
-        state.isLoadingDetail = false;
+        state.loading = false;
       })
       .addCase(getNote.rejected, (state, action) => {
         state.error = action.payload;
-        state.isLoadingDetail = false;
-      })
-
-      // 노트 생성
-      .addCase(createNote.pending, (state) => {
-        state.error = null;
-      })
-      .addCase(createNote.fulfilled, (state, action) => {
-        state.error = null;
-        state.notes.unshift(action.payload);
-        state.selectedNote = action.payload;
-      })
-      .addCase(createNote.rejected, (state, action) => {
-        state.error = action.payload;
+        state.loading = false;
       })
 
       // AI suggestions과 함께 노트 생성
       .addCase(createNoteWithSuggestion.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.saveSuccess = false;
       })
       .addCase(createNoteWithSuggestion.fulfilled, (state, action) => {
         state.loading = false;
-        state.currentNote = action.payload; // 생성된 노트를 현재 노트로 설정
+        state.error = null;
         if (action.payload) {
           state.notes.unshift(action.payload); // 노트 목록 맨 앞에 추가
+          state.selectedNote = action.payload; // 생성된 노트를 선택된 노트로 설정
         }
-        state.saveSuccess = true;
-        state.error = null;
       })
       .addCase(createNoteWithSuggestion.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        state.saveSuccess = false;
       })
-
-      // suggestion 저장 전 미리보기 기능 구현 시 사용
-      .addCase(previewSuggestion.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-        state.previewNote = null;
-      })
-      .addCase(previewSuggestion.fulfilled, (state, action) => {
-        state.loading = false;
-        state.previewNote = action.payload;
-        state.error = null;
-      })
-      .addCase(previewSuggestion.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-        state.previewNote = null;
-      })
-
       // 노트 수정
       .addCase(updateNote.pending, (state) => {
+        state.loading = true;
         state.error = null;
       })
       .addCase(updateNote.fulfilled, (state, action) => {
+        state.loading = false;
         state.error = null;
         const updatedNote = action.payload;
 
@@ -291,14 +214,17 @@ const noteSlice = createSlice({
         }
       })
       .addCase(updateNote.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload;
       })
 
       // 노트 삭제
       .addCase(deleteNote.pending, (state) => {
+        state.loading = true;
         state.error = null;
       })
       .addCase(deleteNote.fulfilled, (state, action) => {
+        state.loading = false;
         state.error = null;
         const deletedNoteId = action.payload;
         state.notes = state.notes.filter((note) => note._id !== deletedNoteId);
@@ -307,30 +233,27 @@ const noteSlice = createSlice({
         }
       })
       .addCase(deleteNote.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload;
       })
 
       // Completed Task, Reminder
       .addCase(getStatus.pending, (state) => {
+        state.loading = true;
         state.error = null;
       })
       .addCase(getStatus.fulfilled, (state, action) => {
+        state.loading = false;
         state.error = null;
         state.status = action.payload;
       })
       .addCase(getStatus.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload;
       });
   },
 });
 
-export const {
-  clearError,
-  clearSaveSuccess,
-  clearPreview,
-  setSelectedNote,
-  clearSelectedNote,
-  resetNoteState,
-} = noteSlice.actions;
+export const { clearError, setSelectedNote, clearSelectedNote } = noteSlice.actions;
 
 export default noteSlice.reducer;

@@ -1,7 +1,6 @@
 import dayGridPlugin from '@fullcalendar/daygrid';
 import FullCalendar from '@fullcalendar/react';
-import { alpha, Box, Paper, useTheme } from '@mui/material';
-import { useMediaQuery } from '@mui/system';
+import { alpha, Box, Paper, useTheme, useMediaQuery } from '@mui/material';
 import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 

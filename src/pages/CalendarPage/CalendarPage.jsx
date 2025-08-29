@@ -4,19 +4,19 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import CalendarSidebar from './components/CalendarSidebar.jsx';
 import MainCalendar from './components/MainCalendar.jsx';
-import { getStatus } from '../../features/notes/noteSlice.js';
+import { getStatics } from '../../features/notes/noteSlice.js';
 
 const CalendarPage = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const dispatch = useDispatch();
-  const { status, loading } = useSelector((state) => state.notes);
+  const { statics, loading } = useSelector((state) => state.notes);
 
-  // 중앙에서 데이터 관리
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth() + 1;
+
   useEffect(() => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth() + 1;
-    dispatch(getStatus({ year, month }));
-  }, [dispatch, currentDate]);
+    dispatch(getStatics({ year, month }));
+  }, [dispatch, year, month]);
 
   const todayDate = currentDate.toLocaleDateString('en-US', {
     weekday: 'long',
@@ -69,7 +69,11 @@ const CalendarPage = () => {
             flexDirection: 'column',
           }}
         >
-          <MainCalendar status={status} currentDate={currentDate} onDateChange={handleDateChange} />
+          <MainCalendar
+            statics={statics}
+            currentDate={currentDate}
+            onDateChange={handleDateChange}
+          />
         </Box>
 
         <Box
@@ -81,7 +85,7 @@ const CalendarPage = () => {
             flexDirection: 'column',
           }}
         >
-          <CalendarSidebar status={status} currentDate={currentDate} />
+          <CalendarSidebar statics={statics} currentDate={currentDate} />
         </Box>
       </Box>
     </Container>

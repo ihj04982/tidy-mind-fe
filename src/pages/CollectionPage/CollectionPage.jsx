@@ -50,7 +50,6 @@ const CollectionPage = () => {
 
   const handleDeleteNote = (noteId) => {
     dispatch(deleteNote(noteId));
-    dispatch(clearSelectedNote());
   };
 
   return (

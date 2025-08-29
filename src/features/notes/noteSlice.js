@@ -5,14 +5,10 @@ import { showToast } from '../toast/toastSlice';
 
 const initialState = {
   notes: [],
-  status: { monthlyNotes: [], dailyCounts: [], total: 0 },
+  statics: { monthlyNotes: [], dailyCounts: [], total: 0 },
   selectedNote: null,
-  error: null,
   loading: false,
-};
-
-const selectInitialSelectedNote = (notes) => {
-  return notes[0] || null;
+  error: null,
 };
 
 // 노트 목록 조회
@@ -25,6 +21,10 @@ export const getNotes = createAsyncThunk(
       if (isCompleted !== undefined) params.isCompleted = isCompleted;
 
       const { data } = await api.get('/notes', { params });
+
+      if (data.notes.length > 0) {
+        dispatch(getNote(data.notes[0]._id));
+      }
 
       return data.notes;
     } catch (error) {
@@ -50,41 +50,15 @@ export const getNote = createAsyncThunk('notes/getNote', async (noteId, { dispat
 // AI suggestions과 함께 노트 생성
 export const createNoteWithSuggestion = createAsyncThunk(
   'notes/createWithSuggestion',
-  async ({ content, images = [] }, { dispatch, rejectWithValue }) => {
+  async ({ content, images = [] }, { dispatch }) => {
     try {
-      const response = await api.post('/notes/suggest', { content, images });
-
-      dispatch(
-        showToast({
-          message: response.data.message,
-          severity: 'success',
-        }),
-      );
-
-      return response.data.note;
+      const { data } = await api.post('/notes/suggest', { content, images });
+      dispatch(showToast({ message: data.message, severity: 'success' }));
+      return data.note;
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
-
-      // Show toast with appropriate message for 401
-      if (error.response?.status === 401) {
-        dispatch(
-          showToast({
-            message: '로그인이 필요합니다.',
-            severity: 'error',
-          }),
-        );
-        // Pass the full error object so component can check status
-        return rejectWithValue({ message: errorMessage, status: 401, originalError: error });
-      }
-
-      dispatch(
-        showToast({
-          message: errorMessage,
-          severity: 'error',
-        }),
-      );
-
-      return rejectWithValue(errorMessage);
+      dispatch(showToast({ message: errorMessage, severity: 'error' }));
+      throw error;
     }
   },
 );
@@ -118,11 +92,10 @@ export const deleteNote = createAsyncThunk('notes/deleteNote', async (noteId, { 
   }
 });
 
-// Completed Task, Reminder
-export const getStatus = createAsyncThunk('notes/getStatus', async (query, { dispatch }) => {
+// 캘린더 통계 조회
+export const getStatics = createAsyncThunk('notes/getStatics', async (query, { dispatch }) => {
   try {
-    const response = await api.get('/notes/status', { params: { ...query } });
-
+    const response = await api.get('/notes/statics', { params: { ...query } });
     return response.data.data;
   } catch (error) {
     const errorMessage = extractErrorMessage(error);
@@ -135,12 +108,6 @@ const noteSlice = createSlice({
   name: 'notes',
   initialState,
   reducers: {
-    clearError(state) {
-      state.error = null;
-    },
-    setSelectedNote(state, action) {
-      state.selectedNote = action.payload;
-    },
     clearSelectedNote(state) {
       state.selectedNote = null;
     },
@@ -156,7 +123,6 @@ const noteSlice = createSlice({
         state.error = null;
         state.notes = action.payload;
         state.loading = false;
-        state.selectedNote = selectInitialSelectedNote(state.notes);
       })
       .addCase(getNotes.rejected, (state, action) => {
         state.error = action.payload;
@@ -187,14 +153,15 @@ const noteSlice = createSlice({
         state.loading = false;
         state.error = null;
         if (action.payload) {
-          state.notes.unshift(action.payload); // 노트 목록 맨 앞에 추가
-          state.selectedNote = action.payload; // 생성된 노트를 선택된 노트로 설정
+          state.notes.unshift(action.payload);
+          state.selectedNote = action.payload;
         }
       })
       .addCase(createNoteWithSuggestion.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
+
       // 노트 수정
       .addCase(updateNote.pending, (state) => {
         state.loading = true;
@@ -203,11 +170,13 @@ const noteSlice = createSlice({
       .addCase(updateNote.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
+
         const updatedNote = action.payload;
 
-        state.notes = state.notes.map((note) =>
-          note._id === updatedNote._id ? updatedNote : note,
-        );
+        const noteIndex = state.notes.findIndex((note) => note._id === updatedNote._id);
+        if (noteIndex !== -1) {
+          state.notes[noteIndex] = updatedNote;
+        }
 
         if (state.selectedNote?._id === updatedNote._id) {
           state.selectedNote = updatedNote;
@@ -227,33 +196,37 @@ const noteSlice = createSlice({
         state.loading = false;
         state.error = null;
         const deletedNoteId = action.payload;
+
         state.notes = state.notes.filter((note) => note._id !== deletedNoteId);
+
         if (state.selectedNote?._id === deletedNoteId) {
           state.selectedNote = null;
         }
+
+        state.loading = false;
       })
       .addCase(deleteNote.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      // Completed Task, Reminder
-      .addCase(getStatus.pending, (state) => {
+      // 캘린더 통계 조회
+      .addCase(getStatics.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getStatus.fulfilled, (state, action) => {
+      .addCase(getStatics.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
-        state.status = action.payload;
+        state.statics = action.payload;
       })
-      .addCase(getStatus.rejected, (state, action) => {
+      .addCase(getStatics.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
   },
 });
 
-export const { clearError, setSelectedNote, clearSelectedNote } = noteSlice.actions;
+export const { clearError, clearSelectedNote } = noteSlice.actions;
 
 export default noteSlice.reducer;

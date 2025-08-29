@@ -6,9 +6,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import EventModal from './EventModal.jsx';
-import { getStatus, updateNote } from '../../../features/notes/noteSlice.js';
+import { updateNote, getStatics } from '../../../features/notes/noteSlice.js';
 
-const MainCalendar = ({ status, currentDate, onDateChange }) => {
+const MainCalendar = ({ statics, currentDate, onDateChange }) => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -187,23 +187,27 @@ const MainCalendar = ({ status, currentDate, onDateChange }) => {
   };
 
   const handleStatusChange = (eventId, newStatus) => {
+    const updatedNote = {
+      completion: {
+        isCompleted: newStatus,
+      },
+    };
+
     dispatch(
       updateNote({
         noteId: eventId,
-        noteData: {
-          completion: { isCompleted: newStatus, dueDate: currentEvent?.completion?.dueDate },
-        },
+        noteData: updatedNote,
       }),
     ).then(() => {
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth() + 1;
-      dispatch(getStatus({ year, month }));
+      dispatch(getStatics({ year, month }));
     });
   };
 
   const SimpleEvents = useMemo(() => {
-    if (status?.monthlyNotes && Array.isArray(status.monthlyNotes)) {
-      const filteredList = status.monthlyNotes
+    if (statics?.monthlyNotes && Array.isArray(statics.monthlyNotes)) {
+      const filteredList = statics.monthlyNotes
         .map((event) => ({
           id: event._id,
           title: event.title,
@@ -232,10 +236,10 @@ const MainCalendar = ({ status, currentDate, onDateChange }) => {
       return filteredList;
     }
     return [];
-  }, [status, theme]);
+  }, [statics, theme]);
 
   const currentEvent = selectedEventId
-    ? status.monthlyNotes.find((event) => event._id === selectedEventId)
+    ? statics.monthlyNotes.find((event) => event._id === selectedEventId)
     : null;
 
   const formattedEvent = currentEvent

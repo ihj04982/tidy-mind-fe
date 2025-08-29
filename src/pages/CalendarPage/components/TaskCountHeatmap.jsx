@@ -62,7 +62,7 @@ const generateCalendarStructure = (year, month) => {
   return { dayNumbers, firstDay, daysInMonth };
 };
 
-const TaskCountHeatmap = ({ status, currentDate }) => {
+const TaskCountHeatmap = ({ statics, currentDate }) => {
   const theme = useTheme();
 
   const COLORS = getColors(theme.palette.mode);
@@ -82,8 +82,8 @@ const TaskCountHeatmap = ({ status, currentDate }) => {
 
   const calendarData = useMemo(
     () =>
-      transformDataToGrid(status?.dailyCounts, currentDate.getFullYear(), currentDate.getMonth()),
-    [status?.dailyCounts, currentDate],
+      transformDataToGrid(statics?.dailyCounts, currentDate.getFullYear(), currentDate.getMonth()),
+    [statics?.dailyCounts, currentDate],
   );
 
   return (

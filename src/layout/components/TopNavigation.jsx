@@ -62,8 +62,12 @@ const TopNavigation = () => {
           }}
         >
           <Box
+            component="button"
+            type="button"
+            aria-label="Go to home"
             onClick={() => navigate('/')}
             sx={{
+              all: 'unset',
               width: '120px',
               height: '31px',
               display: 'flex',
@@ -71,6 +75,11 @@ const TopNavigation = () => {
               alignItems: 'center',
               transform: 'rotate(90deg)',
               cursor: 'pointer',
+              '&:focus-visible': {
+                outline: `2px solid ${theme.palette.primary.main}`,
+                outlineOffset: 2,
+                borderRadius: 1,
+              },
             }}
           >
             <img

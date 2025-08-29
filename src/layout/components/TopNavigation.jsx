@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import ProfileMenu from './ProfileMenu.jsx';
 import UserInfoModal from './UserInfoModal.jsx';
 import Logo from '../../assets/logo.png';
+import LogoWhite from '../../assets/tm_side_white.png';
 import { logout } from '../../features/auth/authSlice.js';
 import ThemeToggle from '../../theme/ThemeToggle.jsx';
 
@@ -69,9 +70,14 @@ const TopNavigation = () => {
               justifyContent: 'center',
               alignItems: 'center',
               transform: 'rotate(90deg)',
+              cursor: 'pointer',
             }}
           >
-            <img src={Logo} style={{ height: '120px' }} />
+            <img
+              src={theme.palette.mode === 'dark' ? LogoWhite : Logo}
+              style={{ height: '120px' }}
+              alt="Tidy Mind Logo"
+            />
           </Box>
           <Button
             sx={{ width: '32px', height: '32px', color: theme.palette.text.primary }}

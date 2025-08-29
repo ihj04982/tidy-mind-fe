@@ -100,7 +100,7 @@ const TaskBoard = ({ statics, currentDate }) => {
       <Typography
         variant="h6"
         fontSize="1rem"
-        fontWeight={5600}
+        fontWeight={600}
         position="sticky"
         sx={{ display: 'flex', flexDirection: 'column', top: 0, zIndex: 1, pb: 2 }}
       >
@@ -245,7 +245,9 @@ const TaskBoard = ({ statics, currentDate }) => {
                             textDecoration: note.completion?.isCompleted ? 'line-through' : 'none',
                           }}
                         >
-                          {formatRelativeDate(note.completion.dueDate)}
+                          {note.completion?.dueDate
+                            ? formatRelativeDate(note.completion.dueDate)
+                            : ''}
                         </Typography>
                       </Box>
                     </ListItemText>
@@ -366,7 +368,9 @@ const TaskBoard = ({ statics, currentDate }) => {
                             textDecoration: note.completion?.isCompleted ? 'line-through' : 'none',
                           }}
                         >
-                          {formatRelativeDate(note.completion.dueDate)}
+                          {note.completion?.dueDate
+                            ? formatRelativeDate(note.completion.dueDate)
+                            : ''}
                         </Typography>
                       </Box>
                     </ListItemText>
@@ -487,7 +491,9 @@ const TaskBoard = ({ statics, currentDate }) => {
                             textDecoration: note.completion?.isCompleted ? 'line-through' : 'none',
                           }}
                         >
-                          {formatRelativeDate(note.completion.dueDate)}
+                          {note.completion?.dueDate
+                            ? formatRelativeDate(note.completion.dueDate)
+                            : ''}
                         </Typography>
                       </Box>
                     </ListItemText>
@@ -613,7 +619,9 @@ const TaskBoard = ({ statics, currentDate }) => {
                             textDecoration: note.completion?.isCompleted ? 'line-through' : 'none',
                           }}
                         >
-                          {formatRelativeDate(note.completion.dueDate)}
+                          {note.completion?.dueDate
+                            ? formatRelativeDate(note.completion.dueDate)
+                            : ''}
                         </Typography>
                       </Box>
                     </ListItemText>

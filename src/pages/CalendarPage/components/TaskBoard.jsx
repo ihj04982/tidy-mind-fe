@@ -20,17 +20,20 @@ const TaskBoard = ({ statics, currentDate }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
 
-  const filteredList = statics?.monthlyNotes
-    ? [...statics.monthlyNotes].sort((a, b) => {
-        if (a.completion?.isCompleted !== b.completion?.isCompleted) {
-          return a.completion?.isCompleted ? 1 : -1;
-        }
+  const filteredList = React.useMemo(() => {
+    if (!statics?.monthlyNotes) return [];
+    const toTs = (d) => {
+      const t = d ? Date.parse(d) : NaN;
+      return Number.isFinite(t) ? t : Number.POSITIVE_INFINITY;
+    };
+    return [...statics.monthlyNotes].sort((a, b) => {
+      if (!!a.completion?.isCompleted !== !!b.completion?.isCompleted) {
+        return a.completion?.isCompleted ? 1 : -1;
+      }
 
-        const dateA = new Date(a.completion?.dueDate || '9999-12-31');
-        const dateB = new Date(b.completion?.dueDate || '9999-12-31');
-        return dateA - dateB;
-      })
-    : [];
+      return toTs(a.completion?.dueDate) - toTs(b.completion?.dueDate);
+    });
+  }, [statics?.monthlyNotes]);
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);

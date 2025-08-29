@@ -51,7 +51,6 @@ const LeftNavigation = () => {
           alt="Tidy Mind Logo"
           style={{
             width: 24,
-            cursor: 'pointer',
           }}
         />
       </Button>

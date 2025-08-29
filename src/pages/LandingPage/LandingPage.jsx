@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { createNoteWithSuggestion } from '../../features/notes/noteSlice';
-import { toastCleared } from '../../features/toast/toastSlice';
 import useSpeechToText from '../../hooks/useSpeechToText';
 import CloudinaryUploadWidget from '../../utils/CloudinaryUploadWidget';
 
@@ -22,10 +21,6 @@ const LandingPage = () => {
   const [inputValue, setInputValue] = useState('');
   const [imgURLs, setImgURLs] = useState([]);
   const MAX_IMAGE_COUNT = 5;
-
-  useEffect(() => {
-    dispatch(toastCleared());
-  }, [dispatch]);
 
   useEffect(() => {
     if (transcript) {

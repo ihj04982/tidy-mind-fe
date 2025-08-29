@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { CATEGORIES } from '../../../constants/note.constants';
-import { updateNote } from '../../../features/notes/noteSlice';
+import { CATEGORIES } from '../constants/note.constants';
+import { updateNote } from '../features/notes/noteSlice';
 
 export const useNoteEditor = (note) => {
   const dispatch = useDispatch();

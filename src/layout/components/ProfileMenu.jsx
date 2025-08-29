@@ -14,7 +14,7 @@ import { useDispatch } from 'react-redux';
 
 import { logout } from '../../features/auth/authSlice';
 
-export default function ProfileMenu() {
+export default function ProfileMenu({ setOpenUserInfo }) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -24,6 +24,11 @@ export default function ProfileMenu() {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleOpenUserInfo = () => {
+    setOpenUserInfo(true);
+    handleClose();
   };
 
   const handleLogout = () => {
@@ -44,9 +49,6 @@ export default function ProfileMenu() {
               padding: 0,
               borderRadius: '30px',
             }}
-            aria-controls={open ? 'account-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
           >
             <User color={theme.palette.text.primary} size={20} strokeWidth={1.5} />
           </IconButton>
@@ -89,7 +91,7 @@ export default function ProfileMenu() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleClose} sx={{ minHeight: 32, fontSize: '0.85rem' }}>
+        <MenuItem onClick={handleOpenUserInfo} sx={{ minHeight: 32, fontSize: '0.85rem' }}>
           <ListItemIcon>
             <User size={16} />
           </ListItemIcon>

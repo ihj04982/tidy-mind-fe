@@ -19,6 +19,10 @@ api.interceptors.request.use((request) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    if (error.response?.status === 401) {
+      sessionStorage.removeItem('token');
+      window.location.href = '/login';
+    }
     return Promise.reject(error);
   },
 );
@@ -27,5 +31,9 @@ api.interceptors.response.use(
 export function extractErrorMessage(error) {
   if (error.response?.data?.message) return error.response.data.message;
   if (error.response?.data?.error) return error.response.data.error;
+
+  if (error.response?.status === 401) {
+    return '인증에 실패했습니다.';
+  }
   return error.message || '요청 처리 중 오류가 발생했습니다.';
 }

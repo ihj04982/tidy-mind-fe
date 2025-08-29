@@ -1,41 +1,30 @@
 import dayGridPlugin from '@fullcalendar/daygrid';
 import FullCalendar from '@fullcalendar/react';
-import { Box, Paper, useTheme } from '@mui/material';
-import React, { useMemo, useState } from 'react';
+import { alpha, Box, Paper, useTheme } from '@mui/material';
+import { useMediaQuery } from '@mui/system';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import EventModal from './EventModal.jsx';
-import SearchBar from './SearchBar.jsx';
+import { updateNote, getStatics } from '../../../features/notes/noteSlice.js';
 
-const MainCalendar = () => {
+const MainCalendar = ({ statics, currentDate, onDateChange }) => {
+  const dispatch = useDispatch();
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [selectedEventId, setSelectedEventId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [events, setEvents] = useState([
-    {
-      _id: '1',
-      title: 'Complete Project Report',
-      content: 'Need to finish the Q3 project report with all metrics and analysis',
-      dueDate: '2025-08-25',
-      done: false,
-      category: {
-        name: 'task',
-        color: '#2F6DF9',
-        type: 'task',
-      },
-    },
-    {
-      _id: '4',
-      title: 'Submit Budget Proposal',
-      content: 'Prepare and submit Q4 budget proposal to finance team',
-      dueDate: '2025-08-27',
-      done: true,
-      category: {
-        name: 'task',
-        color: '#2F6DF9',
-        type: 'task',
-      },
-    },
-  ]);
+
+  useEffect(() => {}, [theme.palette.mode]);
+
+  // 달력 정보 반영
+  const handleDatesSet = (dateInfo) => {
+    const newDate = dateInfo.view.currentStart;
+
+    if (onDateChange) {
+      onDateChange(newDate);
+    }
+  };
 
   const calendarStyles = useMemo(
     () => ({
@@ -57,7 +46,6 @@ const MainCalendar = () => {
         backgroundColor: theme.palette.background.paper,
         border: `1px solid ${theme.palette.border.default}`,
         color: theme.palette.text.primary,
-        padding: '0.375rem 0.875rem',
         fontSize: '0.9rem',
         fontWeight: '400',
         textTransform: 'none',
@@ -81,10 +69,10 @@ const MainCalendar = () => {
           marginLeft: '0',
           borderRadius: '0',
         },
-        '& .fc-button:first-child': {
+        '& .fc-button:first-of-type': {
           borderRadius: '0.25rem 0 0 0.25rem',
         },
-        '& .fc-button:last-child': {
+        '& .fc-button:last-of-type': {
           borderRadius: '0 0.25rem 0.25rem 0',
         },
       },
@@ -110,32 +98,40 @@ const MainCalendar = () => {
         border: `1px solid ${theme.palette.border.default}`,
         overflow: 'hidden',
       },
+      '& .fc-popover-header ': {
+        background: theme.palette.background.paper,
+        fontSize: '0.825rem',
+      },
+      '& .fc-popover-body ': {
+        borderTop: `1px solid ${theme.palette.border.default}`,
+        background: alpha(theme.palette.background.paper, 0.9),
+      },
       '& .fc-col-header': {
-        backgroundColor: '#f8f8f8',
+        backgroundColor: theme.palette.background.paper,
       },
       '& .fc-col-header-cell': {
-        padding: '0.625rem 0',
-        fontWeight: '400',
-        fontSize: '1rem',
+        padding: '0.2rem 0',
+        fontWeight: '700',
+        fontSize: '0.825rem',
         color: theme.palette.text.secondary,
         textAlign: 'center',
       },
       '& .fc-daygrid-day': {
         backgroundColor: theme.palette.background.paper,
         minHeight: '5.625rem',
-        '&:hover': {
-          backgroundColor: '#fafafa',
-        },
       },
       '& .fc-daygrid-day-frame': {
-        padding: '0.5rem',
+        padding: '0.25rem',
         minHeight: '5rem',
       },
       '& .fc-daygrid-day-number': {
-        fontSize: '0.95rem',
+        fontSize: '0.825rem',
         color: theme.palette.text.primary,
-        padding: '0.25rem',
         float: 'left',
+      },
+      '& .fc-daygrid-more-link': {
+        fontSize: '0.8rem',
+        marginTop: '0.25rem',
       },
       '& .fc-day-today': {
         backgroundColor: 'transparent !important',
@@ -144,20 +140,22 @@ const MainCalendar = () => {
         backgroundColor: theme.palette.text.accent,
         color: theme.palette.background.paper,
         borderRadius: '50%',
-        width: '1.625rem',
-        height: '1.625rem',
+        width: '1.5rem',
+        height: '1.5rem',
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontWeight: '500',
+        fontWeight: '600',
         float: 'none',
-        margin: '0.125rem',
+        marginBottom: '0.125rem',
       },
       '& .fc-event': {
-        padding: '0.125rem 0.25rem',
-        fontSize: '0.8rem',
+        padding: '0 0.25rem',
+        fontSize: '0.7rem',
         cursor: 'pointer',
         transition: 'opacity 0.2s',
+        borderRadius: '1rem',
+        marginBottom: '0.125rem',
         '&:hover': {
           opacity: '0.9',
         },
@@ -170,6 +168,9 @@ const MainCalendar = () => {
       },
       '& .fc-daygrid-day-events': {
         marginTop: '0.125rem',
+      },
+      '& .fc .fc-daygrid-body-natural .fc-daygrid-day-events': {
+        marginBottom: '0.25rem',
       },
     }),
     [theme],
@@ -186,45 +187,75 @@ const MainCalendar = () => {
   };
 
   const handleStatusChange = (eventId, newStatus) => {
-    setEvents((prevEvents) =>
-      prevEvents.map((event) => (event._id === eventId ? { ...event, done: newStatus } : event)),
-    );
+    const updatedNote = {
+      completion: {
+        isCompleted: newStatus,
+      },
+    };
+
+    dispatch(
+      updateNote({
+        noteId: eventId,
+        noteData: updatedNote,
+      }),
+    ).then(() => {
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth() + 1;
+      dispatch(getStatics({ year, month }));
+    });
   };
 
+  const SimpleEvents = useMemo(() => {
+    if (statics?.monthlyNotes && Array.isArray(statics.monthlyNotes)) {
+      const filteredList = statics.monthlyNotes
+        .map((event) => ({
+          id: event._id,
+          title: event.title,
+          start: event.completion.dueDate,
+          backgroundColor: event.completion.isCompleted
+            ? theme.palette.border.default
+            : event.category.color,
+          borderColor: event.completion.isCompleted
+            ? theme.palette.border.default
+            : event.category.color,
+          textColor: theme.palette.text.primary,
+          extendedProps: {
+            content: event.content,
+            done: event.completion.isCompleted,
+            categoryName: event.category.name,
+            categoryType: event.category.name,
+            categoryColor: event.category.color,
+          },
+        }))
+        .filter(
+          (note) =>
+            note.extendedProps.categoryName === 'Task' ||
+            note.extendedProps.categoryName === 'Reminder',
+        );
+
+      return filteredList;
+    }
+    return [];
+  }, [statics, theme]);
+
   const currentEvent = selectedEventId
-    ? events.find((event) => event._id === selectedEventId)
+    ? statics.monthlyNotes.find((event) => event._id === selectedEventId)
     : null;
 
   const formattedEvent = currentEvent
     ? {
         id: currentEvent._id,
         title: currentEvent.title,
-        start: currentEvent.dueDate,
+        start: currentEvent.completion.dueDate,
         extendedProps: {
           content: currentEvent.content,
-          done: currentEvent.done,
+          done: currentEvent.completion.isCompleted,
           categoryName: currentEvent.category.name,
           categoryColor: currentEvent.category.color,
           categoryType: currentEvent.category.type,
         },
       }
     : null;
-
-  const mockEvents = events.map((event) => ({
-    id: event._id,
-    title: event.title,
-    start: event.dueDate,
-    backgroundColor: event.done ? theme.palette.text.secondary : event.category.color,
-    borderColor: event.done ? theme.palette.text.secondary : event.category.color,
-    textColor: theme.palette.background.paper,
-    extendedProps: {
-      content: event.content,
-      done: event.done,
-      categoryName: event.category.name,
-      categoryType: event.category.type,
-      categoryColor: event.category.color,
-    },
-  }));
 
   return (
     <Paper
@@ -236,27 +267,27 @@ const MainCalendar = () => {
         flexDirection: 'column',
       }}
     >
-      <SearchBar />
-
       <Box sx={calendarStyles}>
         <FullCalendar
           plugins={[dayGridPlugin]}
           initialView="dayGridMonth"
           headerToolbar={{
-            left: 'prev,next today',
+            left: 'prev,next',
             center: 'title',
-            right: '',
+            right: 'today',
           }}
-          events={mockEvents}
+          events={SimpleEvents}
           height="100%"
           contentHeight="auto"
           aspectRatio={1.8}
           weekends={true}
           dayHeaderFormat={{ weekday: 'short' }}
           eventDisplay="block"
-          dayMaxEvents={3}
+          dayMaxEvents={isMobile ? 1 : 3}
           moreLinkClick="popover"
           eventClick={handleEventClick}
+          displayEventTime={false}
+          datesSet={handleDatesSet}
         />
       </Box>
 

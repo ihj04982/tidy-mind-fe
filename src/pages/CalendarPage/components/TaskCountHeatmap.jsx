@@ -69,9 +69,9 @@ const TaskCountHeatmap = ({ statics, currentDate }) => {
 
   const getColorIntensity = (count) => {
     if (count === 0) return COLORS.empty;
-    if (count <= 3) return COLORS.low;
-    if (count <= 6) return COLORS.medium;
-    if (count <= 9) return COLORS.high;
+    if (count <= 2) return COLORS.low;
+    if (count <= 4) return COLORS.medium;
+    if (count <= 6) return COLORS.high;
     return COLORS.veryHigh;
   };
 
@@ -179,7 +179,7 @@ const TaskCountHeatmap = ({ statics, currentDate }) => {
 
       <Box sx={{ mt: 1, textAlign: 'center' }}>
         <Typography sx={{ fontSize: '0.75rem', color: theme.palette.text.secondary }}>
-          total: <strong>{status.total}</strong>
+          total: <strong>{statics.total}</strong>
         </Typography>
       </Box>
     </Paper>

@@ -270,11 +270,12 @@ const MainCalendar = ({ statics, currentDate, onDateChange }) => {
       <Box sx={calendarStyles}>
         <FullCalendar
           plugins={[dayGridPlugin]}
+          initialDate={currentDate}
           initialView="dayGridMonth"
           headerToolbar={{
-            left: 'prev,next',
+            left: 'today',
             center: 'title',
-            right: 'today',
+            right: 'prev,next',
           }}
           events={SimpleEvents}
           height="100%"

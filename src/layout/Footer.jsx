@@ -130,7 +130,7 @@ const Footer = () => {
                   marginBottom: '12px',
                 }}
               >
-                About Us
+                About
               </Typography>
               <Typography
                 sx={{
@@ -186,7 +186,7 @@ const Footer = () => {
                   },
                 }}
               >
-                @tidymind on Twitter
+                @tidymindai on X
               </Typography>
               <Typography
                 sx={{

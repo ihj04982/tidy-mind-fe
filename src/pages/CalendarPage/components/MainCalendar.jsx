@@ -230,7 +230,7 @@ const MainCalendar = ({ statics, currentDate, onDateChange }) => {
             content: event.content,
             done: event.completion.isCompleted,
             categoryName: event.category.name,
-            categoryType: event.category.name,
+            categoryType: event.category.type,
             categoryColor: event.category.color,
           },
         }));

@@ -131,9 +131,11 @@ const TaskBoard = ({ statics, currentDate }) => {
           },
         }}
       >
-        {filteredList.length === 0 ? (
+        {[todaysTasks, tomorrowsTasks, upcomingTasks, pastTasks].every(
+          (arr) => arr.length === 0,
+        ) ? (
           <Typography variant="body2" color="text.secondary">
-            No pending tasks or reminders this month.
+            No tasks or reminders this month.
           </Typography>
         ) : (
           <List sx={{ padding: 0 }}>

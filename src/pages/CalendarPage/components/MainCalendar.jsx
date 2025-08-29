@@ -207,31 +207,34 @@ const MainCalendar = ({ statics, currentDate, onDateChange }) => {
   const SimpleEvents = useMemo(() => {
     if (statics?.monthlyNotes && Array.isArray(statics.monthlyNotes)) {
       const filteredList = statics.monthlyNotes
-        .filter((event) => event.category.name === 'Task' || event.category.name === 'Reminder')
+        .filter(
+          (event) =>
+            ['Task', 'Reminder'].includes(event.category?.name) && !!event.completion?.dueDate,
+        )
         .sort((a, b) => {
-          if (a.completion.isCompleted !== b.completion.isCompleted) {
-            return a.completion.isCompleted ? 1 : -1;
+          if (a.completion?.isCompleted !== b.completion?.isCompleted) {
+            return a.completion?.isCompleted ? 1 : -1;
           }
           return 0;
         })
         .map((event) => ({
           id: event._id,
           title: event.title,
-          start: event.completion.dueDate,
-          backgroundColor: event.completion.isCompleted
+          start: event.completion?.dueDate,
+          backgroundColor: event.completion?.isCompleted
             ? theme.palette.border.default
-            : event.category.color,
-          borderColor: event.completion.isCompleted
+            : event.category?.color,
+          borderColor: event.completion?.isCompleted
             ? theme.palette.border.default
-            : event.category.color,
+            : event.category?.color,
           textColor: theme.palette.text.primary,
-          displayOrder: event.completion.isCompleted ? 2 : 1,
+          displayOrder: event.completion?.isCompleted ? 2 : 1,
           extendedProps: {
             content: event.content,
-            done: event.completion.isCompleted,
-            categoryName: event.category.name,
-            categoryType: event.category.type,
-            categoryColor: event.category.color,
+            done: !!event.completion?.isCompleted,
+            categoryName: event.category?.name,
+            categoryType: event.category?.type,
+            categoryColor: event.category?.color,
           },
         }));
 

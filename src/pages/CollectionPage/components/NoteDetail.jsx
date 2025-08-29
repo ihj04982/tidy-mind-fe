@@ -92,8 +92,12 @@ const NoteDetail = ({ note, isLoading = false, onBack, isMobile, onDeleteNote, o
             fullWidth
             value={contentValue}
             onChange={handleContentChange}
-            readOnly={!isEditing}
             variant="outlined"
+            slotProps={{
+              htmlInput: {
+                readOnly: !isEditing,
+              },
+            }}
             placeholder={isEditing ? 'Write your note content...' : undefined}
             sx={{
               height: '100%',

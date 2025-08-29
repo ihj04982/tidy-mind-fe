@@ -14,7 +14,7 @@ const initialState = {
 // 노트 목록 조회
 export const getNotes = createAsyncThunk(
   'notes/getNotes',
-  async ({ category, isCompleted }, { dispatch }) => {
+  async ({ category, isCompleted }, { dispatch, rejectWithValue }) => {
     try {
       const params = {};
       if (category) params.category = category;
@@ -30,27 +30,30 @@ export const getNotes = createAsyncThunk(
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
       dispatch(showToast({ message: errorMessage, severity: 'error' }));
-      throw error;
+      return rejectWithValue(errorMessage);
     }
   },
 );
 
 // 노트 상세 조회
-export const getNote = createAsyncThunk('notes/getNote', async (noteId, { dispatch }) => {
-  try {
-    const { data } = await api.get(`/notes/${noteId}`);
-    return data.note;
-  } catch (error) {
-    const errorMessage = extractErrorMessage(error);
-    dispatch(showToast({ message: errorMessage, severity: 'error' }));
-    throw error;
-  }
-});
+export const getNote = createAsyncThunk(
+  'notes/getNote',
+  async (noteId, { dispatch, rejectWithValue }) => {
+    try {
+      const { data } = await api.get(`/notes/${noteId}`);
+      return data.note;
+    } catch (error) {
+      const errorMessage = extractErrorMessage(error);
+      dispatch(showToast({ message: errorMessage, severity: 'error' }));
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
 
 // AI suggestions과 함께 노트 생성
 export const createNoteWithSuggestion = createAsyncThunk(
   'notes/createWithSuggestion',
-  async ({ content, images = [] }, { dispatch }) => {
+  async ({ content, images = [] }, { dispatch, rejectWithValue }) => {
     try {
       const { data } = await api.post('/notes/suggest', { content, images });
       dispatch(showToast({ message: data.message, severity: 'success' }));
@@ -58,7 +61,7 @@ export const createNoteWithSuggestion = createAsyncThunk(
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
       dispatch(showToast({ message: errorMessage, severity: 'error' }));
-      throw error;
+      return rejectWithValue(errorMessage);
     }
   },
 );
@@ -66,7 +69,7 @@ export const createNoteWithSuggestion = createAsyncThunk(
 // 노트 수정
 export const updateNote = createAsyncThunk(
   'notes/updateNote',
-  async ({ noteId, noteData }, { dispatch }) => {
+  async ({ noteId, noteData }, { dispatch, rejectWithValue }) => {
     try {
       const { data } = await api.put(`/notes/${noteId}`, noteData);
       dispatch(showToast({ message: data.message, severity: 'success' }));
@@ -74,35 +77,41 @@ export const updateNote = createAsyncThunk(
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
       dispatch(showToast({ message: errorMessage, severity: 'error' }));
-      throw error;
+      return rejectWithValue(errorMessage);
     }
   },
 );
 
 // 노트 삭제
-export const deleteNote = createAsyncThunk('notes/deleteNote', async (noteId, { dispatch }) => {
-  try {
-    const { data } = await api.delete(`/notes/${noteId}`);
-    dispatch(showToast({ message: data.message, severity: 'success' }));
-    return noteId;
-  } catch (error) {
-    const errorMessage = extractErrorMessage(error);
-    dispatch(showToast({ message: errorMessage, severity: 'error' }));
-    throw error;
-  }
-});
+export const deleteNote = createAsyncThunk(
+  'notes/deleteNote',
+  async (noteId, { dispatch, rejectWithValue }) => {
+    try {
+      const { data } = await api.delete(`/notes/${noteId}`);
+      dispatch(showToast({ message: data.message, severity: 'success' }));
+      return noteId;
+    } catch (error) {
+      const errorMessage = extractErrorMessage(error);
+      dispatch(showToast({ message: errorMessage, severity: 'error' }));
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
 
 // 캘린더 통계 조회
-export const getStatics = createAsyncThunk('notes/getStatics', async (query, { dispatch }) => {
-  try {
-    const response = await api.get('/notes/statics', { params: { ...query } });
-    return response.data.data;
-  } catch (error) {
-    const errorMessage = extractErrorMessage(error);
-    dispatch(showToast({ message: errorMessage, severity: 'error' }));
-    throw error;
-  }
-});
+export const getStatics = createAsyncThunk(
+  'notes/getStatics',
+  async (query, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await api.get('/notes/statics', { params: { ...query } });
+      return response.data.data;
+    } catch (error) {
+      const errorMessage = extractErrorMessage(error);
+      dispatch(showToast({ message: errorMessage, severity: 'error' }));
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
 
 const noteSlice = createSlice({
   name: 'notes',
@@ -227,6 +236,6 @@ const noteSlice = createSlice({
   },
 });
 
-export const { clearError, clearSelectedNote } = noteSlice.actions;
+export const { clearSelectedNote } = noteSlice.actions;
 
 export default noteSlice.reducer;

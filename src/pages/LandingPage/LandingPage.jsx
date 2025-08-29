@@ -18,13 +18,7 @@ const LandingPage = () => {
 
   const { loading: isSaving } = useSelector((state) => state.notes);
 
-  const {
-    transcript,
-    listening,
-    toggleListening,
-    browserSupportsSpeechRecognition,
-    isMicrophoneAvailable,
-  } = useSpeechToText();
+  const { transcript, listening, toggleListening } = useSpeechToText();
   const [inputValue, setInputValue] = useState('');
   const [imgURLs, setImgURLs] = useState([]);
   const MAX_IMAGE_COUNT = 5;
@@ -375,7 +369,7 @@ const LandingPage = () => {
             }}
           >
             <Button
-              disabled={listening || !browserSupportsSpeechRecognition || !isMicrophoneAvailable}
+              disabled={listening}
               onClick={toggleListening}
               disableRipple
               sx={{

@@ -1,13 +1,13 @@
-import { Box, Typography, TextField, Dialog, IconButton } from '@mui/material';
+import { Box, Typography, TextField, Dialog, IconButton, CircularProgress } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { X } from 'lucide-react';
 import React, { useState } from 'react';
 
 import NoteAttachments from './NoteAttachments';
 import NoteDetailHeader from './NoteDetailHeader';
-import { useNoteEditor } from '../hooks/useNoteEditor';
+import { useNoteEditor } from '../../../hooks/useNoteEditor';
 
-const NoteDetail = ({ note, onBack, isMobile, onDeleteNote, onToggleDone }) => {
+const NoteDetail = ({ note, isLoading = false, onBack, isMobile, onDeleteNote, onToggleDone }) => {
   const theme = useTheme();
   const [selectedImage, setSelectedImage] = useState(null);
 
@@ -22,6 +22,29 @@ const NoteDetail = ({ note, onBack, isMobile, onDeleteNote, onToggleDone }) => {
     handleDeleteImage,
     handleAddImage,
   } = useNoteEditor(note);
+
+  const contentValue = isEditing ? draft?.content || '' : note?.content || '';
+  const attachmentsImages = isEditing ? draft?.images || [] : note?.images || [];
+  const showAttachments = isEditing || attachmentsImages.length > 0;
+
+  const handleContentChange = isEditing
+    ? (e) => setDraft((prev) => ({ ...prev, content: e.target.value }))
+    : undefined;
+
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <CircularProgress size={24} />
+      </Box>
+    );
+  }
 
   if (!note) {
     return (
@@ -48,106 +71,62 @@ const NoteDetail = ({ note, onBack, isMobile, onDeleteNote, onToggleDone }) => {
 
   return (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      {isEditing ? (
-        <form onSubmit={handleSave} style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-          <NoteDetailHeader
-            note={note}
-            isEditing={isEditing}
-            draft={draft}
-            setDraft={setDraft}
-            isMobile={isMobile}
-            onBack={onBack}
-            onEdit={handleEdit}
-            onCancel={handleCancel}
-            onDelete={onDeleteNote}
-            onToggleDone={onToggleDone}
-            requiresCompletion={requiresCompletion}
-          />
-
-          <Box sx={{ flex: 1, padding: 3, overflow: 'auto', minHeight: 0 }}>
-            <TextField
-              multiline
-              fullWidth
-              value={draft?.content || ''}
-              onChange={(e) => setDraft((prev) => ({ ...prev, content: e.target.value }))}
-              variant="outlined"
-              placeholder="Write your note content..."
-              sx={{
+      <form onSubmit={handleSave} style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <NoteDetailHeader
+          note={note}
+          isEditing={isEditing}
+          draft={draft}
+          setDraft={setDraft}
+          isMobile={isMobile}
+          onBack={onBack}
+          onEdit={handleEdit}
+          onSave={handleSave}
+          onCancel={handleCancel}
+          onDelete={onDeleteNote}
+          onToggleDone={onToggleDone}
+          requiresCompletion={requiresCompletion}
+        />
+        <Box sx={{ flex: 1, padding: 3, overflow: 'auto', minHeight: 0 }}>
+          <TextField
+            multiline
+            fullWidth
+            value={contentValue}
+            onChange={handleContentChange}
+            variant="outlined"
+            slotProps={{
+              htmlInput: {
+                readOnly: !isEditing,
+              },
+            }}
+            placeholder={isEditing ? 'Write your note content...' : undefined}
+            sx={{
+              height: '100%',
+              '& .MuiOutlinedInput-root': {
                 height: '100%',
-                '& .MuiOutlinedInput-root': {
-                  height: '100%',
-                  alignItems: 'flex-start',
-                },
-                '& .MuiInputBase-input': {
-                  fontSize: '0.875rem',
-                },
-              }}
-            />
-          </Box>
-
-          {(isEditing ? draft?.images || [] : note.images).length > 0 && (
-            <NoteAttachments
-              images={isEditing ? draft?.images || [] : note.images}
-              isEditing={isEditing}
-              onDeleteImage={handleDeleteImage}
-              onImageClick={(img) => setSelectedImage(img)}
-              onAddImage={handleAddImage}
-            />
-          )}
-        </form>
-      ) : (
-        <>
-          <NoteDetailHeader
-            note={note}
-            isEditing={isEditing}
-            draft={draft}
-            setDraft={setDraft}
-            isMobile={isMobile}
-            onBack={onBack}
-            onEdit={handleEdit}
-            onSave={handleSave}
-            onCancel={handleCancel}
-            onDelete={onDeleteNote}
-            onToggleDone={onToggleDone}
-            requiresCompletion={requiresCompletion}
+                alignItems: 'flex-start',
+                backgroundColor: isEditing ? undefined : 'transparent',
+              },
+              '& .MuiInputBase-input': {
+                fontSize: '0.875rem',
+                lineHeight: isEditing ? undefined : 1.6,
+                color: isEditing ? undefined : theme.palette.text.primary,
+              },
+              '& .MuiOutlinedInput-notchedOutline': {
+                border: isEditing ? undefined : 'none',
+              },
+            }}
           />
+        </Box>
+      </form>
 
-          <Box sx={{ flex: 1, padding: 3, overflow: 'auto', minHeight: 0 }}>
-            <TextField
-              multiline
-              fullWidth
-              value={note.content}
-              readOnly
-              variant="outlined"
-              sx={{
-                height: '100%',
-                '& .MuiOutlinedInput-root': {
-                  height: '100%',
-                  alignItems: 'flex-start',
-                  backgroundColor: 'transparent',
-                },
-                '& .MuiInputBase-input': {
-                  fontSize: '0.875rem',
-                  lineHeight: 1.6,
-                  color: theme.palette.text.primary,
-                },
-                '& .MuiOutlinedInput-notchedOutline': {
-                  border: 'none',
-                },
-              }}
-            />
-          </Box>
-
-          {(isEditing ? draft?.images || [] : note.images).length > 0 && (
-            <NoteAttachments
-              images={isEditing ? draft?.images || [] : note.images}
-              isEditing={isEditing}
-              onDeleteImage={handleDeleteImage}
-              onImageClick={(img) => setSelectedImage(img)}
-              onAddImage={handleAddImage}
-            />
-          )}
-        </>
+      {showAttachments && (
+        <NoteAttachments
+          images={attachmentsImages}
+          isEditing={isEditing}
+          onDeleteImage={handleDeleteImage}
+          onImageClick={(img) => setSelectedImage(img)}
+          onAddImage={handleAddImage}
+        />
       )}
 
       <Dialog open={!!selectedImage} onClose={() => setSelectedImage(null)} maxWidth="lg">

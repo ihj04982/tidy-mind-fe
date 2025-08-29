@@ -8,10 +8,10 @@ import NoteDetail from './components/NoteDetail';
 import NoteList from './components/NoteList';
 import {
   getNotes,
-  setSelectedNote,
   clearSelectedNote,
   updateNote,
   deleteNote,
+  getNote,
 } from '../../features/notes/noteSlice';
 
 const CollectionPage = () => {
@@ -19,7 +19,7 @@ const CollectionPage = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const dispatch = useDispatch();
 
-  const { notes, selectedNote } = useSelector((state) => state.notes);
+  const { notes, selectedNote, loading } = useSelector((state) => state.notes);
   const [currentCategory, setCurrentCategory] = useState('all');
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const CollectionPage = () => {
   }, [dispatch, currentCategory]);
 
   const handleNoteSelect = (note) => {
-    dispatch(setSelectedNote(note));
+    dispatch(getNote(note._id));
   };
 
   const handleCategoryFilter = (categoryName) => {
@@ -36,25 +36,20 @@ const CollectionPage = () => {
   };
 
   const handleToggleDone = (noteId, isCompleted) => {
-    const note = notes.find((n) => n._id === noteId);
-    if (!note) return;
-
-    const updatedNote = {
-      ...note,
-      completion: note.completion
-        ? {
-            ...note.completion,
+    dispatch(
+      updateNote({
+        noteId,
+        noteData: {
+          completion: {
             isCompleted,
-          }
-        : null,
-    };
-
-    dispatch(updateNote({ noteId, noteData: updatedNote }));
+          },
+        },
+      }),
+    );
   };
 
   const handleDeleteNote = (noteId) => {
     dispatch(deleteNote(noteId));
-    dispatch(clearSelectedNote());
   };
 
   return (
@@ -94,6 +89,7 @@ const CollectionPage = () => {
           >
             <NoteDetail
               note={selectedNote}
+              isLoading={loading}
               onBack={() => dispatch(clearSelectedNote())}
               isMobile={isMobile}
               onToggleDone={handleToggleDone}
@@ -127,6 +123,7 @@ const CollectionPage = () => {
             <NoteList
               notes={notes}
               selectedNote={selectedNote}
+              isLoading={loading}
               onNoteSelect={handleNoteSelect}
               onCategoryFilter={handleCategoryFilter}
               onToggleDone={handleToggleDone}

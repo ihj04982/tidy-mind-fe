@@ -52,6 +52,7 @@ const NoteCard = ({ note, isSelected, onSelect, onToggleDone, onDeleteNote }) =>
               <Checkbox
                 checked={note.completion?.isCompleted || false}
                 onChange={handleCheckboxClick}
+                onClick={(e) => e.stopPropagation()}
                 size="small"
                 sx={{ padding: 0, marginRight: 0.5 }}
               />

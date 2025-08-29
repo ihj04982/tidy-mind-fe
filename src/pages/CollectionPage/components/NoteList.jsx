@@ -1,4 +1,4 @@
-import { Box, Typography, Stack, Button } from '@mui/material';
+import { Box, Typography, Stack, Button, CircularProgress } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import React from 'react';
 
@@ -9,6 +9,7 @@ import { groupNotesByDate } from '../../../utils/dateUtils';
 const NoteList = ({
   notes,
   selectedNote,
+  isLoading = false,
   onNoteSelect,
   onCategoryFilter,
   onToggleDone,
@@ -78,56 +79,67 @@ const NoteList = ({
       </Box>
 
       <Box sx={{ flex: 1, overflow: 'auto' }}>
-        {Object.entries(groupedNotes).map(([groupName, groupNotes]) => {
-          if (groupNotes.length === 0) return null;
+        {isLoading && (
+          <Box
+            sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}
+          >
+            <CircularProgress size={24} />
+          </Box>
+        )}
+        {!isLoading && (
+          <>
+            {Object.entries(groupedNotes).map(([groupName, groupNotes]) => {
+              if (groupNotes.length === 0) return null;
 
-          return (
-            <Box key={groupName}>
+              return (
+                <Box key={groupName}>
+                  <Box
+                    sx={{
+                      padding: '12px 24px 8px 24px',
+                      borderBottom: `1px solid ${theme.palette.border.default}`,
+                    }}
+                  >
+                    <Typography
+                      variant="subtitle2"
+                      sx={{
+                        color: theme.palette.text.secondary,
+                        fontWeight: 600,
+                        fontSize: '0.875rem',
+                      }}
+                    >
+                      {groupName}
+                    </Typography>
+                  </Box>
+
+                  {groupNotes.map((note) => (
+                    <NoteCard
+                      key={note._id}
+                      note={note}
+                      isSelected={selectedNote?._id === note._id}
+                      onSelect={onNoteSelect}
+                      onToggleDone={onToggleDone}
+                      onDeleteNote={onDeleteNote}
+                    />
+                  ))}
+                </Box>
+              );
+            })}
+
+            {notes.length === 0 && (
               <Box
                 sx={{
-                  padding: '12px 24px 8px 24px',
-                  borderBottom: `1px solid ${theme.palette.border.default}`,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '100%',
+                  color: theme.palette.text.secondary,
                 }}
               >
-                <Typography
-                  variant="subtitle2"
-                  sx={{
-                    color: theme.palette.text.secondary,
-                    fontWeight: 600,
-                    fontSize: '0.875rem',
-                  }}
-                >
-                  {groupName}
-                </Typography>
+                <Typography variant="body2">No notes found</Typography>
               </Box>
-
-              {groupNotes.map((note) => (
-                <NoteCard
-                  key={note._id}
-                  note={note}
-                  isSelected={selectedNote?._id === note._id}
-                  onSelect={onNoteSelect}
-                  onToggleDone={onToggleDone}
-                  onDeleteNote={onDeleteNote}
-                />
-              ))}
-            </Box>
-          );
-        })}
-
-        {notes.length === 0 && (
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '100%',
-              color: theme.palette.text.secondary,
-            }}
-          >
-            <Typography variant="body2">No notes found</Typography>
-          </Box>
+            )}
+          </>
         )}
       </Box>
     </Box>

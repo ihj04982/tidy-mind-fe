@@ -11,36 +11,33 @@ import {
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
-import { getStatus, updateNote } from '../../../features/notes/noteSlice';
+import { updateNote, getStatics } from '../../../features/notes/noteSlice';
 import { formatRelativeDate } from '../../../utils/dateUtils';
 
-const TaskBoard = ({ status, currentDate }) => {
+const TaskBoard = ({ statics, currentDate }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
 
-  const filteredList = status?.monthlyNotes.filter((note) => note.completion?.isCompleted !== true);
+  const filteredList = statics?.monthlyNotes.filter(
+    (note) => note.completion?.isCompleted !== true,
+  );
 
   const handleToggleDone = (noteId, isCompleted) => {
-    const note = filteredList.find((n) => n._id === noteId);
-    if (!note) return;
-
     const updatedNote = {
-      ...note,
-      completion: note.completion
-        ? {
-            ...note.completion,
-            isCompleted,
-          }
-        : {
-            isCompleted,
-            dueDate: new Date().toISOString(),
-          },
+      completion: {
+        isCompleted,
+      },
     };
 
-    dispatch(updateNote({ noteId, noteData: updatedNote })).then(() => {
+    dispatch(
+      updateNote({
+        noteId,
+        noteData: updatedNote,
+      }),
+    ).then(() => {
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth() + 1;
-      dispatch(getStatus({ year, month }));
+      dispatch(getStatics({ year, month }));
     });
   };
   return (

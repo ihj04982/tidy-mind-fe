@@ -118,11 +118,13 @@ const MainCalendar = ({ statics, currentDate, onDateChange }) => {
       },
       '& .fc-daygrid-day': {
         backgroundColor: theme.palette.background.paper,
-        minHeight: '5.625rem',
+        height: isMobile ? '5.625rem' : '6.9375rem',
+        minHeight: isMobile ? '5.625rem' : '6.9375rem',
       },
       '& .fc-daygrid-day-frame': {
         padding: '0.25rem',
-        minHeight: '5rem',
+        height: isMobile ? '5rem' : 'calc(6.9375rem - 0.5rem)',
+        minHeight: isMobile ? '5rem' : 'calc(6.9375rem - 0.5rem)',
       },
       '& .fc-daygrid-day-number': {
         fontSize: '0.825rem',
@@ -208,16 +210,17 @@ const MainCalendar = ({ statics, currentDate, onDateChange }) => {
   const SimpleEvents = useMemo(() => {
     if (statics?.monthlyNotes && Array.isArray(statics.monthlyNotes)) {
       const filteredList = statics.monthlyNotes
+        .filter(
+          (event) =>
+            !event.completion.isCompleted && // Only show incomplete tasks
+            (event.category.name === 'Task' || event.category.name === 'Reminder'),
+        )
         .map((event) => ({
           id: event._id,
           title: event.title,
           start: event.completion.dueDate,
-          backgroundColor: event.completion.isCompleted
-            ? theme.palette.border.default
-            : event.category.color,
-          borderColor: event.completion.isCompleted
-            ? theme.palette.border.default
-            : event.category.color,
+          backgroundColor: event.category.color,
+          borderColor: event.category.color,
           textColor: theme.palette.text.primary,
           extendedProps: {
             content: event.content,
@@ -226,12 +229,7 @@ const MainCalendar = ({ statics, currentDate, onDateChange }) => {
             categoryType: event.category.name,
             categoryColor: event.category.color,
           },
-        }))
-        .filter(
-          (note) =>
-            note.extendedProps.categoryName === 'Task' ||
-            note.extendedProps.categoryName === 'Reminder',
-        );
+        }));
 
       return filteredList;
     }
@@ -263,6 +261,7 @@ const MainCalendar = ({ statics, currentDate, onDateChange }) => {
         p: 3,
         borderRadius: 2,
         height: '100%',
+        maxHeight: '51.412rem',
         display: 'flex',
         flexDirection: 'column',
       }}
@@ -284,7 +283,7 @@ const MainCalendar = ({ statics, currentDate, onDateChange }) => {
           weekends={true}
           dayHeaderFormat={{ weekday: 'short' }}
           eventDisplay="block"
-          dayMaxEvents={isMobile ? 1 : 3}
+          dayMaxEvents={isMobile ? 1 : 2}
           moreLinkClick="popover"
           eventClick={handleEventClick}
           displayEventTime={false}

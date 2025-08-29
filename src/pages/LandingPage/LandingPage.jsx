@@ -49,9 +49,8 @@ const LandingPage = () => {
 
         setInputValue('');
         setImgURLs([]);
-        setTimeout(() => {
-          navigate('/collections');
-        }, 2000);
+        // Navigate immediately after successful save
+        navigate('/collections');
       } catch (error) {
         if (error?.status === 401) {
           setTimeout(() => {
@@ -151,7 +150,7 @@ const LandingPage = () => {
         >
           Every random note, every fleeting idea, TidyMind captures it all.
           <br />
-          Instantly organized with tasks added to your calendar.
+          Instantly organized with tasks and reminders added to your calendar.
         </Typography>
       </Box>
 

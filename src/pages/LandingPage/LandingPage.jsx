@@ -49,7 +49,6 @@ const LandingPage = () => {
 
         setInputValue('');
         setImgURLs([]);
-        // Navigate immediately after successful save
         navigate('/collections');
       } catch (error) {
         if (error?.status === 401) {

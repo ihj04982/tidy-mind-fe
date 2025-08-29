@@ -210,18 +210,25 @@ const MainCalendar = ({ statics, currentDate, onDateChange }) => {
   const SimpleEvents = useMemo(() => {
     if (statics?.monthlyNotes && Array.isArray(statics.monthlyNotes)) {
       const filteredList = statics.monthlyNotes
-        .filter(
-          (event) =>
-            !event.completion.isCompleted && // Only show incomplete tasks
-            (event.category.name === 'Task' || event.category.name === 'Reminder'),
-        )
+        .filter((event) => event.category.name === 'Task' || event.category.name === 'Reminder')
+        .sort((a, b) => {
+          if (a.completion.isCompleted !== b.completion.isCompleted) {
+            return a.completion.isCompleted ? 1 : -1;
+          }
+          return 0;
+        })
         .map((event) => ({
           id: event._id,
           title: event.title,
           start: event.completion.dueDate,
-          backgroundColor: event.category.color,
-          borderColor: event.category.color,
+          backgroundColor: event.completion.isCompleted
+            ? theme.palette.border.default
+            : event.category.color,
+          borderColor: event.completion.isCompleted
+            ? theme.palette.border.default
+            : event.category.color,
           textColor: theme.palette.text.primary,
+          displayOrder: event.completion.isCompleted ? 2 : 1,
           extendedProps: {
             content: event.content,
             done: event.completion.isCompleted,
@@ -288,6 +295,7 @@ const MainCalendar = ({ statics, currentDate, onDateChange }) => {
           eventClick={handleEventClick}
           displayEventTime={false}
           datesSet={handleDatesSet}
+          eventOrder="displayOrder,title"
         />
       </Box>
 

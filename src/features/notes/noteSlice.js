@@ -23,11 +23,6 @@ export const getNotes = createAsyncThunk(
       if (isCompleted !== undefined) params.isCompleted = isCompleted;
 
       const { data } = await api.get('/notes', { params });
-
-      if (data.notes.length > 0) {
-        dispatch(getNote(data.notes[0]._id));
-      }
-
       return data.notes;
     } catch (error) {
       const errorMessage = extractErrorMessage(error);

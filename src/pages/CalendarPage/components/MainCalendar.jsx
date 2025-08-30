@@ -231,10 +231,9 @@ const MainCalendar = ({ statics, currentDate, onDateChange }) => {
           displayOrder: event.completion?.isCompleted ? 2 : 1,
           extendedProps: {
             content: event.content,
-            done: !!event.completion?.isCompleted,
-            categoryName: event.category?.name,
-            categoryType: event.category?.type,
-            categoryColor: event.category?.color,
+            done: event.completion.isCompleted,
+            categoryName: event.category.name,
+            categoryColor: event.category.color,
           },
         }));
 
@@ -257,7 +256,6 @@ const MainCalendar = ({ statics, currentDate, onDateChange }) => {
           done: currentEvent.completion.isCompleted,
           categoryName: currentEvent.category.name,
           categoryColor: currentEvent.category.color,
-          categoryType: currentEvent.category.type,
         },
       }
     : null;

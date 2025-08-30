@@ -1,12 +1,14 @@
 import { Link, Typography } from '@mui/material';
 import { Box, Grid, useTheme } from '@mui/system';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import LogoDark from '../assets/tm_side_black0.png';
 import LogoLight from '../assets/tm_side_white0.png';
 
 const Footer = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const isDarkMode = theme.palette.mode === 'dark';
 
   return (
@@ -35,10 +37,29 @@ const Footer = () => {
               <Box
                 component="img"
                 src={isDarkMode ? LogoLight : LogoDark}
+                onClick={() => navigate('/')}
+                aria-label="Go to home"
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    navigate('/');
+                  }
+                }}
                 sx={{
                   mt: '4px',
                   width: '80px',
                   objectFit: 'contain',
+                  cursor: 'pointer',
+                  transition: 'opacity 0.2s',
+                  '&:hover': {
+                    opacity: 0.8,
+                  },
+                  '&:focus-visible': {
+                    outline: `2px solid ${theme.palette.primary.main}`,
+                    outlineOffset: 2,
+                    borderRadius: 1,
+                  },
                 }}
               />
             </Box>
@@ -109,7 +130,7 @@ const Footer = () => {
                   marginBottom: '12px',
                 }}
               >
-                About Us
+                About
               </Typography>
               <Typography
                 sx={{
@@ -165,7 +186,7 @@ const Footer = () => {
                   },
                 }}
               >
-                @tidymind on Twitter
+                @tidymindai on X
               </Typography>
               <Typography
                 sx={{

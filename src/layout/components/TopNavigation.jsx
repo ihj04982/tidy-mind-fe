@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import ProfileMenu from './ProfileMenu.jsx';
 import UserInfoModal from './UserInfoModal.jsx';
 import Logo from '../../assets/logo.png';
+import LogoWhite from '../../assets/tm_side_white.png';
 import { logout } from '../../features/auth/authSlice.js';
 import ThemeToggle from '../../theme/ThemeToggle.jsx';
 
@@ -61,17 +62,31 @@ const TopNavigation = () => {
           }}
         >
           <Box
+            component="button"
+            type="button"
+            aria-label="Go to home"
             onClick={() => navigate('/')}
             sx={{
+              all: 'unset',
               width: '120px',
               height: '31px',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
               transform: 'rotate(90deg)',
+              cursor: 'pointer',
+              '&:focus-visible': {
+                outline: `2px solid ${theme.palette.primary.main}`,
+                outlineOffset: 2,
+                borderRadius: 1,
+              },
             }}
           >
-            <img src={Logo} style={{ height: '120px' }} />
+            <img
+              src={theme.palette.mode === 'dark' ? LogoWhite : Logo}
+              style={{ height: '120px' }}
+              alt="Tidy Mind Logo"
+            />
           </Box>
           <Button
             sx={{ width: '32px', height: '32px', color: theme.palette.text.primary }}

@@ -1,8 +1,7 @@
 import dayGridPlugin from '@fullcalendar/daygrid';
 import FullCalendar from '@fullcalendar/react';
-import { alpha, Box, Paper, useTheme } from '@mui/material';
-import { useMediaQuery } from '@mui/system';
-import React, { useEffect, useMemo, useState } from 'react';
+import { alpha, Box, Paper, useTheme, useMediaQuery } from '@mui/material';
+import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import EventModal from './EventModal.jsx';
@@ -14,8 +13,6 @@ const MainCalendar = ({ statics, currentDate, onDateChange }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [selectedEventId, setSelectedEventId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-
-  useEffect(() => {}, [theme.palette.mode]);
 
   // 달력 정보 반영
   const handleDatesSet = (dateInfo) => {
@@ -118,11 +115,13 @@ const MainCalendar = ({ statics, currentDate, onDateChange }) => {
       },
       '& .fc-daygrid-day': {
         backgroundColor: theme.palette.background.paper,
-        minHeight: '5.625rem',
+        height: isMobile ? '5.625rem' : '6.9375rem',
+        minHeight: isMobile ? '5.625rem' : '6.9375rem',
       },
       '& .fc-daygrid-day-frame': {
         padding: '0.25rem',
-        minHeight: '5rem',
+        height: isMobile ? '5rem' : 'calc(6.9375rem - 0.5rem)',
+        minHeight: isMobile ? '5rem' : 'calc(6.9375rem - 0.5rem)',
       },
       '& .fc-daygrid-day-number': {
         fontSize: '0.825rem',
@@ -208,29 +207,35 @@ const MainCalendar = ({ statics, currentDate, onDateChange }) => {
   const SimpleEvents = useMemo(() => {
     if (statics?.monthlyNotes && Array.isArray(statics.monthlyNotes)) {
       const filteredList = statics.monthlyNotes
+        .filter(
+          (event) =>
+            ['Task', 'Reminder'].includes(event.category?.name) && !!event.completion?.dueDate,
+        )
+        .sort((a, b) => {
+          if (a.completion?.isCompleted !== b.completion?.isCompleted) {
+            return a.completion?.isCompleted ? 1 : -1;
+          }
+          return 0;
+        })
         .map((event) => ({
           id: event._id,
           title: event.title,
-          start: event.completion.dueDate,
-          backgroundColor: event.completion.isCompleted
+          start: event.completion?.dueDate,
+          backgroundColor: event.completion?.isCompleted
             ? theme.palette.border.default
-            : event.category.color,
-          borderColor: event.completion.isCompleted
+            : event.category?.color,
+          borderColor: event.completion?.isCompleted
             ? theme.palette.border.default
-            : event.category.color,
+            : event.category?.color,
           textColor: theme.palette.text.primary,
+          displayOrder: event.completion?.isCompleted ? 2 : 1,
           extendedProps: {
             content: event.content,
             done: event.completion.isCompleted,
             categoryName: event.category.name,
             categoryColor: event.category.color,
           },
-        }))
-        .filter(
-          (note) =>
-            note.extendedProps.categoryName === 'Task' ||
-            note.extendedProps.categoryName === 'Reminder',
-        );
+        }));
 
       return filteredList;
     }
@@ -261,6 +266,7 @@ const MainCalendar = ({ statics, currentDate, onDateChange }) => {
         p: 3,
         borderRadius: 2,
         height: '100%',
+        maxHeight: '51.412rem',
         display: 'flex',
         flexDirection: 'column',
       }}
@@ -282,11 +288,12 @@ const MainCalendar = ({ statics, currentDate, onDateChange }) => {
           weekends={true}
           dayHeaderFormat={{ weekday: 'short' }}
           eventDisplay="block"
-          dayMaxEvents={isMobile ? 1 : 3}
+          dayMaxEvents={isMobile ? 1 : 2}
           moreLinkClick="popover"
           eventClick={handleEventClick}
           displayEventTime={false}
           datesSet={handleDatesSet}
+          eventOrder="displayOrder,title"
         />
       </Box>
 

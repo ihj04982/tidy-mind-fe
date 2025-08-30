@@ -179,7 +179,7 @@ const TaskCountHeatmap = ({ statics, currentDate }) => {
 
       <Box sx={{ mt: 1, textAlign: 'center' }}>
         <Typography sx={{ fontSize: '0.75rem', color: theme.palette.text.secondary }}>
-          total: <strong>{statics.total}</strong>
+          Total: <strong>{statics.total}</strong> completed!
         </Typography>
       </Box>
     </Paper>

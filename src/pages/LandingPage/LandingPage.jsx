@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { createNoteWithSuggestion } from '../../features/notes/noteSlice';
-import { toastCleared } from '../../features/toast/toastSlice';
 import useSpeechToText from '../../hooks/useSpeechToText';
 import CloudinaryUploadWidget from '../../utils/CloudinaryUploadWidget';
 
@@ -22,10 +21,6 @@ const LandingPage = () => {
   const [inputValue, setInputValue] = useState('');
   const [imgURLs, setImgURLs] = useState([]);
   const MAX_IMAGE_COUNT = 5;
-
-  useEffect(() => {
-    dispatch(toastCleared());
-  }, [dispatch]);
 
   useEffect(() => {
     if (transcript) {
@@ -54,9 +49,7 @@ const LandingPage = () => {
 
         setInputValue('');
         setImgURLs([]);
-        setTimeout(() => {
-          navigate('/collections');
-        }, 2000);
+        navigate('/collections');
       } catch (error) {
         if (error?.status === 401) {
           setTimeout(() => {
@@ -156,7 +149,7 @@ const LandingPage = () => {
         >
           Every random note, every fleeting idea, TidyMind captures it all.
           <br />
-          Instantly organized with tasks added to your calendar.
+          Instantly organized with tasks and reminders added to your calendar.
         </Typography>
       </Box>
 

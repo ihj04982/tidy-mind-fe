@@ -30,18 +30,30 @@ const LeftNavigation = () => {
         zIndex: 999,
       }}
     >
-      <Box
+      <Button
         onClick={() => navigate('/')}
-        component="img"
-        src={isDarkMode ? LogoLight : LogoDark}
-        alt="logo"
+        aria-label="Go to home"
+        disableRipple
         sx={{
-          width: 24,
+          padding: 0,
           marginTop: 7,
           marginBottom: 1.5,
-          cursor: 'pointer',
+          minWidth: 'auto',
+          '&:focus-visible': {
+            outline: `2px solid ${theme.palette.primary.main}`,
+            outlineOffset: 2,
+            borderRadius: 1,
+          },
         }}
-      />
+      >
+        <img
+          src={isDarkMode ? LogoLight : LogoDark}
+          alt="Tidy Mind Logo"
+          style={{
+            width: 24,
+          }}
+        />
+      </Button>
       <Tooltip
         title="Collections"
         placement="right"

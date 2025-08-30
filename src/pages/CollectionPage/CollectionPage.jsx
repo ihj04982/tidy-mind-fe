@@ -27,6 +27,12 @@ const CollectionPage = () => {
     dispatch(getNotes(params));
   }, [dispatch, currentCategory]);
 
+  useEffect(() => {
+    if (!isMobile && !selectedNote && notes.length > 0) {
+      dispatch(getNote(notes[0]._id));
+    }
+  }, [isMobile, selectedNote, notes, dispatch]);
+
   const handleNoteSelect = (note) => {
     dispatch(getNote(note._id));
   };

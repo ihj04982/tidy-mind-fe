@@ -8,13 +8,21 @@ const ColorModeContext = createContext({ mode: 'light', toggle: () => {} });
 export const useColorMode = () => useContext(ColorModeContext);
 
 export default function ThemeRegistry({ children }) {
-  const [mode, setMode] = useState('light');
+  const [mode, setMode] = useState(() => {
+    const savedMode = localStorage.getItem('themeMode');
+    return savedMode === 'dark' ? 'dark' : 'light';
+  });
   const theme = useMemo(() => makeTheme(mode), [mode]);
 
-  const api = useMemo(
-    () => ({ mode, toggle: () => setMode((m) => (m === 'light' ? 'dark' : 'light')) }),
-    [mode],
-  );
+  const toggleMode = () => {
+    setMode((prev) => {
+      const next = prev === 'light' ? 'dark' : 'light';
+      localStorage.setItem('themeMode', next);
+      return next;
+    });
+  };
+
+  const api = useMemo(() => ({ mode, toggle: toggleMode }), [mode]);
 
   return (
     <ColorModeContext.Provider value={api}>

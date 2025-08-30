@@ -8,6 +8,8 @@ const initialState = {
   statics: { monthlyNotes: [], dailyCounts: [], total: 0 },
   selectedNote: null,
   loading: false,
+  notesLoading: false,
+  noteLoading: false,
   error: null,
 };
 
@@ -21,11 +23,6 @@ export const getNotes = createAsyncThunk(
       if (isCompleted !== undefined) params.isCompleted = isCompleted;
 
       const { data } = await api.get('/notes', { params });
-
-      if (data.notes.length > 0) {
-        dispatch(getNote(data.notes[0]._id));
-      }
-
       return data.notes;
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
@@ -126,31 +123,31 @@ const noteSlice = createSlice({
       // 노트 목록 조회
       .addCase(getNotes.pending, (state) => {
         state.error = null;
-        state.loading = true;
+        state.notesLoading = true;
       })
       .addCase(getNotes.fulfilled, (state, action) => {
         state.error = null;
         state.notes = action.payload;
-        state.loading = false;
+        state.notesLoading = false;
       })
       .addCase(getNotes.rejected, (state, action) => {
         state.error = action.payload;
-        state.loading = false;
+        state.notesLoading = false;
       })
 
       // 노트 상세 조회
       .addCase(getNote.pending, (state) => {
         state.error = null;
-        state.loading = true;
+        state.noteLoading = true;
       })
       .addCase(getNote.fulfilled, (state, action) => {
         state.error = null;
         state.selectedNote = action.payload;
-        state.loading = false;
+        state.noteLoading = false;
       })
       .addCase(getNote.rejected, (state, action) => {
         state.error = action.payload;
-        state.loading = false;
+        state.noteLoading = false;
       })
 
       // AI suggestions과 함께 노트 생성

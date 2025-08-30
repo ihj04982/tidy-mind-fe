@@ -1,4 +1,5 @@
-import { Box, Chip, Divider, Modal, Switch, Typography, useTheme } from '@mui/material';
+import { Box, Chip, Divider, IconButton, Modal, Switch, Typography, useTheme } from '@mui/material';
+import { X } from 'lucide-react';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -45,21 +46,37 @@ const EventModal = ({ open, onClose, event, onStatusChange }) => {
       aria-describedby="event-modal-description"
     >
       <Box sx={modalStyle}>
-        <Box
-          sx={{ mb: 2, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}
+        <IconButton
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+            color: theme.palette.text.secondary,
+            '&:hover': {
+              backgroundColor: theme.palette.action.hover,
+            },
+          }}
+          aria-label="Close modal"
         >
+          <X size={20} />
+        </IconButton>
+
+        <Box sx={{ mb: 2 }}>
           <Typography
             id="event-modal-title"
             variant="h5"
             sx={{
               fontWeight: 600,
               color: theme.palette.text.primary,
-              flex: 1,
               pr: 2,
             }}
           >
             {event.title}
           </Typography>
+        </Box>
+
+        <Box sx={{ mb: 2 }}>
           <Chip
             label={event.extendedProps.categoryName}
             size="small"
@@ -160,7 +177,7 @@ const EventModal = ({ open, onClose, event, onStatusChange }) => {
                 fontSize: '0.875rem',
               }}
             >
-              Mark as done
+              {event.extendedProps.done ? 'Mark as incomplete' : 'Mark as complete'}
             </Typography>
             <Switch
               checked={event.extendedProps.done}

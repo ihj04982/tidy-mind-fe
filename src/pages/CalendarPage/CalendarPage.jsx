@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Container, Typography } from '@mui/material';
+import { Box, CircularProgress, Container } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -18,13 +18,6 @@ const CalendarPage = () => {
     dispatch(getStatics({ year, month }));
   }, [dispatch, year, month]);
 
-  const todayDate = currentDate.toLocaleDateString('en-US', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  });
-
   // 달력 변경 값 반영
   const handleDateChange = (newDate) => {
     setCurrentDate(newDate);
@@ -40,18 +33,6 @@ const CalendarPage = () => {
 
   return (
     <Container sx={{ my: 10 }}>
-      <Typography
-        variant="body2"
-        sx={{
-          color: 'text.secondary',
-          fontSize: '0.875rem',
-          mb: '0.7rem',
-          textAlign: 'left',
-        }}
-      >
-        {todayDate}
-      </Typography>
-
       <Box
         sx={{
           display: 'flex',

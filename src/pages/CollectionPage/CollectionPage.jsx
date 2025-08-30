@@ -19,13 +19,19 @@ const CollectionPage = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const dispatch = useDispatch();
 
-  const { notes, selectedNote, loading } = useSelector((state) => state.notes);
+  const { notes, selectedNote, notesLoading, noteLoading } = useSelector((state) => state.notes);
   const [currentCategory, setCurrentCategory] = useState('all');
 
   useEffect(() => {
     const params = currentCategory === 'all' ? {} : { category: currentCategory };
     dispatch(getNotes(params));
   }, [dispatch, currentCategory]);
+
+  useEffect(() => {
+    if (!isMobile && !selectedNote && notes.length > 0) {
+      dispatch(getNote(notes[0]._id));
+    }
+  }, [isMobile, selectedNote, notes, dispatch]);
 
   const handleNoteSelect = (note) => {
     dispatch(getNote(note._id));
@@ -89,7 +95,7 @@ const CollectionPage = () => {
           >
             <NoteDetail
               note={selectedNote}
-              isLoading={loading}
+              isLoading={noteLoading}
               onBack={() => dispatch(clearSelectedNote())}
               isMobile={isMobile}
               onToggleDone={handleToggleDone}
@@ -123,7 +129,7 @@ const CollectionPage = () => {
             <NoteList
               notes={notes}
               selectedNote={selectedNote}
-              isLoading={loading}
+              isLoading={notesLoading}
               onNoteSelect={handleNoteSelect}
               onCategoryFilter={handleCategoryFilter}
               onToggleDone={handleToggleDone}

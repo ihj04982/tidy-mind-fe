@@ -223,7 +223,6 @@ const MainCalendar = ({ statics, currentDate, onDateChange }) => {
             content: event.content,
             done: event.completion.isCompleted,
             categoryName: event.category.name,
-            categoryType: event.category.name,
             categoryColor: event.category.color,
           },
         }))
@@ -252,7 +251,6 @@ const MainCalendar = ({ statics, currentDate, onDateChange }) => {
           done: currentEvent.completion.isCompleted,
           categoryName: currentEvent.category.name,
           categoryColor: currentEvent.category.color,
-          categoryType: currentEvent.category.type,
         },
       }
     : null;

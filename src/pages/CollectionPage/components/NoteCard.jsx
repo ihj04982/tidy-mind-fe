@@ -9,7 +9,8 @@ const NoteCard = ({ note, isSelected, onSelect, onToggleDone, onDeleteNote }) =>
   const theme = useTheme();
 
   const category = note.category;
-  const hasCompletion = note.completion !== null;
+  const hasCompletion = note.completion !== null && note.completion !== undefined;
+  const validCategory = category?.name === 'Task' || category?.name === 'Reminder';
 
   const handleClick = () => {
     onSelect(note);
@@ -48,7 +49,7 @@ const NoteCard = ({ note, isSelected, onSelect, onToggleDone, onDeleteNote }) =>
       >
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, marginBottom: 0.5 }}>
-            {hasCompletion && (
+            {hasCompletion && validCategory && (
               <Checkbox
                 checked={note.completion?.isCompleted || false}
                 onChange={handleCheckboxClick}
@@ -63,8 +64,9 @@ const NoteCard = ({ note, isSelected, onSelect, onToggleDone, onDeleteNote }) =>
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
-                textDecoration: note.completion?.isCompleted ? 'line-through' : 'none',
-                opacity: note.completion?.isCompleted ? 0.6 : 1,
+                textDecoration:
+                  note.completion?.isCompleted && validCategory ? 'line-through' : 'none',
+                opacity: note.completion?.isCompleted && validCategory ? 0.6 : 1,
               }}
             >
               {note.title}

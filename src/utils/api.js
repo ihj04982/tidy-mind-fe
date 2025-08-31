@@ -21,7 +21,11 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       sessionStorage.removeItem('token');
-      window.location.href = '/login';
+      // 로그인/ 레지스터 페이지에 있지 않을 때만 리다이렉트
+      const currentPath = window.location.pathname;
+      if (!currentPath.includes('/login') && !currentPath.includes('/register')) {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   },
